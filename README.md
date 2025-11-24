@@ -1,2 +1,3 @@
 # prefviz
-This is a package to visualisation preference data, such as elections where voters rank candidates. 
+
+This is a package for visualising preference data, such as from elections where voters rank candidates.
