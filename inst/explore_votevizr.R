@@ -6,7 +6,7 @@ library(ggtern)
 ### Explore under the hood of votevizr
 
 # Input type: List of candidate preferences
-# Not use ggtern while aware that it exists
+# The author did not use ggtern while aware that it exists
 votevizr::brexit_prefs
 
 # Figure out the region first
@@ -40,41 +40,3 @@ brexit_rcv_ternary %>%
 # Not really sure how to do this atp, converting pref to %pref -> Discussion on input type
 nsw_pref <- read_preflib(here::here("data-raw/00058-00000274.soi"))
 nsw_pref[which(pref_length(nsw_pref$preferences) == 3),]
-
-# AEC 2022 election data
-url <- "https://results.aec.gov.au/27966/Website/Downloads/HouseDopByDivisionDownload-27966.csv"
-aec <- read_csv(url, skip = 1) |> 
-  filter(CalculationType == "Preference Percent", CountNumber == 0) |> 
-  mutate(Party = case_when(
-    !(PartyAb %in% c("LP", "ALP", "NP")) ~ "Other",
-    PartyAb %in% c("LP", "NP") ~ "NLP",
-    TRUE ~ PartyAb
-  )) 
-
-aec_pref <- aec |> 
-  left_join(
-    aec |> 
-      filter(Elected == "Y") |> 
-      select(DivisionNm, ElectedParty = Party),
-    by = "DivisionNm"
-  ) |> 
-  group_by(DivisionNm, Party, ElectedParty) |> 
-    summarise(
-      Votes = sum(CalculationValue, na.rm = TRUE),
-      .groups = "drop"
-    ) |> 
-    pivot_wider(
-      names_from = Party,
-      values_from = Votes,
-      values_fill = 0
-    ) |> 
-    mutate(Other = 100 - NLP - ALP) |>
-    select(DivisionNm, ALP, NLP, Other, ElectedParty)
-
-aec_pref2 <- aec_pref |> wide_preferences()
-
-ggtern(aec_pref, aes(x = ALP, y = Other, z = NLP)) +
-  geom_point(aes(color = ElectedParty), size = 3, alpha = 0.7) +
-  theme_bw()
-
-aec_pref
