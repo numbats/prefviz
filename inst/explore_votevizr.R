@@ -36,18 +36,50 @@ brexit_rcv_ternary %>%
   expand_limits(x = c(-.1, 1.1), y = sqrt(3/4)*c(-.1, 1.1)) + 
   annotate(geom = "text", x = c(1,.5,0), y = c(0,sqrt(3/4),0) + .05*c(-1,1,-1), label = c("Remain", "Deal", "No deal"))
 
-# Adapt to NSW pref
-# Not really sure how to do this atp, converting pref to %pref -> Discussion on input type
+
+#### Adapt to preflib format
 netflix <- read_preflib("00004 - netflix/00004-00000001.soc", from_preflib = TRUE)
 
-pref_irv(netflix, 
-  preferences_col = preferences,
-  frequency_col = frequency
-)$winner
+# Convert data to wide format, ready for ggplot
+netflix_wide <- netflix |> 
+  mutate(
+    first_pref = pref_get_items(preferences, rank = 1) |> unlist(),
+    second_pref = pref_get_items(preferences, rank = 2) |> unlist(),
+    third_pref = pref_get_items(preferences, rank = 3) |> unlist(),
+    pref_percent = frequency/sum(frequency),
+    winner = pref_irv(netflix, 
+      preferences_col = preferences,
+      frequency_col = frequency
+    )$winner
+  )
 
-lst <- list(netflix$preferences)
-as.list(netflix$preferences)
+netflix_first_pref <- netflix_wide |> 
+  group_by(first_pref, winner) |> 
+  summarise(
+    votes = sum(pref_percent),
+    .groups = "drop"
+  ) |> 
+  pivot_wider(names_from = first_pref, values_from = votes) |> 
+  rename(
+    "Shrek" = "Shrek (Full-screen)",
+    "Punisher" = "The Punisher",
+    "X-Files" = "The X-Files: Season 2"
+  )
 
-netflix_pref <- list(netflix$frequency)
-setNames(netflix_pref, lst)
+# Find the winning region
+netflix_lst <- netflix_wide |> 
+  mutate(pref_str = paste(first_pref, ">", second_pref, ">", third_pref)) |> 
+  select(pref_str, frequency) |> 
+  deframe() |> as.list()
 
+first_preference_win_regions(netflix_lst, split = " > ", method = "RCV")
+
+df <- data.frame(ballot = names(netflix_lst), value = unlist(netflix_lst))
+candidate_names <- unique(unlist(strsplit(as.character(df$ballot), split = " > "))) 
+
+# ggtern 
+ggtern(netflix_first_pref, 
+  aes(x = `Shrek`, y = `Punisher`, z = `X-Files`)) +
+  geom_point(size = 3, alpha = 0.8) +
+  theme_rgbw() +
+  theme_noarrows()
