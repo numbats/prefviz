@@ -38,5 +38,16 @@ brexit_rcv_ternary %>%
 
 # Adapt to NSW pref
 # Not really sure how to do this atp, converting pref to %pref -> Discussion on input type
-nsw_pref <- read_preflib(here::here("data-raw/00058-00000274.soi"))
-nsw_pref[which(pref_length(nsw_pref$preferences) == 3),]
+netflix <- read_preflib("00004 - netflix/00004-00000001.soc", from_preflib = TRUE)
+
+pref_irv(netflix, 
+  preferences_col = preferences,
+  frequency_col = frequency
+)$winner
+
+lst <- list(netflix$preferences)
+as.list(netflix$preferences)
+
+netflix_pref <- list(netflix$frequency)
+setNames(netflix_pref, lst)
+
