@@ -59,27 +59,32 @@ netflix_first_pref <- netflix_wide |>
     votes = sum(pref_percent),
     .groups = "drop"
   ) |> 
-  pivot_wider(names_from = first_pref, values_from = votes) |> 
-  rename(
-    "Shrek" = "Shrek (Full-screen)",
-    "Punisher" = "The Punisher",
-    "X-Files" = "The X-Files: Season 2"
-  )
+  pivot_wider(names_from = first_pref, values_from = votes)
 
-# Find the winning region
-netflix_lst <- netflix_wide |> 
-  mutate(pref_str = paste(first_pref, ">", second_pref, ">", third_pref)) |> 
-  select(pref_str, frequency) |> 
-  deframe() |> as.list()
+## How the input wrapper works
+preflib_soi <- read_preflib("00058 - nswla/00058-00000171.soi", from_preflib = TRUE)
 
-first_preference_win_regions(netflix_lst, split = " > ", method = "RCV")
+result <- pref_irv(preflib_soi, 
+  preferences_col = preferences,
+  frequency_col = frequency
+)
 
-df <- data.frame(ballot = names(netflix_lst), value = unlist(netflix_lst))
-candidate_names <- unique(unlist(strsplit(as.character(df$ballot), split = " > "))) 
+percent_df <- data.frame()
 
-# ggtern 
-ggtern(netflix_first_pref, 
-  aes(x = `Shrek`, y = `Punisher`, z = `X-Files`)) +
-  geom_point(size = 3, alpha = 0.8) +
-  theme_rgbw() +
-  theme_noarrows()
+for (i in 1:length(result$rounds)) { 
+  # Get the i-th round of preferences
+  round_pref <- result$rounds[[i]] |> 
+    mutate(
+      pref_percent = value/sum(value),
+      round = i) |> 
+    select(-value) |> 
+    pivot_wider(names_from = candidate, values_from = pref_percent)
+
+  # Record the preference of the current round
+  percent_df <- bind_rows(percent_df, round_pref) |> 
+    mutate(across(everything(), ~replace_na(.x, 0)))
+}
+
+# Add the final winner to the df
+percent_df <- percent_df |> 
+  mutate(winner = result$winner)

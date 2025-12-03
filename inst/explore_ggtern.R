@@ -76,6 +76,9 @@ fst_pref_tern <- ggtern(data = aec_pref, aes(x = ALP, y = Other, z = LNP)) +
     values = c("ALP" = "red", "LNP" = "blue", "Other" = "green"),
     name = "Elected Party"
   ) +
+  labs(
+    title = "First preference by electorate (2022 election)",
+  ) + 
   theme(
     tern.axis.line.T = element_line(color = "green"),
     tern.axis.line.L = element_line(color = "red"),
@@ -151,13 +154,14 @@ ggtern(
   geom_polygon(data = alp_region,
     fill = "red", alpha = 0.15) +
   geom_polygon(data = lnp_region,
-      fill = "blue", alpha = 0.15) +
+    fill = "blue", alpha = 0.15) +
   geom_polygon(data = other_region,
-        fill = "green", alpha = 0.15) +
+    fill = "green", alpha = 0.15) +
   scale_color_manual(
   values = c("ALP" = "red", "LNP" = "blue", "Other" = "green"),
   name = "Elected Party"
   ) +
+  labs(title = "Round-by-round movement in Richmond and Cowper") +
   theme(
   tern.axis.line.T = element_line(color = "green"),
   tern.axis.line.L = element_line(color = "red"),
