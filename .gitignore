@@ -48,3 +48,6 @@ po/*~
 # RStudio Connect folder
 rsconnect/
 /.quarto/
+
+# Heavy shapefile
+data-raw/2025_ELB

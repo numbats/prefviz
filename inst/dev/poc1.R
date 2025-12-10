@@ -6,6 +6,7 @@ library(sf)
 library(crosstalk)
 library(ggthemes)
 
+
 # Data
 
 ## AEC DOP 2025 and 2022
@@ -28,7 +29,7 @@ aec_2025 <- read_csv(url_2025, skip = 1) |>
   ))
 
 ## 2025 electoral boundaries + centroids
-elb <- st_read("data-raw/2025_ELB/AUS_ELB_region.shp") |> 
+elb <- st_read(here::here("data-raw/2025_ELB/AUS_ELB_region.shp")) |> 
   rmapshaper::ms_simplify()
 elb_df <- elb |> 
   mutate(id = row_number()) |>
@@ -216,10 +217,7 @@ p_ternary_unlinked <- ggtern_cartesian(
   geom_point(
     aes(color = ElectedParty, text = text), 
     size = 1, alpha = 0.8) +
-  scale_color_manual(values = party_colors, name = "Elected Party") +
-  labs(
-    title = "First preference by electorate (2025)"
-  )
+  scale_color_manual(values = party_colors, name = "Elected Party")
 
 ## Linked ternary plot
 
@@ -238,12 +236,18 @@ p_ternary <- sd_ternary |>
     aes(color = ElectedParty, text = text),
     size = 1, alpha = 0.8
   ) +
-  scale_color_manual(values = party_colors, name = "Elected Party") +
-  labs(
-    title = "First preference by electorate (2025)"
+  annotate(
+    geom = "text", 
+    x = c(0, 50, 100), 
+    y = c(0, sqrt(3/4)*100, 0) + 5*c(-1, 1, -1), 
+    label = c("ALP", "LNP", "Other")
   ) +
+  scale_color_manual(values = party_colors, name = "Elected Party") +
   theme_void() +
-  coord_fixed(ratio = 1)
+  coord_fixed(ratio = 1) +
+  theme(
+    legend.position = "none"
+  )
 
 plotly_ternary <- ggplotly(p_ternary, tooltip = "text") |> 
   highlight(
@@ -252,6 +256,10 @@ plotly_ternary <- ggplotly(p_ternary, tooltip = "text") |>
     opacityDim = 0.3
   ) |> 
   layout(
+    title = list(
+      text = "First preference by electorate (2025)",
+      font = list(size = 16) 
+    ),
     xaxis = list(showgrid = FALSE, zeroline = FALSE, showline = FALSE),
     yaxis = list(showgrid = FALSE, zeroline = FALSE, showline = FALSE)
   ) |> 
@@ -271,19 +279,19 @@ p_elec_map <- ggplot() +
   ) +
   scale_color_manual(values = party_colors, name = "Elected Party") +
   coord_equal() +
-  labs(
-    title = "Result by electorate (2025)"
-  ) +
-  theme_map() +
-  theme(
-    legend.position = "none"
-  )
+  theme_map()
 
 plotly_map <- ggplotly(p_elec_map, tooltip = "text") |> 
   highlight(
     on = "plotly_selected",
     off = "plotly_deselect",
     opacityDim = 0.3
+  ) |> 
+  layout(
+    title = list(
+      text = "Result by electorate (2025)",
+      font = list(size = 16)  # Same size
+    )
   ) |> 
   style(hoverinfo = "skip", traces = 1)
 
@@ -317,18 +325,18 @@ p_change <- ggtern_cartesian(first_pref, x = ALP, y = LNP, z = Other) +
   )
 
 ## Preference flow
-ggtern_cartesian(
+p_flow <- ggtern_cartesian(
   pref_2025 |> filter(DivisionNm == "Wright") |> arrange(CountNumber),
   x = ALP, y = LNP, z = Other
 ) +
   geom_polygon(data = polygon_shade(cartesian = TRUE),
                aes(x = cart_x, y = cart_y, group = group),
                fill = NA, color = "grey50", alpha = 0.3) +
-  geom_path(aes(color = "ElectedParty")) +
+  geom_path(aes(color = ElectedParty)) +
   geom_point(aes(color = ElectedParty)) +
   scale_color_manual(values = party_colors, name = "Elected Party") +
   labs(
-    title = "Preference flow in Cowper (2025)"
+    title = "Preference flow in Wright (2025)"
   )
 
 ggtern(

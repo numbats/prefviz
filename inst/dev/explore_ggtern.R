@@ -152,7 +152,7 @@ url_centroid <- "https://github.com/jforbes14/eechidna/raw/8d771b33126c5828352a9
 
 # Download to temp file and load
 temp_map <- tempfile(fileext = ".rda")
-download.file(url, temp_map, mode = "wb")
+download.file(url_map, temp_map, mode = "wb")
 load(temp_map)
 unlink(temp_map)
 
