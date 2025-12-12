@@ -76,7 +76,10 @@ round_pref <- function(data) {
       values_from = Votes,
       values_fill = 0
     ) |> 
-    mutate(Other = 100 - LNP - ALP)
+    mutate(
+      Other = 100 - LNP - ALP,
+      across(ALP:Other, ~.x/100)
+    )
 
   return(df)
 }
