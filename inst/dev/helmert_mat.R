@@ -36,6 +36,8 @@ ggplot() +
   coord_fixed(ratio=1) +
   theme_void()
 
+penguins_rf$votes |> colnames()
+
 ### Helmert transformation
 
 helmert_transform <- function(data, alternatives = NULL){
@@ -67,17 +69,6 @@ helmert_transform <- function(data, alternatives = NULL){
 
   return(res)
 }
-
-# Input as a tibble or a matrix, needs to specify column names of the alternatives, and the id
-input <- pref_2025 |> 
-  select(ALP, LNP, Other)
-
-input_mat <- as.matrix(pref_2025[, c("ALP", "LNP", "Other")] )
-
-
-# Convert to cartesian through helmert transformation
-
-
 
 ### Plot
 
