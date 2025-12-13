@@ -51,7 +51,7 @@ helmert_transform <- function(data, alternatives = NULL) {
     } else if (is.numeric(alternatives)) {
       # Validate column indices
       if (any(alternatives < 1) || any(alternatives > ncol(data))) {
-        stop("Alternatives must be column indices between 1 and ", ncol(data))
+        stop("Alternatives column indices must be between 1 and ", ncol(data))
       }
 
       input_mat <- as.matrix(data[, alternatives, drop = FALSE])
