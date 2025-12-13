@@ -71,16 +71,17 @@ round_pref <- function(data) {
       Votes = sum(CalculationValue, na.rm = TRUE),
       .groups = "drop"
     ) |> 
+    ungroup() |>
     pivot_wider(
       names_from = Party,
       values_from = Votes,
       values_fill = 0
     ) |> 
     mutate(
-      Other = 100 - LNP - ALP,
-      across(ALP:Other, ~.x/100)
+      across(ALP:Other, ~.x/100),
+      Other = ifelse(1 - ALP - LNP < 0, 0, 1 - ALP - LNP),
     )
-
+  
   return(df)
 }
 

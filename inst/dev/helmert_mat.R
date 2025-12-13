@@ -90,3 +90,8 @@ p_tern_helm <- ggplot() +
   theme_void()
 
 ggplotly(p_tern_helm, tooltip = "ElectedParty") 
+
+
+ggtern_cart2d(pref_2025 |> filter(CountNumber == 0), alternatives = c("ALP", "LNP", "Other")) +
+  geom_point(aes(color = ElectedParty), size = 1, alpha = 0.8) 
+
