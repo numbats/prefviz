@@ -3,42 +3,9 @@ library(geozoo)
 library(randomForest)
 library(tidyverse)
 library(tourr)
+library(detourr)
 
 source("inst/dev/poc1.R")
-
-penguins <- penguins |> drop_na()
-penguins_sub <- penguins[,1:5]
-
-penguins_rf <- randomForest(species~.,
-                             data=penguins_sub,
-                             importance=TRUE)
-
-# Project 4D into 3D
-proj <- t(geozoo::f_helmert(3)[-1,])
-p_rf_v_p <- as.matrix(penguins_rf$votes) %*% proj
-colnames(p_rf_v_p) <- c("x1", "x2")
-p_rf_v_p <- p_rf_v_p |>
-  as.data.frame() |>
-  mutate(species = penguins_sub$species)
-
-simp <- simplex(p=2)
-sp <- data.frame(cbind(simp$points), simp$points[c(2,3,1),])
-colnames(sp) <- c("x1", "x2", "x3", "x4")
-sp$species = sort(unique(penguins_sub$species))
-
-ggplot() +
-  geom_polygon(data = sp, aes(x = x1, y = x2), fill = NA, color = "black") +
-  geom_text(data=sp, aes(x=x1, y=x2, label=species),
-            nudge_x=c(-0.06, 0.07, 0),
-            nudge_y=c(-0.05, -0.05, 0.05)) +
-  geom_point(data=p_rf_v_p, aes(x=x1, y=x2, color=species)) +
-  scale_y_reverse() +
-  coord_fixed(ratio=1) +
-  theme_void()
-
-penguins_rf$votes |> colnames()
-
-### Helmert transformation
 
 helmert_transform <- function(data, alternatives = NULL){
   # Check input type
@@ -60,17 +27,22 @@ helmert_transform <- function(data, alternatives = NULL){
   }
 
   # Helmert transformation
-  output_mat <- f_composition(input_mat) 
+  output_mat <- f_composition(input_mat)
   colnames(output_mat) <- paste0("x", 1:ncol(output_mat))
-  
+
   # Plug back to the dataset
-  res <- data |> 
+  res <- data |>
     cbind(cart_output)
 
   return(res)
 }
 
-### Plot
+### Plot 2D ternary
+
+helm <- f_composition(as.matrix(pref_2025[, c("ALP", "LNP", "Other")]))
+colnames(helm) <- paste0("x", 1:ncol(helm))
+res <- pref_2025 |>
+  cbind(helm)
 
 # Define the simplex. Input columns of alternatives ElectedParty
 alt <- res$ElectedParty |> unique()
@@ -89,9 +61,69 @@ p_tern_helm <- ggplot() +
   coord_fixed(ratio=1) +
   theme_void()
 
-ggplotly(p_tern_helm, tooltip = "ElectedParty") 
-
-
 ggtern_cart2d(pref_2025 |> filter(CountNumber == 0), alternatives = c("ALP", "LNP", "Other")) +
-  geom_point(aes(color = ElectedParty), size = 1, alpha = 0.8) 
+  geom_point(aes(color = ElectedParty), size = 1, alpha = 0.8)
+
+### Plot 4D ternary
+# 5 dimensions: ALP, LNP, GRN, IND, Other
+url_2025 <- "https://results.aec.gov.au/31496/Website/Downloads/HouseDopByDivisionDownload-31496.csv"
+aec_2025_hd <- read_csv(url_2025, skip = 1) |>
+  filter(CalculationType == "Preference Percent") |>
+  mutate(Party = case_when(
+    !(PartyAb %in% c("LP", "ALP", "NP", "LNP", "LNQ", "GRN", "IND")) ~ "Other",
+    PartyAb %in% c("LP", "NP", "LNP", "LNQ") ~ "LNP",
+    TRUE ~ PartyAb
+  ))
+
+pref_2025_hd <- aec_2025_hd |>
+  left_join(
+      aec_2025_hd |>
+        filter(Elected == "Y") |>
+        select(DivisionNm, ElectedParty = Party, CountNumber),
+      by = c("DivisionNm", "CountNumber")) |>
+  group_by(DivisionNm, CountNumber, Party, ElectedParty) |>
+  summarise(
+    Votes = sum(CalculationValue, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  ungroup() |>
+  pivot_wider(
+    names_from = Party,
+    values_from = Votes,
+    values_fill = 0
+  ) |>
+  mutate(
+    across(ALP:IND, ~.x/100),
+    Other = ifelse(1 - ALP - LNP - GRN - IND < 0, 0, 1 - ALP - LNP - GRN - IND)
+  )
+
+cart_df <- helmert_transform(pref_2025_hd, alternatives = c(4:8)) |>
+  filter(CountNumber == 0)
+
+simp <- geozoo::simplex(p = 4)
+sp <- data.frame(simp$points)
+colnames(sp) <- paste0("x", 1:length(sp))
+
+labels <- c("ALP", "GRN", "LNP", "Other", "IND", rep("", nrow(cart_df)))
+cart_df_simp <- bind_rows(sp, cart_df) |>
+  mutate(labels = labels)
+
+animate_xy(
+  cart_df_simp |> select(x1:x4),
+  col = cart_df_simp$ElectedParty,
+  edges = as.matrix(simp$edges),
+  obs_labels  = cart_df_simp$labels,
+  axes = "bottomleft"
+)
+
+render_gif(
+  cart_df_simp |> select(x1:x4),
+  grand_tour(),
+  display_xy(
+    col = cart_df_simp$ElectedParty,
+    edges = as.matrix(simp$edges),
+    obs_labels = cart_df_simp$labels,
+    axes = "bottomleft"
+  )
+)
 
