@@ -12,12 +12,16 @@ execute:
   echo: true
   warning: false
   message: false
+  eval: false
 code-fold: true
 ---
 
 ```{r setup}
 #| include: false
+#| eval: true
+#| cache: true
 source("poc1.R")
+source(here::here("R/helmert_trans.R"))
 ```
 
 ## Overview
@@ -254,7 +258,6 @@ ggtern_cartesian <- function(data, x, y, z, label = TRUE, ...){
 
 ```{r example}
 #| code-fold: false
-#| eval: true
 ggtern_cartesian(
   pref_2025_centroid,
   x = ALP, y = LNP, z = Other) +
@@ -304,3 +307,101 @@ geom_polygon_shade <- function(
 
 - Extend the ternary plot to multidimensionality
 - Interactivity for all plots, displayed in a Shiny app
+
+# Helmert matrix + High dimensional plots
+
+- `helmert_transform()` - Internal function to transform the compisitional input data to cartesian coordinates. Applied to all dimensions
+- `ggtern_cart2d()` - Plot 2D ternary plot
+- `ternary_tour()` - S3 object as input to `tourr::animate_xy()` and other `tourr` functions
+
+## `helmert_transform()` 
+
+`helmert_transform(data, alternatives = NULL)`
+
+- Internal function, nested in 2 plotting functions
+- Return a data frame with the original columns and additional columns containing the Helmert-transformed coordinates, named `x1`, `x2`, ..., `x(n-1)` where `n` is the number of dimensions in the compositional data.
+
+```{r}
+#| eval: true
+#| echo: true
+helmert_transform(pref_2025, alternatives = c("ALP", "LNP", "Other")) |> head()
+```
+
+## `ggtern_cart2d()` - Plot 2D ternary plot
+
+`ggtern_cart2d(data, alternatives = NULL, label = TRUE, ...)`
+
+- Main plotting function, Draw the ternary plot on cartesian coordinate
+
+```{r}
+#| eval: true
+#| echo: true
+first_pref_2025 <- pref_2025 |>
+  filter(CountNumber == 0)
+
+ggtern_cart2d(first_pref_2025, alternatives = c("ALP", "LNP", "Other")) +
+  geom_point(aes(color = ElectedParty), size = 1, alpha = 0.8)
+```
+
+**Next step:** 
+
+- Add geoms for labelling and spliting the ternary space
+- Consider compatibility with `ggtern()`
+
+## `ternary_tour()` - Input for `tourr::animate_xy()`
+
+- S3 object
+- Transform the compositional data to cartesian coordinates using `helmert_transform()`
+- Define the simplex, edges and vertex labels
+
+![](animation.gif)
+
+```{r}
+#| echo: true
+#| code-fold: false
+tour_obj <- ternary_tour(pref_2025_hd, alternatives = c(4:8))
+animate_xy(tour_obj$data, 
+           col = tour_obj$col,
+           edges = tour_obj$edges,
+           obs_labels = tour_obj$labels)
+```
+
+## `ternary_tour()` - Input for `tourr::animate_xy()`
+```{r}
+ternary_tour <- function(data, alternatives, ...) {
+  # Transform data using helmert matrix
+  cart_df <- helmert_transform(data, alternatives = alternatives) |>
+    filter(CountNumber == 0)
+  
+  # Define the simplex
+  simp <- geozoo::simplex(p = length(alternatives) - 1)
+  sp <- data.frame(simp$points)
+  colnames(sp) <- paste0("x", 1:ncol(sp))
+  
+  # Combine data
+  cart_df_simp <- bind_rows(sp, cart_df)
+  
+  # Create labels
+  labels <- c(alternatives, rep("", nrow(cart_df)))
+  
+  # Build the S3 object
+  structure(
+    list(
+      data = cart_df_simp |> select(starts_with("x")),
+      edges = as.matrix(simp$edges),
+      labels = labels,
+      col = cart_df_simp$alternatives,
+      simplex = simp
+    ),
+    class = "ternary_tour"
+  )
+}
+
+# Custom print method
+print.ternary_tour <- function(x, ...) {
+  cat("Ternary tour object\n")
+  cat("Data dimensions:", nrow(x$data), "x", ncol(x$data), "\n")
+  cat("Simplex vertices:", nrow(x$simplex$points), "\n")
+  cat("Edges:", nrow(x$edges), "\n")
+}
+```

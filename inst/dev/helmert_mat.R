@@ -61,10 +61,15 @@ p_tern_helm <- ggplot() +
   coord_fixed(ratio=1) +
   theme_void()
 
-ggtern_cart2d(pref_2025 |> filter(CountNumber == 0), alternatives = c("ALP", "LNP", "Other")) +
+# Use the functions
+
+pref_2025 |> 
+  filter(CountNumber == 0) |>
+  ggtern_cart2d(alternatives = c("ALP", "LNP", "Other")) +
   geom_point(aes(color = ElectedParty), size = 1, alpha = 0.8)
 
 ### Plot 4D ternary
+
 # 5 dimensions: ALP, LNP, GRN, IND, Other
 url_2025 <- "https://results.aec.gov.au/31496/Website/Downloads/HouseDopByDivisionDownload-31496.csv"
 aec_2025_hd <- read_csv(url_2025, skip = 1) |>
@@ -75,6 +80,7 @@ aec_2025_hd <- read_csv(url_2025, skip = 1) |>
     TRUE ~ PartyAb
   ))
 
+# Transform distribution of pref
 pref_2025_hd <- aec_2025_hd |>
   left_join(
       aec_2025_hd |>
@@ -97,17 +103,21 @@ pref_2025_hd <- aec_2025_hd |>
     Other = ifelse(1 - ALP - LNP - GRN - IND < 0, 0, 1 - ALP - LNP - GRN - IND)
   )
 
+# Convert to cartesian coordinates usingh helmert matrix
 cart_df <- helmert_transform(pref_2025_hd, alternatives = c(4:8)) |>
   filter(CountNumber == 0)
 
+# Define the simplex
 simp <- geozoo::simplex(p = 4)
 sp <- data.frame(simp$points)
 colnames(sp) <- paste0("x", 1:length(sp))
 
+# Define the vertex labels
 labels <- c("ALP", "GRN", "LNP", "Other", "IND", rep("", nrow(cart_df)))
 cart_df_simp <- bind_rows(sp, cart_df) |>
   mutate(labels = labels)
 
+# Animate the tour
 animate_xy(
   cart_df_simp |> select(x1:x4),
   col = cart_df_simp$ElectedParty,
