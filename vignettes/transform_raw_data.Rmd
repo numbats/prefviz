@@ -1,0 +1,191 @@
+---
+title: "Transforming voting data to ternable-friendly format"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{transform_raw_data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(prefviz)
+library(prefio)
+library(tidyverse)
+library(kableExtra)
+```
+
+# Introduction
+
+Raw voting data comes in all shapes and forms, and not all voting data can be easily transformed into a format that is ready for ternary plots. 
+
+This vignette shows how to transform common voting data formats into a `ternable`-friendly format that can be used for ternary plots. These include PrefLib-formatted data, raw ballot data in long and wide forms, and AEC distribution of preference data. 
+
+# `ternable`-friendly data
+
+`ternable()` creates a `ternable` object, which is a S3 object that contains the data and metadata necessary for ternary plots. 
+
+A `ternable`-friendly data frame must have the following characteristics:
+
+- At least 3 numeric columns representing the preferences for 3 alternatives/candidates of the election. These columns will act as the vertices of the ternary plot.
+- Values in these alternative columns must be non-negative, and sum to 1.
+
+```{r}
+df <- tibble(
+  electorate = c("A", "B", "C"),
+  PartyA = c(0.5, 0.4, 0.6),
+  PartyB = c(0.3, 0.4, 0.2),
+  PartyC = c(0.2, 0.2, 0.2)
+)
+
+df
+```
+
+The above data frame is a minimal example of a `ternable`-friendly data frame. It contains 3 columns, each representing the preferences for a party in a specific electorate. The values in these columns are all non-negative and sum to 1.
+
+# PrefLib-formatted data
+
+[PrefLib format](https://preflib.github.io/PrefLib-Jekyll/format) is a common format for storing preferential data, and can be easily downloaded using `prefio::read_preflib()` function.
+
+In this example, we will use the [NSW Legislative Assembly Election dataset](https://preflib.github.io/PrefLib-Jekyll/dataset/00058).
+
+```{r}
+nswla <- read_preflib("00058 - nswla/00058-00000171.soi", from_preflib = TRUE)
+nswla
+```
+
+The dataset contains preferential data, with each row representing a unique set of preferences and their respective frequencies. What is missing to transform this data into a `ternable`-friendly format is the breakdown of preferences for each candidate in each round of voting. 
+
+The function `dop_irv()` in this package helps us simulate the Instant Runoff Voting (IRV) process to get the round-by-round preferences for each candidate, and then transform the data into a `ternable`-friendly format. A caveat for this function is that it does not handle ties in preferences given a ballot, which works fine under Australian IRV rules, but may not be appropriate for other electoral systems.
+
+```{r}
+dop_irv(
+  nswla, value_type = "percentage",
+  preferences_col = preferences,
+  frequency_col = frequency)
+```
+
+# Raw ballot data in long and wide formats
+
+Raw ballot data mostly comes in long or wide format. Both formats can be transformed into Preflib format, which can then be converted to `ternable`-friendly format using `dop_irv()`.
+
+**Processing long format**
+
+Consider the following example of simulated ballot data in long format for the Melbourne electorate, with 3 parties: ALP, LNP, and Other, and a typical column for preference rank.
+
+```{r}
+#| echo: false
+ballot_long <- tibble(
+  ballot_id = c(1, 1, 1,
+                2, 2, 2,
+                3, 3, 3,
+                4, 4, 4,
+                5, 5, 5),
+  elect_division = "Melbourne",
+  party = c("ALP", "LNP", "Other",
+            "ALP", "LNP", "Other",
+            "ALP", "LNP", "Other",
+            "ALP", "LNP", "Other",
+            "ALP", "LNP", "Other"),
+  preference_rank = c(1, 2, 3,
+                 2, 1, 3,
+                 3, 2, 1,
+                 1, 3, 2,
+                 2, 3, 1)
+)
+
+ballot_long |> kable()
+```
+
+```{r}
+# Convert to PrefLib format
+preflib_long <- prefio::long_preferences(
+  ballot_long,
+  vote,
+  id_cols = c(ballot_id, elect_division),
+  item_col = party,
+  rank_col = preference_rank
+)
+
+# Convert to ternable-friendly format
+dop_irv(preflib_long$vote, value_type = "percentage")
+```
+
+**Processing wide format**
+
+Consider the same example, but in wide format, with each column representing a candidate/alternative and its value representing the preference rank.
+
+```{r}
+#| echo: false
+
+ballot_wide <- tibble(
+  ballot_id = 1:5,
+  elect_division = "Melbourne",
+  ALP = c(1, 2, 3, 1, 2),
+  LNP = c(2, 1, 2, 3, 3),
+  Other = c(3, 3, 1, 2, 1)
+)
+
+ballot_wide |> kable()
+```
+
+
+```{r}
+# Convert to PrefLib format
+preflib_wide <- prefio::wide_preferences(ballot_wide, vote, ALP:Other)
+
+# Convert to ternable-friendly format
+dop_irv(preflib_wide$vote, value_type = "percentage")
+```
+
+# AEC distribution of preferences
+
+This section applies specifically to the [AEC distribution of preferences](https://results.aec.gov.au/31496/Website/Downloads/HouseDopByDivisionDownload-31496.csv) data. However, it can also be adapted to datasets of similar format, where 
+
+- Each row represents an aggregated preference count and/or percentage for a specific candidate in a specific group/electorate.
+- There must be at least a primary key column that uniquely identifies each row, a value column representing the preference count/percentage, and an alternative column representing the alternatives/parties.
+- There may also be a column representing the electoral status of the alternative/party (elected or not elected). This is optional.
+
+In this example, we will work with 2025 Distribution of Preference data, which is included in this package as `aec_dop_2025`. We are interested in preference percentages of 4 main parties: Labor, The Coalition, Greens, and Independents. The rest is grouped into Other. 
+
+Before transforming the data, let's do some data wrangling to filter for relevant information.
+
+```{r}
+# only include preference percentage and parties of interest
+
+aecdop_2025 <- aecdop_2025 |> 
+  filter(CalculationType == "Preference Percent") |>
+  mutate(Party = case_when(
+    # all parties not in the main parties are grouped into "Other"
+    !(PartyAb %in% c("LP", "ALP", "NP", "LNP", "LNQ", "GRN", "IND")) ~ "Other", 
+    # group all parties in the Coalition into "LNP"
+    PartyAb %in% c("LP", "NP", "LNP", "LNQ") ~ "LNP",
+    TRUE ~ PartyAb
+  ))
+```
+
+The data is now ready for transformation, with the following characteristics:
+
+- `DivisionNm` and `CountNumber` columns together form the primary key that uniquely identifies each row.
+- `CalculationValue` column contains the preference percentage.
+- `Party` column contains the alternative/party.
+- `Elected` column contains the elected/electoral status of the party.
+
+We will use the `dop_transform()` function to transform the data into a `ternable`-friendly format.
+
+```{r}
+dop_transform(
+  data = aecdop_2025,
+  key_cols = c(DivisionNm, CountNumber),
+  value_col = CalculationValue,
+  alternative_col = Party,
+  winner_col = Elected,
+  winner_identifier = "Y"
+)
+```

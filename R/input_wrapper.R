@@ -253,6 +253,3 @@ dop_transform <- function(data,
   
   return(df_wide)
 }
-
-
-#' 

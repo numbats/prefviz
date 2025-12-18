@@ -51,3 +51,6 @@ rsconnect/
 
 # Heavy shapefile
 data-raw/2025_ELB
+inst/doc
+/doc/
+/Meta/
