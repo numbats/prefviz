@@ -94,3 +94,40 @@ NULL
 #'     fill = "grey90", color = "white") +
 #'   theme_map()
 "elb_map"
+
+#' Centroids of electoral divisions in the 2025 Australian Federal Election
+#' 
+#' Provides the centroids of all electorates in the 2025 Australian Federal Election. 
+#' The dataset is computed from 2025 Electoral Boundaries data.
+#' 
+#' @format A tibble of 5 columns:
+#' \describe{
+#'   \item{id}{Unique identifier for electorate}
+#'   \item{elect_div}{Electoral division name}
+#'   \item{area_sqkm}{Area of the electorate in square kilometres}
+#'   \item{long}{Longitude of the electoratecentroid}
+#'   \item{lat}{Latitude of the electorate centroid}
+#' }
+#' 
+#' @source Australian Electoral Commission (AEC)
+#'   \url{https://www.aec.gov.au/electorates/maps.htm}
+#'
+#' @examples
+#' library(ggplot2)
+#' library(ggthemes)
+#' 
+#' # Load the dataset
+#' data(elb_centroid)
+#'
+#' # Plot the centroids on top of the electoral boundaries
+#' ggplot(elb_map) + 
+#'   geom_polygon(
+#'     aes(x = long, y = lat, group = group),
+#'     fill = "grey90", color = "white") +
+#'   geom_point(
+#'     data = elb_centroid,
+#'     aes(x = long, y = lat),
+#'     size = 1, alpha = 0.8
+#'   ) +
+#'   theme_map()
+"elb_centroid"

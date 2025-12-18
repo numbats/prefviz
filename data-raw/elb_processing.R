@@ -40,7 +40,11 @@ elb_centroid <- st_centroid(elb, of_largest_polygon = TRUE) |>
   mutate(
     long = st_coordinates(geometry)[,1],
     lat = st_coordinates(geometry)[,2]
-  )
+  ) |> 
+  st_drop_geometry() |>
+  mutate(id = as.character(row_number() - 1)) |>
+  rename_with(tolower) |> 
+  select(id, elect_div, area_sqkm, long, lat)
 
 usethis::use_data(elb_map, overwrite = TRUE)
 usethis::use_data(elb_centroid, overwrite = TRUE)
