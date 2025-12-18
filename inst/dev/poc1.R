@@ -31,6 +31,7 @@ aec_2025 <- read_csv(url_2025, skip = 1) |>
 ## 2025 electoral boundaries + centroids
 elb <- st_read(here::here("data-raw/2025_ELB/AUS_ELB_region.shp")) |> 
   rmapshaper::ms_simplify()
+
 elb_df <- elb |> 
   mutate(id = row_number()) |>
   st_cast("MULTIPOLYGON") |>
@@ -353,3 +354,18 @@ ggtern(
   geom_path(aes(color = ElectedParty)) +
   geom_point(aes(color = ElectedParty)) +
   scale_color_manual(values = party_colors, name = "Elected Party") 
+
+
+# Treat long ballot data
+
+long_raw <- read_tsv("data-raw/nswla_ballina.txt") |> 
+  filter(Formality == "Formal") 
+preflib_long <- long_preferences(
+  long_raw,
+  vote,
+  id_cols = BPNumber,
+  item_col = CandidateName,
+  rank_col = PrefCounted
+) 
+
+dop_irv(preflib_long$vote, value_type = "percentage")

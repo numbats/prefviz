@@ -129,14 +129,14 @@ dop_irv <- function(x, value_type = c("percentage", "count"), ...) {
 #'     PartyAb %in% c("LP", "NP", "LNP", "LNQ") ~ "LNP",
 #'    TRUE ~ PartyAb))
 #' 
-#' transform_preference(
+#' dop_transform(
 #'   data = aec_dop_2025,
 #'   key_cols = DivisionNm, CountNumber,
 #'   value_col = CalculationValue,
 #'   alternative_col = Party,
 #'   winner_col = Elected
 #' )
-#'@export
+#' @export
 
 dop_transform <- function(data,
                           key_cols,
@@ -253,3 +253,6 @@ dop_transform <- function(data,
   
   return(df_wide)
 }
+
+
+#' 
