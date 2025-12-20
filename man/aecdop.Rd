@@ -38,8 +38,8 @@ An object of class \code{spec_tbl_df} (inherits from \code{tbl_df}, \code{tbl}, 
 }
 \source{
 Australian Electoral Commission (AEC)
-\url[Distribution of Preferences 2022]{https://results.aec.gov.au/27966/Website/HouseDownloadsMenu-27966-Csv.htm}
-\url[Distribution of Preferences 2025]{https://results.aec.gov.au/31496/Website/HouseDownloadsMenu-31496-Csv.htm}
+\url(Distribution of Preferences 2022){https://results.aec.gov.au/27966/Website/HouseDownloadsMenu-27966-Csv.htm}
+\url(Distribution of Preferences 2025){https://results.aec.gov.au/31496/Website/HouseDownloadsMenu-31496-Csv.htm}
 }
 \usage{
 aecdop_2022

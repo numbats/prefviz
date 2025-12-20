@@ -12,7 +12,8 @@ Imports:
     dplyr,
     prefio,
     tibble,
-    tidyr
+    tidyr,
+    rlang
 Suggests: 
     knitr,
     rmarkdown,
