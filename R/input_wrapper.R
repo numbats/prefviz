@@ -149,7 +149,7 @@ dop_transform <- function(data,
                           winner_identifier = "Y") {
   
   # Input validation
-  stopifnot("'data' must be a data frame" = is.data.frame(data))
+  stopifnot(is.data.frame(data))
   
   # Capture and convert column selections
   key_cols_sel <- tidyselect::eval_select(
@@ -193,15 +193,15 @@ dop_transform <- function(data,
   
   # Aggregate data
   df_agg <- data |>
-    group_by(across(all_of(group_cols))) |>
-    summarise(
+    dplyr::group_by(dplyr::across(all_of(group_cols))) |>
+    dplyr::summarise(
       aggregated_value = sum(.data[[value_col_chr]], na.rm = TRUE),
       .groups = "drop"
     )
   
   # Pivot wider
   df_wide <- df_agg |>
-    pivot_wider(
+    tidyr::pivot_wider(
       id_cols = all_of(key_cols_chr),
       names_from = all_of(alternative_col_chr),
       values_from = aggregated_value,
@@ -214,19 +214,19 @@ dop_transform <- function(data,
   # Apply normalization or scaling
   if (normalize) {
     df_wide <- df_wide |>
-      mutate(
-        row_total = rowSums(across(all_of(alternative_names)), na.rm = TRUE),
-        across(
+      dplyr::mutate(
+        row_total = rowSums(dplyr::across(all_of(alternative_names)), na.rm = TRUE),
+        dplyr::across(
           all_of(alternative_names),
           ~ .x / row_total
         )
       ) |>
-      select(-row_total)
+      dplyr::select(-row_total)
     
     # Handle division by zero
     df_wide <- df_wide |>
-      mutate(
-        across(
+      dplyr::mutate(
+        dplyr::across(
           all_of(alternative_names),
           ~ if_else(is.nan(.x) | is.infinite(.x), 0, .x)
         )
@@ -234,21 +234,21 @@ dop_transform <- function(data,
     
   } else if (scale != 1) {
     df_wide <- df_wide |>
-      mutate(
-        across(all_of(alternative_names), ~ .x / scale)
+      dplyr::mutate(
+        dplyr::across(all_of(alternative_names), ~ .x / scale)
       )
   }
   
   # Join winner information if requested
   if (!is.null(winner_col_chr)) {
     winner_data <- data |>
-      filter(.data[[winner_col_chr]] == winner_identifier) |>
-      select(all_of(c(key_cols_chr, alternative_col_chr))) |>
-      distinct() |>
-      rename(Winner = all_of(alternative_col_chr))
+      dplyr::filter(.data[[winner_col_chr]] == winner_identifier) |>
+      dplyr::select(all_of(c(key_cols_chr, alternative_col_chr))) |>
+      dplyr::distinct() |>
+      dplyr::rename(Winner = all_of(alternative_col_chr))
     
     df_wide <- df_wide |>
-      left_join(winner_data, by = key_cols_chr)
+      dplyr::left_join(winner_data, by = key_cols_chr)
   }
   
   return(df_wide)
