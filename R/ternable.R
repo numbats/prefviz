@@ -44,7 +44,7 @@ ternable <- function(data, alternatives = everything(), ...) {
 
   # Normalize if rows don't sum to 1
   row_sums <- rowSums(alt_data, na.rm = TRUE)
-  tolerance <- 1e-6
+  tolerance <- 1e-8
   
   if (!all(abs(row_sums - 1) < tolerance)) {
     warning(
@@ -73,16 +73,14 @@ new_ternable <- function(data, alternative_col_chr, ...) {
 
   # Define the vertex labels
   labels <- c(alternative_col_chr, rep("", nrow(cart_df)))
-
-  # Combine data
   simp_points$labels <- alternative_col_chr
-  cart_df_simp <- dplyr::bind_rows(simp_points, cart_df) |> 
-    dplyr::mutate(labels = labels)
+
+  #cart_df_simp <- dplyr::bind_rows(simp_points, cart_df)
 
   structure(
     list(
-      data = cart_df_simp,
-      ternary_coord = cart_df_simp |> dplyr::select(paste0("x", 1:ncol(simp_points))),
+      data = cart_df,
+      ternary_coord = cart_df |> dplyr::select(paste0("x", seq(ncol(simp_points) - 1))),
       simplex_edges = matrix(simp$edges),
       simplex_points = simp_points,
       vertex_labels = labels,

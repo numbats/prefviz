@@ -35,9 +35,13 @@ helmert_transform <- function(data, alternatives = everything()) {
 
   input_df <- data.frame(data)
 
+  if(is.character(alternatives)){
+    alternative_col_ind <- tidyselect::eval_select(all_of(alternatives), input_df)
+  } else {
   alternative_col_ind <- tidyselect::eval_select(
       rlang::enquo(alternatives), 
-      data)
+      input_df)
+  }
   alternative_col_chr <- colnames(input_df)[alternative_col_ind]
 
   # Validate compositional data
@@ -56,4 +60,4 @@ helmert_transform <- function(data, alternatives = everything()) {
   }
 
   return(res)
-}
+  }
