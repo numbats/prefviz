@@ -63,7 +63,7 @@ new_ternable <- function(data, alternative_col_chr, ...) {
   stopifnot(is.data.frame(data))
   stopifnot(is.character(alternative_col_chr))
 
-  # Transform data using helmert matrix
+  # Get ternary coordinates of the data
   cart_df <- helmert_transform(data, alternatives = alternative_col_chr)
 
   # Define the simplex
@@ -72,18 +72,15 @@ new_ternable <- function(data, alternative_col_chr, ...) {
   colnames(simp_points) <- paste0("x", 1:ncol(simp_points))
 
   # Define the vertex labels
-  labels <- c(alternative_col_chr, rep("", nrow(cart_df)))
+  # labels <- c(alternative_col_chr, rep("", nrow(cart_df)))
   simp_points$labels <- alternative_col_chr
-
-  #cart_df_simp <- dplyr::bind_rows(simp_points, cart_df)
 
   structure(
     list(
-      data = cart_df,
-      ternary_coord = cart_df |> dplyr::select(paste0("x", seq(ncol(simp_points) - 1))),
-      simplex_edges = matrix(simp$edges),
-      simplex_points = simp_points,
-      vertex_labels = labels,
+      data = data, # validated & normalized data
+      ternary_coord = cart_df,
+      simplex_vertices = simp_points,
+      simplex_edges = as.matrix(simp$edges),
       alternative_names = alternative_col_chr
     ),
     class = "ternable"
@@ -95,7 +92,7 @@ print.ternable <- function(x, ...) {
   cat("Ternable object\n")
   cat("----------------\n")
   cat("Alternatives:    ", paste(x$alternative_names, collapse = ", "), "\n")
-  cat("Simplex vertices:", nrow(x$simplex_points), "\n")
+  cat("Vertices:", nrow(x$simplex_vertices), "\n")
   cat("Edges:           ", nrow(x$simplex_edges), "\n")
   invisible(x)
 }

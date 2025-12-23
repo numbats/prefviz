@@ -30,7 +30,7 @@
 #' )
 #' helmert_transform(df, alternatives = c("ALP", "LNP", "Other"))
 #'}
-helmert_transform <- function(data, alternatives = everything()) {
+helmert_transform <- function(data, alternatives = everything(), append = FALSE) {
   stopifnot(is.data.frame(data) || is.matrix(data))
 
   input_df <- data.frame(data)
@@ -53,10 +53,10 @@ helmert_transform <- function(data, alternatives = everything()) {
   colnames(cart_output) <- paste0("x", seq_len(ncol(cart_output)))
   
   # Combine with original data
-  if (is.data.frame(data)) {
-    res <- cbind(data, data.frame(cart_output))
-  } else {
+  if (append) {
     res <- cbind(data.frame(data), data.frame(cart_output))
+  } else {
+    res <- data.frame(cart_output)
   }
 
   return(res)

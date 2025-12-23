@@ -1,18 +1,35 @@
+library(tidyverse)
+
 pref_2022 <- read_csv("inst/dev/pref_2022.csv")
+pref_2025 <- read_csv("inst/dev/pref_2025.csv")
 
-# Validate input
-tern_object <- function(data, alternatives = everything()) {
-  stopifnot(is.data.frame(data))
-  
-  alternative_col_ind <- tidyselect::eval_select(
-      rlang::enquo(alternatives), 
-      data)
-  alternative_col_chr <- colnames(data)[alternative_col_ind]
+ternary_tour22 <- ternable(pref_2022, c(LNP, ALP, Other))
+ternary_tour25 <- ternable(pref_2025, 3:7)
 
-  return(alternative_col_ind)
-}
+tern_data <- cbind(ternary_tour22$data, ternary_tour22$ternary_coord)
+vert <- ternary_tour22$simplex_vertices
 
-# All column selection automatically handled
+ggplot(tern_data |> filter(CountNumber == 0), aes(x = x1, y = x2)) +
+  geom_polygon(data = vert, aes(x = x1, y = x2), fill = NA, color = "black") +
+  scale_y_reverse() +
+  coord_fixed(ratio = 1) +
+  theme_void() +
+  geom_text(
+        data = vert, 
+        aes(x = x1, y = x2, label = labels),
+        nudge_x=c(-0.02, 0.02, 0),
+        nudge_y=c(-0.05, -0.05, 0.05)) +
+  geom_point(aes(color = ElectedParty))
 
-alt_data <- pref_2022 |> select(ALP, LNP, Other)
-tern_object(pref_2022, c(ALP, DivisionNm))
+sp <- ternary_tour25$simplex_vertices |> 
+  select(-labels)
+tern_data25 <- rbind(sp, ternary_tour25$ternary_coord)
+labels <- c(ternary_tour25$simplex_vertices$labels, rep("", nrow(ternary_tour25$ternary_coord)))
+
+tourr::animate_xy(
+  tern_data25,
+  edges = ternary_tour25$simplex_edges,
+  obs_labels = labels
+)
+
+ternary_tour25$simplex_edges |> class()

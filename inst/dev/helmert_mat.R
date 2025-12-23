@@ -104,7 +104,7 @@ pref_2025_hd <- aec_2025_hd |>
   )
 
 # Convert to cartesian coordinates usingh helmert matrix
-cart_df <- helmert_transform(pref_2025_hd, alternatives = c(4:8)) |>
+cart_df <- helmert_transform(pref_2025_hd, alternatives = c(4:8), append = TRUE) |>
   filter(CountNumber == 0)
 
 # Define the simplex
@@ -118,7 +118,7 @@ cart_df_simp <- bind_rows(sp, cart_df) |>
   mutate(labels = labels)
 
 # Animate the tour
-animate_xy(
+tourr::animate_xy(
   cart_df_simp |> select(x1:x4),
   col = cart_df_simp$ElectedParty,
   edges = as.matrix(simp$edges),
