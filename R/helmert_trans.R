@@ -5,8 +5,10 @@
 #' using the Helmert matrix. 
 #' 
 #' @param data A data frame or matrix containing the compositional data. 
-#' @param alternatives (Optional) A character or numeric vector specifying the columns of 
-#' compositional data to use. If `NULL` (default), all columns are used.
+#' @param alternatives (Optional) A character or numeric vector specifying the columns of compositional data to use. 
+#'  If `NULL` (default), all columns are used.
+#' @param append (Optional) A logical value indicating whether the transformed data should be appended to the original data frame. 
+#'  Default is `FALSE`.
 #' 
 #' @return A data frame with the original columns and additional columns 
 #' containing the Helmert-transformed coordinates, named `x1`, `x2`, ..., `x(n-1)` where `n` is 

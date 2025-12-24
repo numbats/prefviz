@@ -1,5 +1,26 @@
 #' Create a ternable object
 #' 
+#' @description
+#' Creates a ternable object, which contains ternary coordinates, simplex vertices, and edges
+#' necessary for building a ternary plot in both 2D (ggplot2) and higher dimensions (tourr).
+#' 
+#' @param data A data frame containing the alternative columns used to construct the ternary plot.
+#'   All selected alternatives must be numeric and non-negative.
+#' @param alternatives <[`tidy-select`][dplyr::dplyr_tidy_select]> Columns to
+#'   use as alternatives in calculating ternary coordinates. Default is [everything()],
+#'   which selects all columns. Must select at least 3 columns.
+#' @param ... Additional arguments (currently unused, reserved for future extensions).
+#' 
+#' @return A ternable object (S3 class) containing:
+#' \describe{
+#'   \item{data}{The validated and normalized data frame}
+#'   \item{ternary_coord}{Transformed coordinates for all observations}
+#'   \item{simplex_vertices}{Vertex coordinates and labels for the simplex}
+#'   \item{simplex_edges}{Edge connections for drawing the simplex boundary}
+#'   \item{alternative_names}{Names of the alternative columns used}
+#' }
+#'
+#' @export
 ternable <- function(data, alternatives = everything(), ...) {
   stopifnot(is.data.frame(data))
 
@@ -14,7 +35,17 @@ ternable <- function(data, alternatives = everything(), ...) {
 }
 
 #' Validate input for ternable
-#' 
+#' @description
+#' Internal validation function that checks compositional data requirements
+#' and normalizes if necessary.
+#'
+#' @param data A data frame
+#' @param alternative_col_chr Character vector of alternative column names
+#'
+#' @return The validated (and possibly normalized) data frame, invisibly
+#'
+#' @keywords internal
+#' @noRd
 .validate_ternable <- function(data, alternative_col_chr) {
   alt_data <- data[, alternative_col_chr, drop = FALSE]
 
@@ -57,8 +88,20 @@ ternable <- function(data, alternatives = everything(), ...) {
   invisible(data)
 }
 
-#' Low-level constructor of ternable object
-#' 
+#' Low-level constructor for ternable objects
+#'
+#' @description
+#' Constructor that builds the ternable object after validation. 
+#' Users should use [ternable()] instead.
+#'
+#' @param data A validated data frame
+#' @param alternative_col_chr Character vector of alternative column names
+#' @param ... Additional arguments (unused for now)
+#'
+#' @return A ternable object
+#'
+#' @keywords internal
+#' @noRd
 new_ternable <- function(data, alternative_col_chr, ...) {
   stopifnot(is.data.frame(data))
   stopifnot(is.character(alternative_col_chr))
@@ -87,7 +130,14 @@ new_ternable <- function(data, alternative_col_chr, ...) {
   )
 }
 
-#' Print method
+#' Print method for ternable objects
+#'
+#' @param x A ternable object
+#' @param ... Additional arguments passed to print methods
+#'
+#' @return The object, invisibly
+#'
+#' @export
 print.ternable <- function(x, ...) {
   cat("Ternable object\n")
   cat("----------------\n")
