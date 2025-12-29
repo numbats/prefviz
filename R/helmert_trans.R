@@ -30,20 +30,16 @@
 #'   LNP = c(0.3, 0.4, 0.2),
 #'   Other = c(0.2, 0.2, 0.2)
 #' )
-#' helmert_transform(df, alternatives = c("ALP", "LNP", "Other"))
+#' helmert_transform(df, alternatives = c(ALP, LNP, Other))
 #'}
 helmert_transform <- function(data, alternatives = everything(), append = FALSE) {
   stopifnot(is.data.frame(data) || is.matrix(data))
 
   input_df <- data.frame(data)
 
-  if(is.character(alternatives)){
-    alternative_col_ind <- tidyselect::eval_select(all_of(alternatives), input_df)
-  } else {
   alternative_col_ind <- tidyselect::eval_select(
       rlang::enquo(alternatives), 
       input_df)
-  }
   alternative_col_chr <- colnames(input_df)[alternative_col_ind]
 
   # Validate compositional data
