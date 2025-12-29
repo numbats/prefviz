@@ -1,4 +1,5 @@
 library(tidyverse)
+library(ggplot2)
 
 pref_2022 <- read_csv("inst/dev/pref_2022.csv")
 pref_2025 <- read_csv("inst/dev/pref_2025.csv")
@@ -32,4 +33,17 @@ tourr::animate_xy(
   obs_labels = labels
 )
 
-ternary_tour25$simplex_edges |> class()
+# Reverse sp
+sp <- ternary_tour22$simplex_vertices |> 
+  mutate(x2 = x2*-1)
+
+reverse_tern <- ternary_tour22$ternary_coord |> 
+  mutate(x2 = x2*-1)
+
+combined_df <- cbind(ternary_tour22$data, reverse_tern)
+
+ggplot(combined_df |> filter(CountNumber == 0), aes(x = x1, y = x2)) +
+  geom_polygon(data = sp, aes(x = x1, y = x2), fill = NA, color = "black") +
+  coord_fixed(ratio = 1) +
+  geom_point(aes(color = ElectedParty)) +
+  theme_void()
