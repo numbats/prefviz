@@ -42,21 +42,24 @@ create_ternary_region <- function(x1, x2, x3) {
     x = c(v1[1], p5[1], p4[1], p6[1], v1[1]),
     y = c(v1[2], p5[2], p4[2], p6[2], v1[2]),
     id = c("1", "5", "4", "6", "1"),
-    vertex_labels = "1"
+    group = "1",
+    vertex_labels = "Region 1"
   )
 
   r2 <- tibble::tibble(
     x = c(v2[1], p5[1], p4[1], p7[1], v2[1]),
     y = c(v2[2], p5[2], p4[2], p7[2], v2[2]),
     id = c("2", "5", "4", "7", "2"),
-    vertex_labels = "2"
+    group = "2",
+    vertex_labels = "Region 2"
   )
 
   r3 <- tibble::tibble(
     x = c(v3[1], p6[1], p4[1], p7[1], v3[1]),
     y = c(v3[2], p6[2], p4[2], p7[2], v3[2]),
     id = c("3", "5", "4", "7", "3"),
-    vertex_labels = "3"
+    group = "3",
+    vertex_labels = "Region 3"
   )
 
   polygon <- rbind(r1, r2, r3) |> 
@@ -78,7 +81,7 @@ StatTernaryRegion <- ggplot2::ggproto("StatTernaryRegion", ggplot2::Stat,
       if(length(vertex_labels) != 3){
         stop("There must be 3 vertex labels.")
       }
-      res$vertex_labels <- vertex_labels
+      res$vertex_labels <- rep(vertex_labels, each = 5)
     }
     res
   }
@@ -112,7 +115,7 @@ geom_ternary_region <- function(mapping = NULL, data = NULL,
   # Check if user is trying to map to columns without after_stat()
   if (!is.null(mapping)) {
     aes_list <- mapping
-    aesthetics_to_check <- c("fill", "colour", "color", "alpha", "group", "shape", "size")
+    aesthetics_to_check <- c("fill", "colour", "alpha", "group")
     
     for (aes_name in aesthetics_to_check) {
       if (!is.null(aes_list[[aes_name]])) {
@@ -125,18 +128,13 @@ geom_ternary_region <- function(mapping = NULL, data = NULL,
         
         if (is_simple_column) {
           # Warning for any column mapping
-            warning(
-              sprintf(
-                "aesthetic '%s' is mapped to column from input data.\n",
-                aes_name
-              ),
-              "Note: geom_ternary_region generates its own data. ",
-              "If you want to apply aesthetic mappings, use after_stat():\n",
-              sprintf("after_stat(vertex_labels))"),
-              "Use ?stat_ternary_region to learn more about columns that can be specified
-              in after_stat().",
-              call. = FALSE
-            )
+          warning(
+            sprintf("aesthetic '%s' is mapped to column from input data. ", aes_name),
+            "Note: geom_ternary_region generates its own data. ",
+            "If you want to apply aesthetic mappings, use after_stat() with computed variables. ",
+            "Use ?stat_ternary_region to learn more about columns that can be specified in after_stat().",
+            call. = FALSE
+          )
           }
         }
       }

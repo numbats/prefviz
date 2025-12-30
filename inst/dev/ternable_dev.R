@@ -60,12 +60,12 @@ ttern_2025 <- ternable(pref_2025_trunc, ALP:IND)
 
 ggtern_cart2d(ttern_2025$data, alternatives = c("ALP", "LNP", "IND")) +
   geom_ternary_region(
-    # vertex_labels = ttern_2025$alternatives,
+    vertex_labels = ttern_2025$alternatives,
     aes(fill = after_stat(vertex_labels)), 
-    alpha = 0.5, color = "grey50",
-    x1 = 0.1, x2 = 0.3, x3 = 0.6
+    alpha = 0.5, color = "grey50"
   ) +
   geom_point(aes(color = Winner)) +
   scale_fill_manual(
     values = c("ALP" = "#009E73", "LNP" = "#D55E00", "IND" = "#CC79A7"),
-    aesthetics = c("fill"))
+    aesthetics = c("fill", "colour")) 
+
