@@ -5,13 +5,14 @@ test_data <- data.frame(
   value = rnorm(10)
 )
 
+#-----Warnings when not using after_stat() for aesthetic mappings----
 test_that("No warning when using after_stat() correctly", {
   expect_no_warning(
-    ggplot() + geom_ternary_region(aes(fill = after_stat(vertex_labels)))
+    ggplot(test_data) + geom_ternary_region(aes(fill = after_stat(vertex_labels)))
   )
   
   expect_no_warning(
-    ggplot() + geom_ternary_region(aes(color = after_stat(vertex_labels)))
+    ggplot(test_data) + geom_ternary_region(aes(color = after_stat(vertex_labels)))
   )
 })
 
@@ -61,19 +62,19 @@ test_that("Multiple warnings for multiple incorrect aesthetics", {
 })
 
 test_that("No warning for NULL or missing mapping", {
-  expect_no_warning(ggplot() + geom_ternary_region())
-  expect_no_warning(ggplot() + geom_ternary_region(mapping = NULL))
+  expect_no_warning(ggplot(test_data) + geom_ternary_region())
+  expect_no_warning(ggplot(test_data) + geom_ternary_region(mapping = NULL))
 })
 
 test_that("No warning for fixed aesthetics", {
   expect_no_warning(
-    ggplot() + geom_ternary_region(fill = "red", color = "blue", alpha = 0.5)
+    ggplot(test_data) + geom_ternary_region(fill = "red", color = "blue", alpha = 0.5)
   )
 })
 
 test_that("No warning for functions inside after_stat()", {
   expect_no_warning(
-    ggplot() + geom_ternary_region(aes(fill = after_stat(factor(vertex_labels))))
+    ggplot(test_data) + geom_ternary_region(aes(fill = after_stat(factor(vertex_labels))))
   )
 })
 
@@ -98,4 +99,72 @@ test_that("Warnings only for incorrect mappings in mixed usage", {
   )
   
   expect_false(any(grepl("'color'.*after_stat", warnings)))
+})
+
+#-----Warnings when there is no vertex_labels-----
+
+test_that("Message when using after_stat() without vertex_labels", {
+  # Test for fill aesthetic
+  expect_message(
+    ggplot(test_data) + 
+      geom_ternary_region(aes(fill = after_stat(vertex_labels))),
+    regexp = "You've mapped aesthetics using after_stat\\(\\), but 'vertex_labels' is NULL"
+  )
+
+  expect_message(
+    ggplot(test_data) + 
+      geom_ternary_region(aes(colour = after_stat(vertex_labels))),
+    regexp = "provide the 'vertex_labels' argument"
+  )
+})
+
+test_that("No message when vertex_labels is provided with after_stat()", {
+  expect_no_message(
+    ggplot(test_data) + 
+      geom_ternary_region(
+        aes(fill = after_stat(vertex_labels)),
+        vertex_labels = c("A", "B", "C")
+      )
+  )
+})
+
+test_that("No message when mapping without after_stat()", {
+  expect_no_message(
+    suppressWarnings(
+      ggplot(test_data) + 
+        geom_ternary_region(aes(fill = category))
+    )
+  )
+})
+
+test_that("Message for fill aesthetic with after_stat() and no vertex_labels", {
+  expect_message(
+    ggplot(test_data) + 
+      geom_ternary_region(aes(fill = after_stat(vertex_labels))),
+    regexp = "You've mapped aesthetics using after_stat"
+  )
+})
+
+test_that("Message for colour aesthetic with after_stat() and no vertex_labels", {
+  expect_message(
+    ggplot(test_data) + 
+      geom_ternary_region(aes(colour = after_stat(vertex_labels))),
+    regexp = "You've mapped aesthetics using after_stat"
+  )
+})
+
+test_that("Message for alpha aesthetic with after_stat() and no vertex_labels", {
+  expect_message(
+    ggplot(test_data) + 
+      geom_ternary_region(aes(alpha = after_stat(vertex_labels))),
+    regexp = "You've mapped aesthetics using after_stat"
+  )
+})
+
+test_that("Message for group aesthetic with after_stat() and no vertex_labels", {
+  expect_message(
+    ggplot(test_data) + 
+      geom_ternary_region(aes(group = after_stat(vertex_labels))),
+    regexp = "You've mapped aesthetics using after_stat"
+  )
 })

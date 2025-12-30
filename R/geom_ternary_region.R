@@ -112,7 +112,7 @@ geom_ternary_region <- function(mapping = NULL, data = NULL,
                                 x1 = 1/3, x2 = 1/3, x3 = 1/3, 
                                 vertex_labels = NULL, ...) {
   
-  # Check if user is trying to map to columns without after_stat()
+  # Check if user is trying to map to columns without after_stat() or vertex_labels()
   if (!is.null(mapping)) {
     aes_list <- mapping
     aesthetics_to_check <- c("fill", "colour", "alpha", "group")
@@ -135,10 +135,27 @@ geom_ternary_region <- function(mapping = NULL, data = NULL,
             "Use ?stat_ternary_region to learn more about columns that can be specified in after_stat().",
             call. = FALSE
           )
-          }
+        }
+
+        # Check if user has after_stat() but forgot vertex_labels
+        has_after_stat_no_vertex_labels <- is.null(vertex_labels) &&
+                                          rlang::is_call(aes_expr) && 
+                                          identical(rlang::call_name(aes_expr), "after_stat")
+        
+        if (has_after_stat_no_vertex_labels) {
+          message(
+            "Note: You've mapped aesthetics using after_stat(), but 'vertex_labels' is NULL. ",
+            "To create meaningful region labels for your aesthetic mapping, ",
+            "provide the 'vertex_labels' argument:\n",
+            "  geom_ternary_region(vertex_labels = c('A', 'B', 'C'), ...) \n",
+            "If you have used object ternable, vertex_labels can be found via:\n",
+            "  geom_ternary_region(vertex_labels = your_ternable_object$vertex_labels, ...) \n"
+          )
+          break
         }
       }
     }
+  } 
 
   ggplot2::layer(
     data = data, 
@@ -153,4 +170,4 @@ geom_ternary_region <- function(mapping = NULL, data = NULL,
       x1 = x1, x2 = x2, x3 = x3, 
       vertex_labels = vertex_labels, ...)
   )
-}
+  }
