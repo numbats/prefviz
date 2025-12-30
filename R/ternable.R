@@ -115,7 +115,6 @@ new_ternable <- function(data, alternative_col_chr, ...) {
   colnames(simp_points) <- paste0("x", 1:ncol(simp_points))
 
   # Define the vertex labels
-  # labels <- c(alternative_col_chr, rep("", nrow(cart_df)))
   simp_points$labels <- alternative_col_chr
 
   structure(
@@ -124,7 +123,7 @@ new_ternable <- function(data, alternative_col_chr, ...) {
       ternary_coord = cart_df,
       simplex_vertices = simp_points,
       simplex_edges = as.matrix(simp$edges),
-      alternative_names = alternative_col_chr
+      alternatives = alternative_col_chr
     ),
     class = "ternable"
   )

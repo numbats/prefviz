@@ -4,7 +4,7 @@ library(ggplot2)
 pref_2022 <- read_csv("inst/dev/pref_2022.csv")
 pref_2025 <- read_csv("inst/dev/pref_2025.csv")
 
-ternary_tour22 <- ternable(pref_2022, c(LNP, ALP, Other))
+ternary_tour22 <- ternable(pref_2022, ALP:Other)
 ternary_tour25 <- ternable(pref_2025, 3:7)
 
 tern_data <- cbind(ternary_tour22$data, ternary_tour22$ternary_coord)
@@ -20,8 +20,10 @@ ggplot(tern_data |> filter(CountNumber == 0), aes(x = x1, y = x2)) +
         aes(x = x1, y = x2, label = labels),
         nudge_x=c(-0.02, 0.02, 0),
         nudge_y=c(-0.05, -0.05, 0.05)) +
-  geom_point(aes(color = ElectedParty))
+  geom_point(aes(color = ElectedParty)) +
+  geom_ternary_region(aes(fill = after_stat(group)), alpha = 0.5, color = "grey50")
 
+# HD
 sp <- ternary_tour25$simplex_vertices |> 
   select(-labels)
 tern_data25 <- rbind(sp, ternary_tour25$ternary_coord)
@@ -47,3 +49,23 @@ ggplot(combined_df |> filter(CountNumber == 0), aes(x = x1, y = x2)) +
   coord_fixed(ratio = 1) +
   geom_point(aes(color = ElectedParty)) +
   theme_void()
+
+# Different alphabetical order
+
+pref_2025_trunc <- pref_2025 |>
+  filter(CountNumber == 0, Winner %in% c("ALP", "LNP", "IND")) |>
+  select(Winner, ALP, LNP, IND)
+
+ttern_2025 <- ternable(pref_2025_trunc, ALP:IND)
+
+ggtern_cart2d(ttern_2025$data, alternatives = c("ALP", "LNP", "IND")) +
+  geom_ternary_region(
+    # vertex_labels = ttern_2025$alternatives,
+    aes(fill = after_stat(vertex_labels)), 
+    alpha = 0.5, color = "grey50",
+    x1 = 0.1, x2 = 0.3, x3 = 0.6
+  ) +
+  geom_point(aes(color = Winner)) +
+  scale_fill_manual(
+    values = c("ALP" = "#009E73", "LNP" = "#D55E00", "IND" = "#CC79A7"),
+    aesthetics = c("fill"))
