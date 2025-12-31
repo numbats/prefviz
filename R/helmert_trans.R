@@ -7,6 +7,8 @@
 #' @param data A data frame or matrix containing the compositional data. 
 #' @param alternatives (Optional) A character or numeric vector specifying the columns of compositional data to use. 
 #'  If `NULL` (default), all columns are used.
+#' @param alternatives <[`tidy-select`][dplyr::dplyr_tidy_select]> Columns of compositional data to
+#'   use. Default is [everything()], which selects all columns. Must select at least 3 columns.
 #' @param append (Optional) A logical value indicating whether the transformed data should be appended to the original data frame. 
 #'  Default is `FALSE`.
 #' 
@@ -43,7 +45,7 @@ helmert_transform <- function(data, alternatives = everything(), append = FALSE)
   alternative_col_chr <- colnames(input_df)[alternative_col_ind]
 
   # Validate compositional data
-  validate_df <- .validate_ternable(input_df, alternative_col_chr)
+  validate_df <- validate_ternable(input_df, alternative_col_chr)
 
   # Helmert transformation
   input_mat <- validate_df[, alternative_col_chr, drop = FALSE] |> as.matrix()

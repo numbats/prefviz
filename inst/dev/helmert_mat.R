@@ -92,11 +92,11 @@ pref_2025_hd <- aec_2025_hd |>
     Votes = sum(CalculationValue, na.rm = TRUE),
     .groups = "drop"
   ) |>
-  ungroup() |>
   pivot_wider(
     names_from = Party,
     values_from = Votes,
-    values_fill = 0
+    values_fill = 0,
+    names_sort = TRUE
   ) |>
   mutate(
     across(ALP:IND, ~.x/100),

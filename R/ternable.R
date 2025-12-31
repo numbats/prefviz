@@ -20,6 +20,34 @@
 #'   \item{alternative_names}{Names of the alternative columns used}
 #' }
 #'
+#' @examples
+#' 
+#' ### Create a ternable object from the 2025 Australian election's Distribution of Preferences
+#' 
+#' # Load and transform the dataset
+#' df <- aecdop_2025 |> 
+#'  filter(CalculationType == "Preference Percent") |>
+#'  mutate(Party = case_when(
+#'    # all parties not in the main parties are grouped into "Other"
+#'    !(PartyAb %in% c("LP", "ALP", "NP", "LNP", "LNQ", "GRN", "IND")) ~ "Other", 
+#'    # group all parties in the Coalition into "LNP"
+#'    PartyAb %in% c("LP", "NP", "LNP", "LNQ") ~ "LNP",
+#'    TRUE ~ PartyAb
+#'  ))
+#' 
+#' transform_df <- dop_transform(
+#'  data = aecdop_2025,
+#'  key_cols = c(DivisionNm, CountNumber),
+#'  value_col = CalculationValue,
+#'  alternative_col = Party,
+#'  winner_col = Elected,
+#'  winner_identifier = "Y")
+#' head(transform_df)
+#' 
+#' # Create the ternable object
+#' tern <- ternable(transform_df, ALP:Other)
+#' tern
+#'
 #' @export
 ternable <- function(data, alternatives = everything(), ...) {
   stopifnot(is.data.frame(data))
@@ -29,7 +57,7 @@ ternable <- function(data, alternatives = everything(), ...) {
       data)
   alternative_col_chr <- colnames(data)[alternative_col_ind]
 
-  validate_df <- .validate_ternable(data, alternative_col_chr)
+  validate_df <- validate_ternable(data, alternative_col_chr)
 
   new_ternable(validate_df, alternative_col_chr)
 }
@@ -46,7 +74,7 @@ ternable <- function(data, alternatives = everything(), ...) {
 #'
 #' @keywords internal
 #' @noRd
-.validate_ternable <- function(data, alternative_col_chr) {
+validate_ternable <- function(data, alternative_col_chr) {
   alt_data <- data[, alternative_col_chr, drop = FALSE]
 
   # At least 3 alternatives
