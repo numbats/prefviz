@@ -1,0 +1,30 @@
+---
+title: "draw_ternary_plot"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{draw_ternary_plot}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(prefviz)
+```
+
+## Order of vertex labels
+
+When customizing your aesthetic mappings, you might stumble upon the issue of mismatch 
+in value between the base layer's aesthetic mappings and the aesthetic mapping of `geom_ternary_region()This is because `geom_ternary_region()` generates its own data and does not inherit the
+aesthetic from the base layer. 
+The issue commonly come in the message of `No shared levels found between `names(values)` of the manual scale and the data's fill values.`
+
+
+You can specify the naming of the ternary regions using the `vertex_labels` argument. 
+The default of `vertex_labels` is `c("Region 1", "Region 2", "Region 3")`.
