@@ -1,80 +1,77 @@
-#' Helper to calculate the perpendicular projection of a point on a line
-perp_proj <- function (A, B, P) {
-  AB <- B - A
-  AP <- P - A
-  t <- sum(AP * AB) / sum(AB * AB)
-  intersection <- A + t * AB
-  
-  return(intersection)
-}
+#' Create 3 polygonial regions in a ternary plot based on a reference point
+#' 
+#' @description
+#' `geom_ternary_region()` and `stat_ternary_region()` create three polygonal
+#' regions in a ternary plot via a reference point. Each region is defined by perpendicular 
+#' projections from the reference point to the edges of the ternary triangle. 
+#' Each region represents one of the traingular vertex that forms the corresponding region.
+#' 
+#' @inheritParams ggplot2::layer
+#' @inheritParams ggplot2::geom_polygon
+#' @param x1,x2,x3 Numeric values defining the reference point in ternary coordinates. 
+#'   Must sum to 1 (or will be normalized). Default is `1/3, 1/3, 1/3` (centroid), 
+#'   diving the ternary space into 3 equal regions.
+#' @param vertex_labels Character vector of length 3 giving labels for the three 
+#'   regions. The order corresponds to the three vertices of the ternary triangle 
+#'   (see Details). If `NULL`, regions are labeled numerically. These labels can be 
+#'   accessed in aesthetic mappings via `after_stat(vertex_labels)`.
+#' @param mapping Set of aesthetic mappings created by [ggplot2::aes()]. 
+#'   To map aesthetics to computed variables (like region labels), use 
+#'   [ggplot2::after_stat()], e.g., `aes(fill = after_stat(vertex_labels))`.
+#' @param geom The geometric object to use display the data for `stat_ternary_region()`.
+#'   Default is `"polygon"`.
+#' @param show.legend Logical. Determines whether this layer is included in the legends.
+#'   `NA` (the default) includes if any aesthetics are mapped. `FALSE` never includes, 
+#'   and `TRUE` always includes.
+#' @param inherit.aes If `FALSE`, overrides the default aesthetics, rather than 
+#'   combining with them. This is most useful for helper functions that define both 
+#'   data and aesthetics and shouldn't inherit behaviour from the default plot specification.
+#' 
+#' #' @section Computed variables:
+#' These are calculated by `stat_ternary_region()`:
+#' \describe{
+#'   \item{`x`, `y`}{Cartesian coordinates of polygon vertices}
+#'   \item{`id`}{Numeric identifier for each points (
+#'    - 1-3 are the vertices of the triangle
+#'    - 4 is the reference point
+#'    - 5-7 are the projection of the reference point to the edges of the triangle)}
+#'   \item{`group`}{Numeric identifier for each region (1, 2, or 3)}
+#'   \item{`vertex_labels`}{Label for the vertex, representing each region.
+#'    If `vertex_labels` is `NULL`, the labels default to `Region 1, Region 2, Region 3`.}
+#' }
+#' 
+#' @section Aesthetic mappings
+#' 
+#' geom_ternary_region()` uses [ggplot2::geom_polygon()], so it understands the 
+#' same aesthetics. The most commonly used are:
+#' \itemize{
+#'   \item `fill` - Fill color of regions
+#'   \item `colour`/`color` - Border color of regions
+#'   \item `alpha` - Transparency (0 = transparent, 1 = opaque)
+#'   \item `linewidth` - Width of region borders
+#'   \item `linetype` - Type of border lines
+#' }
+#' 
+#' However, since this geom generates its own data based on the reference point parameters, `
+#' `after_stat()` is needed to access the computed variables. 
+#' The most common use case is to map aesthetics based on the three alternatives, 
+#' representing by three ternary vertices. 
+#' To do so, use `ggplot2::after_stat(vertex_labels)` in your `aes()` mappings. 
+#' See Computed variables section for variables calculated by `stat_ternary_region()`.
+#' 
+#' TODO: Update with examples once geom_ternary_cart() is done
+#' 
+#' @name geom_ternary_region
 
-#' Helper to create a 3-region ternary polygon
-create_ternary_region <- function(x1, x2, x3) {
-  # Validate input
-  if(sum(x1, x2, x3) - 1 > 1e-8) {
-    stop("x1, x2, x3 must sum to 1")
-  }
-
-  if(any(x1 < 0, x2 < 0, x3 < 0)) {
-    stop("x1, x2, x3 must be non-negative")
-  }
-
-  # Vertices
-  vert <- geozoo::simplex(p = 2)$points
-  colnames(vert) <- paste0("x", seq_len(ncol(vert)))
-
-  # Midpoint
-  mid_point <- matrix(c(x1, x2, x3), ncol = 3, byrow = TRUE)
-  p4 <- geozoo::f_composition(mid_point)
-  names(p4) <- c("x1", "x2")
-
-  # Perp projection
-  v1 <- vert[1,] 
-  v2 <- vert[2,] 
-  v3 <- vert[3,] 
-
-  p5 <- perp_proj(v1, v2, p4)
-  p6 <- perp_proj(v1, v3, p4)
-  p7 <- perp_proj(v2, v3, p4)
-
-  # Regions
-  r1 <- tibble::tibble(
-    x = c(v1[1], p5[1], p4[1], p6[1], v1[1]),
-    y = c(v1[2], p5[2], p4[2], p6[2], v1[2]),
-    id = c("1", "5", "4", "6", "1"),
-    group = "1",
-    vertex_labels = "Region 1"
-  )
-
-  r2 <- tibble::tibble(
-    x = c(v2[1], p5[1], p4[1], p7[1], v2[1]),
-    y = c(v2[2], p5[2], p4[2], p7[2], v2[2]),
-    id = c("2", "5", "4", "7", "2"),
-    group = "2",
-    vertex_labels = "Region 2"
-  )
-
-  r3 <- tibble::tibble(
-    x = c(v3[1], p6[1], p4[1], p7[1], v3[1]),
-    y = c(v3[2], p6[2], p4[2], p7[2], v3[2]),
-    id = c("3", "5", "4", "7", "3"),
-    group = "3",
-    vertex_labels = "Region 3"
-  )
-
-  polygon <- rbind(r1, r2, r3) |> 
-    mutate(y = y*-1)
-
-  return(polygon)
-}
-
-#' Stat to create a 3-region ternary polygon
+#' @export
+#' @rdname geom_ternary_region
 StatTernaryRegion <- ggplot2::ggproto("StatTernaryRegion", ggplot2::Stat,
   required_aes = character(0),
   
   compute_panel = function(data, scales, 
                           x1, x2, x3,
                           vertex_labels = NULL) {
+    
     res <- create_ternary_region(x1, x2, x3)
 
     if(!is.null(vertex_labels)){
@@ -87,30 +84,33 @@ StatTernaryRegion <- ggplot2::ggproto("StatTernaryRegion", ggplot2::Stat,
   }
 )
 
-stat_ternary_region <- function(mapping = NULL, data = NULL, geom = "polygon",
-                                position = "identity", na.rm = FALSE, 
-                                show.legend = NA, inherit.aes = TRUE, 
+#' @export
+#' @rdname geom_ternary_region
+stat_ternary_region <- function(mapping = NULL, data = NULL, 
+                                geom = "polygon", position = "identity", 
+                                show.legend = NA, inherit.aes = FALSE, 
                                 x1 = 1/3, x2 = 1/3, x3 = 1/3, 
                                 vertex_labels = NULL, ...) {
   ggplot2::layer(
-    data = data, 
+    data = NULL, 
     mapping = mapping, 
     geom = geom,
     stat = StatTernaryRegion, 
-    position = position, 
+    position = position,
     show.legend = show.legend, 
     inherit.aes = inherit.aes,
     params = list(
-      na.rm = na.rm, x1 = x1, x2 = x2, x3 = x3, 
+      x1 = x1, x2 = x2, x3 = x3,
       vertex_labels = vertex_labels, ...)
   )
 }
 
+#' @export
+#' @rdname geom_ternary_region
 geom_ternary_region <- function(mapping = NULL, data = NULL, 
-                                position = "identity", na.rm = FALSE, 
+                                position = "identity", 
                                 show.legend = NA, inherit.aes = TRUE, 
-                                x1 = 1/3, x2 = 1/3, x3 = 1/3, 
-                                vertex_labels = NULL, ...) {
+                                x1 = 1/3, x2 = 1/3, x3 = 1/3, vertex_labels = NULL, ...) {
   
   # Check if user is trying to map to columns without after_stat() or vertex_labels()
   if (!is.null(mapping)) {
@@ -158,16 +158,15 @@ geom_ternary_region <- function(mapping = NULL, data = NULL,
   } 
 
   ggplot2::layer(
-    data = data, 
+    data = NULL, 
     mapping = mapping, 
     geom = GeomPolygon, 
     stat = StatTernaryRegion,
-    position = position, 
+    position = position,
     show.legend = show.legend, 
     inherit.aes = inherit.aes,
     params = list(
-      na.rm = na.rm, 
-      x1 = x1, x2 = x2, x3 = x3, 
+      x1 = x1, x2 = x2, x3 = x3,
       vertex_labels = vertex_labels, ...)
   )
-  }
+}
