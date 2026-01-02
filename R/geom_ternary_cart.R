@@ -17,20 +17,21 @@
 #'
 #' @export
 geom_ternary_cart <- function(...) {
-  # Generate simplex vertices
   vert <- geozoo::simplex(p = 2)$points
   vert_df <- as.data.frame(vert)
   colnames(vert_df) <- c("x", "y")
+  vert_df$y <- vert_df$y * -1
   
-  ggplot2::geom_polygon(
-    data = vert_df,
-    mapping = ggplot2::aes(x = .data$x, y = .data$y),
-    fill = NA,
-    colour = "black",
-    inherit.aes = FALSE,
-    ...
-  ) +
-    ggplot2::coord_fixed(ratio = 1) +
-    ggplot2::scale_y_reverse() +
+  list(
+    ggplot2::geom_polygon(
+      data = vert_df,
+      mapping = ggplot2::aes(x = .data$x, y = .data$y),
+      fill = NA,
+      colour = "black",
+      inherit.aes = FALSE,
+      ...
+    ),
+    ggplot2::coord_fixed(ratio = 1),
     ggplot2::theme_void()
+  )
 }
