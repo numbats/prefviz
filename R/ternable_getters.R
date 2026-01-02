@@ -42,16 +42,29 @@ NULL
 
 #' @rdname ternary_getters
 #' @export
-get_tern_data <- function(ternable) {
-  sp <- ternable$simplex_vertices |> 
+get_tern_data <- function(ternable, plot_type = c("2D", "HD")) {
+  stopifnot("input should be of class `ternable`" = class(ternable) == "ternable")
+  plot_type <- match.arg(plot_type)
+  
+  if(plot_type == "2D"){
+    tern_coord <- ternable$ternary_coord |> 
+      mutate(x2 = x2*-1)
+    data <- cbind(ternable$data, tern_coord)
+  } 
+  else if(plot_type == "HD"){
+    sp <- ternable$simplex_vertices |> 
     select(-labels)
-  data <- dplyr::bind_rows(ternable$ternary_coord, sp)
+    data <- dplyr::bind_rows(ternable$ternary_coord, sp)
+  }
+
   return(data)
 }
 
 #' @rdname ternary_getters
 #' @export
 get_tern_edges <- function(ternable) {
+  stopifnot("input should be of class `ternable`" = class(ternable) == "ternable")
+
   edges <- ternable$simplex_edges
   return(edges)
 }
@@ -59,6 +72,8 @@ get_tern_edges <- function(ternable) {
 #' @rdname ternary_getters
 #' @export
 get_tern_labels <- function(ternable) {
+  stopifnot("input should be of class `ternable`" = class(ternable) == "ternable")
+
   vert_labels <- ternable$simplex_vertices$labels
   labels <- c(vert_labels, rep("", nrow(ternable$ternary_coord)))
   return(labels)
