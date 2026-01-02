@@ -168,8 +168,8 @@ new_ternable <- function(data, alternative_col_chr, ...) {
 print.ternable <- function(x, ...) {
   cat("Ternable object\n")
   cat("----------------\n")
-  cat("Alternatives:    ", paste(x$alternative_names, collapse = ", "), "\n")
+  cat("Alternatives:", paste(x$alternatives, collapse = ", "), "\n")
   cat("Vertices:", nrow(x$simplex_vertices), "\n")
-  cat("Edges:           ", nrow(x$simplex_edges), "\n")
+  cat("Edges:", nrow(x$simplex_edges), "\n")
   invisible(x)
 }

@@ -34,7 +34,7 @@ round_pref <- function(data) {
 }
 
 aecdop22_transformed <- aecdop_2022 |> 
-  filter(CalculationType == "Preference Percent") |> 
+  filter(CalculationType == "Preference Percent", CountNumber == 0) |> 
   mutate(Party = case_when(
     !(PartyAb %in% c("LP", "ALP", "NP", "LNP", "LNQ")) ~ "Other",
     PartyAb %in% c("LP", "NP", "LNP", "LNQ") ~ "LNP",
@@ -46,7 +46,7 @@ aecdop22_transformed <- aecdop_2022 |>
     Other = ifelse(1 - ALP - LNP < 0, 0, 1 - ALP - LNP))
 
 aecdop25_transformed <- aecdop_2025 |>
-  filter(CalculationType == "Preference Percent") |>
+  filter(CalculationType == "Preference Percent", CountNumber == 0) |>
   mutate(Party = case_when(
     !(PartyAb %in% c("LP", "ALP", "NP", "LNP", "LNQ", "GRN", "IND")) ~ "Other",
     PartyAb %in% c("LP", "NP", "LNP", "LNQ") ~ "LNP",
