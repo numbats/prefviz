@@ -12,7 +12,7 @@
 #' @param ... Additional arguments (currently unused, reserved for future extensions).
 #' 
 #' @return A ternable object (S3 class) containing:
-#' \describe{
+#' \itemize{
 #'   \item{data}{The validated and normalized data frame}
 #'   \item{ternary_coord}{Transformed coordinates for all observations}
 #'   \item{simplex_vertices}{Vertex coordinates and labels for the simplex}

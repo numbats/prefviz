@@ -40,7 +40,7 @@
 #'    If `vertex_labels` is `NULL`, the labels default to `Region 1, Region 2, Region 3`.}
 #' }
 #' 
-#' @section Aesthetic mappings
+#' @section Aesthetic mappings:
 #' 
 #' geom_ternary_region()` uses [ggplot2::geom_polygon()], so it understands the 
 #' same aesthetics. The most commonly used are:

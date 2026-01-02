@@ -1,15 +1,23 @@
-#' Getter functions to extract components from ternable object for high-dimensional ternary plots
+#' Getter functions to extract components from ternable object for ternary plots
 #' 
 #' @description
 #' Performs additional transformations on ternable object components, making it
-#' ready for high-dimensional ternary plots with the `tourr` package.
+#' ready for both 2D ternary plot with `ggplot2` and 
+#' high-dimensional ternary plots with `tourr`.
 #' 
 #' @param ternable A ternable object created by [ternable()].
+#' @param plot_type Only in `get_tern_data()`. Character string specifying the type of plot to be drawn. 
+#'   Either "2D" for a 2D ternary plot or "HD" for a high-dimensional ternary plot.
 #'
 #' @return 
-#' - `get_tern_data()`: A data frame combining ternary coordinates of 
-#'   observations with those of simplex vertices (without vertex labels). 
-#'   Used as input data for `tourr`.
+#' - `get_tern_data()`: A data frame as input for `ggplot2` or `tourr`.
+#'   \itemize{
+#'     \item If `plot_type = "2D"`, the data frame augments the original data, with
+#'     its ternary coordinates. Used as input data for `ggplot2`.
+#'     \item If `plot_type = "HD"`, the data frame combines ternary coordinates of 
+#'     original data with those of simplex vertices (without vertex labels). 
+#'     Used as input data for `tourr`.
+#'  }
 #' - `get_tern_edges()`: A matrix of simplex edge connections for drawing 
 #'   the simplex boundary. Equivalent to `ternable$simplex_edges`.
 #' - `get_tern_labels()`: A character vector containing vertex labels. 
@@ -29,12 +37,17 @@
 #' 
 #' # Use with tourr (example)
 #' tourr::animate_xy(
-#'  get_tern_data(tern),
+#'  get_tern_data(tern, plot_type = "HD"),
 #'  edges = get_tern_edges(tern),
 #'  obs_labels  = get_tern_labels(tern),
 #'  axes = "bottomleft")
-#'}
 #'
+#' # Use with ggplot2 (example)
+#' ggplot(get_tern_data(tern, plot_type = "2D"), aes(x = x1, y = x2)) +
+#'   geom_ternary_cart() +
+#'   geom_point(aes(color = ElectedParty))
+#'}
+#' 
 #' @seealso [ternable()] for creating ternable objects
 #' 
 #' @name ternary_getters

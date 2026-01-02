@@ -4,13 +4,16 @@
 \alias{helmert_transform}
 \title{Transform compositional data using Helmert matrix}
 \usage{
-helmert_transform(data, alternatives = NULL)
+helmert_transform(data, alternatives = everything(), append = FALSE)
 }
 \arguments{
 \item{data}{A data frame or matrix containing the compositional data.}
 
-\item{alternatives}{(Optional) A character or numeric vector specifying the columns of
-compositional data to use. If \code{NULL} (default), all columns are used.}
+\item{alternatives}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Columns of compositional data to
+use. Default is \code{\link[tidyselect:everything]{tidyselect::everything()}}, which selects all columns. Must select at least 3 columns.}
+
+\item{append}{(Optional) A logical value indicating whether the transformed data should be appended to the original data frame.
+Default is \code{FALSE}.}
 }
 \value{
 A data frame with the original columns and additional columns
@@ -37,6 +40,6 @@ df <- data.frame(
   LNP = c(0.3, 0.4, 0.2),
   Other = c(0.2, 0.2, 0.2)
 )
-helmert_transform(df, alternatives = c("ALP", "LNP", "Other"))
+helmert_transform(df, alternatives = c(ALP, LNP, Other))
 }
 }

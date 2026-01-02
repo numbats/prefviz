@@ -2,10 +2,60 @@
 % Please edit documentation in R/ternable.R
 \name{ternable}
 \alias{ternable}
-\title{Helper function for ternable}
+\title{Create a ternable object}
 \usage{
-ternable(data, alternatives)
+ternable(data, alternatives = everything(), ...)
+}
+\arguments{
+\item{data}{A data frame containing the alternative columns used to construct the ternary plot.
+All selected alternatives must be numeric and non-negative.}
+
+\item{alternatives}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Columns to
+use as alternatives in calculating ternary coordinates. Default is \code{\link[tidyselect:everything]{tidyselect::everything()}},
+which selects all columns. Must select at least 3 columns.}
+
+\item{...}{Additional arguments (currently unused, reserved for future extensions).}
+}
+\value{
+A ternable object (S3 class) containing:
+\itemize{
+\item{data}{The validated and normalized data frame}
+\item{ternary_coord}{Transformed coordinates for all observations}
+\item{simplex_vertices}{Vertex coordinates and labels for the simplex}
+\item{simplex_edges}{Edge connections for drawing the simplex boundary}
+\item{alternative_names}{Names of the alternative columns used}
+}
 }
 \description{
-Helper function for ternable
+Creates a ternable object, which contains ternary coordinates, simplex vertices, and edges
+necessary for building a ternary plot in both 2D (ggplot2) and higher dimensions (tourr).
+}
+\examples{
+
+### Create a ternable object from the 2025 Australian election's Distribution of Preferences
+
+# Load and transform the dataset
+df <- aecdop_2025 |> 
+ filter(CalculationType == "Preference Percent") |>
+ mutate(Party = case_when(
+   # all parties not in the main parties are grouped into "Other"
+   !(PartyAb \%in\% c("LP", "ALP", "NP", "LNP", "LNQ", "GRN", "IND")) ~ "Other", 
+   # group all parties in the Coalition into "LNP"
+   PartyAb \%in\% c("LP", "NP", "LNP", "LNQ") ~ "LNP",
+   TRUE ~ PartyAb
+ ))
+
+transform_df <- dop_transform(
+ data = aecdop_2025,
+ key_cols = c(DivisionNm, CountNumber),
+ value_col = CalculationValue,
+ alternative_col = Party,
+ winner_col = Elected,
+ winner_identifier = "Y")
+head(transform_df)
+
+# Create the ternable object
+tern <- ternable(transform_df, ALP:Other)
+tern
+
 }

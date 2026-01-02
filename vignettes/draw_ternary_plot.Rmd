@@ -1,5 +1,5 @@
 ---
-title: "draw_ternary_plot"
+title: "Using `ternable` object to draw ternary plots"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{draw_ternary_plot}
@@ -16,7 +16,39 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(prefviz)
+library(ggplot2)
+library(tourr)
 ```
+
+This vignette shows you how to build a ternary plot on 2 and higher dimensions, using the `ternable` object.
+
+Both 2D and high-dimensional (HD) ternary plots require the following 3 components:
+
+- Coordinates of the observations: TBD
+- Vertices: The point coordinates that define the vertices of the simplex
+- Edges: How the vertices are connected to create the simplex
+
+Below is the illustration of these 3 components in the simplest case of ternary plots, which is a 2D ternary plot:
+
+[add some illustration]
+
+You can access all these components conveniently via a `ternable` object.
+
+# `ternable` object
+
+`ternable` is a simple S3 object that contains all the data and metadata necessary for ternary plots, including the 3 main components mentioned above. 
+
+To create a `ternable` object, simply call the function `ternable()`:
+
+```{r}
+ternable()
+```
+
+Note that your data must be in a `ternable`-friendly shape to be used with `ternable()`. For more details on how to transform your raw data into a `ternable`-friendly format, please refer to the tutorial[Transforming voting data to ternable-friendly format](transform_raw_data.html).
+
+# Drawing a 2D ternary plot
+
+
 
 ## Order of vertex labels
 
