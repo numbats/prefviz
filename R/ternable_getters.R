@@ -61,13 +61,13 @@ get_tern_data <- function(ternable, plot_type = c("2D", "HD")) {
   
   if(plot_type == "2D"){
     tern_coord <- ternable$ternary_coord |> 
-      mutate(x2 = x2*-1)
+      dplyr::mutate(x2 = x2*-1)
     data <- cbind(ternable$data, tern_coord)
   } 
   else if(plot_type == "HD"){
     sp <- ternable$simplex_vertices |> 
-    select(-labels)
-    data <- dplyr::bind_rows(ternable$ternary_coord, sp)
+      dplyr::select(-labels)
+    data <- dplyr::bind_rows(sp, ternable$ternary_coord)
   }
 
   return(data)

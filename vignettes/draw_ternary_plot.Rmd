@@ -2,7 +2,7 @@
 title: "Using `ternable` object to draw ternary plots"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{draw_ternary_plot}
+  %\VignetteIndexEntry{Using `ternable` object to draw ternary plots}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -18,19 +18,16 @@ knitr::opts_chunk$set(
 library(prefviz)
 library(ggplot2)
 library(tourr)
+library(dplyr)
 ```
 
 This vignette shows you how to build a ternary plot on 2 and higher dimensions, using the `ternable` object.
 
 Both 2D and high-dimensional (HD) ternary plots require the following 3 components:
 
-- Coordinates of the observations: TBD
+- Cartesian coordinates of the observations: The original Barycentric coordinates of the observations must be transformed into Cartesian coordinates using the Helmert matrix.
 - Vertices: The point coordinates that define the vertices of the simplex
 - Edges: How the vertices are connected to create the simplex
-
-Below is the illustration of these 3 components in the simplest case of ternary plots, which is a 2D ternary plot:
-
-[add some illustration]
 
 You can access all these components conveniently via a `ternable` object.
 
@@ -38,7 +35,7 @@ You can access all these components conveniently via a `ternable` object.
 
 `ternable` is a simple S3 object that contains all the data and metadata useful for ternary plots, including the following components:
 
-- `data`: Stores input data after being validated and normalized
+- `data`: Stores input data after being validated and normalized 
 - `ternary_coord`: Stores the coordinates for all observations.
 - `simplex_vertices`: Stores the coordinates of the vertices of the simplex.
 - `simplex_edges`: Stores the connections between the vertices of the simplex.
@@ -46,10 +43,11 @@ You can access all these components conveniently via a `ternable` object.
 
 To create a `ternable` object, simply call the function `ternable()`. `ternable()` takes 2 arguments:
 
-- `data`: The input data, which must be in a `ternable`-friendly format. For more details on how to transform your raw data into a `ternable`-friendly format, please refer to the tutorial[Transforming voting data to ternable-friendly format](transform_raw_data.html).
+- `data`: The input data, which must be in a `ternable`-friendly format. For more details on how to transform your raw data into a `ternable`-friendly format, please refer to `vignette("transform_raw_data")`
 - `alternatives`: The names of the alternatives in the order you want them to appear in the ternary plot. The default takes all the columns in `data`.
 
 ```{r}
+aecdop22_transformed <- prefviz:::aecdop22_transformed
 head(aecdop22_transformed)
 
 tern22 <- ternable(aecdop22_transformed, ALP:Other)
@@ -85,11 +83,9 @@ input_df <- get_tern_data(tern22, plot_type = "2D")
 head(input_df)
 ```
 
-The output is a data frame where the original columns (`DivisionNm` to `Other`) are combined with the coordinates (`x1`, `x2`). These coordinate columns are the observation locations on the plot. We can now use `ggplot2` to draw the ternary plot.
+The output is a data frame where the original columns are combined with the coordinates (`x1`, `x2`). These coordinate columns are the observation locations on the plot. We can now use `ggplot2` to draw the ternary plot.
 
 ```{r}
-library(ggplot2)
-
 p <- ggplot(input_df, aes(x = x1, y = x2)) +
   geom_ternary_cart() + # Draw the ternary space as an equilateral triangle
   geom_point(aes(color = ElectedParty)) + # Plot the observations as points
@@ -117,12 +113,72 @@ p +
   )
 ```
 
-## Order of vertex labels
+`vertex_labels` argument is used to specify the vertex of which the region belongs to. This is helpful when you want to "sync" the aesthetic mapping of `geom_ternary_region()` with the base layer because you only need to specify the customization once. 
 
-When customizing your aesthetic mappings, you might stumble upon the issue of mismatch 
-in value between the base layer's aesthetic mappings and the aesthetic mapping of `geom_ternary_region()This is because `geom_ternary_region()` generates its own data and does not inherit the
-aesthetic from the base layer. 
-The issue commonly comes in the message of `No shared levels found between `names(values)` of the manual scale and the data's fill values.`
+Please note that the order in which the labels are provided must match the order of the vertices in the ternary plot. The vertices are listed clockwise, from the right to the left, then ending at the top of the triangle. The best way is to get these labels from `ternable$alternatives` as `ternable` preserves the vertex orders.
 
-You can specify the naming of the ternary regions using the `vertex_labels` argument. 
-The default of `vertex_labels` is `c("Region 1", "Region 2", "Region 3")`.
+# Drawing a high-dimensional ternary plot
+
+Take the example of the 2025 Australian Federal Election, we would like to take a look at the first preference distribution between the 4 major groups: Labor, Coalition, Greens, Independents and the other party. This can be conveniently done using the `tourr` package, `ternable` object and the `get_tern_*()` functions.
+
+A ternary tour requires the following components:
+
+- Coordinates of the observations and vertices
+- Edges of the simplex
+- Vertex labels (good to have to identify the vertices during the tour)
+
+```{r}
+# Load the data
+aecdop25_transformed <- prefviz:::aecdop25_transformed
+head(aecdop25_transformed)
+
+tern25 <- ternable(aecdop25_transformed, ALP:IND)
+
+# Animate the tour
+animate_xy(
+  get_tern_data(tern25, plot_type = "HD"), # Dataframe with coordinates of the observations and vertices
+  edges = get_tern_edges(tern25), # Edges of the simplex
+  obs_labels  = get_tern_labels(tern25), # Labels for the vertices
+  axes = "bottomleft"
+)
+```
+
+We can add colors to the points.
+```{r}
+#| eval: false
+
+# Define color mapping
+party_colors <- c(
+  "ALP" = "#E13940",    # Red
+  "LNP" = "#1C4F9C",    # Blue
+  "GRN" = "#10C25B",    # Green
+  "IND" = "#F39C12",    # Orange
+  "Other" = "#95A5A6"   # Gray
+)
+
+# Map to your data (assuming your column is called elected_party)
+color_vector <- c(rep("black", 5),
+  party_colors[aecdop25_transformed$ElectedParty])
+
+# Animate the tour
+animate_xy(
+  get_tern_data(tern25, plot_type = "HD"), 
+  edges = get_tern_edges(tern25),
+  obs_labels  = get_tern_labels(tern25),
+  col = color_vector,
+  axes = "bottomleft"
+)
+
+render_gif(
+  get_tern_data(tern25, plot_type = "HD"),
+  grand_tour(),
+  display_xy(
+    col = color_vector,
+    edges = get_tern_edges(tern25),
+    obs_labels = get_tern_labels(tern25),
+    axes = "bottomleft"
+  )
+)
+```
+
+![](images\vignette_hd_plot.gif)

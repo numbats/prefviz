@@ -2,7 +2,7 @@
 title: "Transforming voting data to ternable-friendly format"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{transform_raw_data}
+  %\VignetteIndexEntry{Transforming voting data to ternable-friendly format}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

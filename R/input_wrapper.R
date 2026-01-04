@@ -205,8 +205,7 @@ dop_transform <- function(data,
       id_cols = all_of(key_cols_chr),
       names_from = all_of(alternative_col_chr),
       values_from = aggregated_value,
-      values_fill = fill_value,
-      names_sort = TRUE
+      values_fill = fill_value
     )
   
   # Get alternative column names

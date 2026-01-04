@@ -80,7 +80,6 @@ aec_2025_hd <- read_csv(url_2025, skip = 1) |>
     TRUE ~ PartyAb
   ))
 
-# Transform distribution of pref
 pref_2025_hd <- aec_2025_hd |>
   left_join(
       aec_2025_hd |>
@@ -92,35 +91,32 @@ pref_2025_hd <- aec_2025_hd |>
     Votes = sum(CalculationValue, na.rm = TRUE),
     .groups = "drop"
   ) |>
+  ungroup() |>
   pivot_wider(
     names_from = Party,
     values_from = Votes,
-    values_fill = 0,
-    names_sort = TRUE
+    values_fill = 0
   ) |>
   mutate(
     across(ALP:IND, ~.x/100),
     Other = ifelse(1 - ALP - LNP - GRN - IND < 0, 0, 1 - ALP - LNP - GRN - IND)
   )
 
-# Convert to cartesian coordinates usingh helmert matrix
 cart_df <- helmert_transform(pref_2025_hd, alternatives = c(4:8), append = TRUE) |>
   filter(CountNumber == 0)
 
-# Define the simplex
 simp <- geozoo::simplex(p = 4)
 sp <- data.frame(simp$points)
 colnames(sp) <- paste0("x", 1:length(sp))
 
-# Define the vertex labels
 labels <- c("ALP", "GRN", "LNP", "Other", "IND", rep("", nrow(cart_df)))
 cart_df_simp <- bind_rows(sp, cart_df) |>
   mutate(labels = labels)
+input_df <- cart_df_simp |> select(x1:x4)
 
-# Animate the tour
-tourr::animate_xy(
-  cart_df_simp |> select(x1:x4),
-  col = cart_df_simp$ElectedParty,
+animate_xy(
+  input_df,
+  # col = cart_df_simp$ElectedParty,
   edges = as.matrix(simp$edges),
   obs_labels  = cart_df_simp$labels,
   axes = "bottomleft"
@@ -136,4 +132,3 @@ render_gif(
     axes = "bottomleft"
   )
 )
-

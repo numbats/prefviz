@@ -26,8 +26,7 @@ round_pref <- function(data) {
     pivot_wider(
       names_from = Party,
       values_from = Votes,
-      values_fill = 0,
-      names_sort = TRUE
+      values_fill = 0
     )
   
   return(df)
@@ -60,5 +59,9 @@ aecdop25_transformed <- aecdop_2025 |>
 
 usethis::use_data(aecdop_2022, overwrite = TRUE)
 usethis::use_data(aecdop_2025, overwrite = TRUE)
-usethis::use_data(aecdop22_transformed, overwrite = TRUE, internal = TRUE)
-usethis::use_data(aecdop25_transformed, overwrite = TRUE, internal = TRUE)
+usethis::use_data(
+  aecdop22_transformed, 
+  aecdop25_transformed, 
+  overwrite = TRUE, 
+  internal = TRUE
+)
