@@ -143,7 +143,6 @@ Each region represents one of the traingular vertex that forms the corresponding
 }
 \section{Aesthetic mappings}{
 
-
 geom_ternary_region()\verb{uses [ggplot2::geom_polygon()], so it understands the  same aesthetics. The most commonly used are: \\itemize\{ \\item}fill\verb{- Fill color of regions \\item}colour\code{/}color\verb{- Border color of regions \\item}alpha\verb{- Transparency (0 = transparent, 1 = opaque) \\item}linewidth\verb{- Width of region borders \\item}linetype` - Type of border lines
 }
 
