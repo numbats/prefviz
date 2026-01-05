@@ -6,7 +6,7 @@
 #'
 #' @param vertex_labels_df A data frame containing vertex coordinates and labels.
 #'   Should have columns `x1`, `x2`, and `labels`. Can be specified manually or 
-#'   obtained from a ternable object: `ternable_object$alternatives`.
+#'   obtained from a ternable object: `ternable_object$simplex_vertices`.
 #' @param ... Arguments passed to [ggplot2::geom_text()], such as
 #'   `size`, `colour`, `fontface`, etc.
 #'
@@ -19,12 +19,12 @@
 #' # Add vertex labels
 #' ggplot() +
 #'   geom_ternary_cart() +
-#'   add_vertex_labels(tern$alternatives)
+#'   add_vertex_labels(tern$simplex_vertices)
 #' 
 #' # Customize label appearance
 #' ggplot() +
 #'   geom_ternary_cart() +
-#'   add_vertex_labels(tern$alternatives, size = 5, fontface = "bold")
+#'   add_vertex_labels(tern$simplex_vertices, size = 5, fontface = "bold")
 #'
 #' @export
 add_vertex_labels <- function(vertex_labels_df, 

@@ -87,7 +87,7 @@ get_tern_edges <- function(ternable) {
 get_tern_labels <- function(ternable) {
   stopifnot("input should be of class `ternable`" = class(ternable) == "ternable")
 
-  vert_labels <- ternable$simplex_vertices$labels
+  vert_labels <- ternable$vertex_labels
   labels <- c(vert_labels, rep("", nrow(ternable$ternary_coord)))
   return(labels)
 }

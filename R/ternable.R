@@ -1,14 +1,14 @@
 #' Create a ternable object
 #' 
 #' @description
-#' Creates a ternable object, which contains ternary coordinates, simplex vertices, and edges
-#' necessary for building a ternary plot in both 2D (ggplot2) and higher dimensions (tourr).
+#' Creates a ternable object, which contains observation coordinates, simplex vertices, and edges
+#' necessary for building a ternary plot in both 2 and higher dimensions.
 #' 
-#' @param data A data frame containing the alternative columns used to construct the ternary plot.
-#'   All selected alternatives must be numeric and non-negative.
-#' @param alternatives <[`tidy-select`][dplyr::dplyr_tidy_select]> Columns to
-#'   use as alternatives in calculating ternary coordinates. Default is [everything()],
-#'   which selects all columns. Must select at least 3 columns.
+#' @param data A data frame containing the item (alternative) columns used to construct the ternary plot.
+#' @param items <[`tidy-select`][dplyr::dplyr_tidy_select]> Columns representing the 
+#'   items to be plotted as vertices of the simplex. Default is [everything()],
+#'   which selects all columns. Must select at least 3 columns. All columns must be
+#'   non-negative and sum to 1. 
 #' @param ... Additional arguments (currently unused, reserved for future extensions).
 #' 
 #' @return A ternable object (S3 class) containing:
@@ -17,7 +17,7 @@
 #'   \item{ternary_coord}{Transformed coordinates for all observations}
 #'   \item{simplex_vertices}{Vertex coordinates and labels for the simplex}
 #'   \item{simplex_edges}{Edge connections for drawing the simplex boundary}
-#'   \item{alternative_names}{Names of the alternative columns used}
+#'   \item{vertex_labels}{Labels of the vertices, same as names of the selected item columns}
 #' }
 #'
 #' @examples
@@ -39,7 +39,7 @@
 #'  data = aecdop_2025,
 #'  key_cols = c(DivisionNm, CountNumber),
 #'  value_col = CalculationValue,
-#'  alternative_col = Party,
+#'  item_col = Party,
 #'  winner_col = Elected,
 #'  winner_identifier = "Y")
 #' head(transform_df)
@@ -49,17 +49,17 @@
 #' tern
 #'
 #' @export
-ternable <- function(data, alternatives = everything(), ...) {
-  stopifnot(is.data.frame(data))
+ternable <- function(data, items = everything(), ...) {
+  stopifnot(is.data.frame(data), is.character(items))
 
-  alternative_col_ind <- tidyselect::eval_select(
-      rlang::enquo(alternatives), 
+  item_col_ind <- tidyselect::eval_select(
+      rlang::enquo(items), 
       data)
-  alternative_col_chr <- colnames(data)[alternative_col_ind]
+  item_col_chr <- colnames(data)[item_col_ind]
 
-  validate_df <- validate_ternable(data, alternative_col_chr)
+  validate_df <- validate_ternable(data, item_col_chr)
 
-  new_ternable(validate_df, alternative_col_chr)
+  new_ternable(validate_df, item_col_chr)
 }
 
 #' Validate input for ternable
@@ -68,27 +68,27 @@ ternable <- function(data, alternatives = everything(), ...) {
 #' and normalizes if necessary.
 #'
 #' @param data A data frame
-#' @param alternative_col_chr Character vector of alternative column names
+#' @param item_col_chr Character vector of item column names
 #'
 #' @return The validated (and possibly normalized) data frame, invisibly
 #'
 #' @keywords internal
 #' @noRd
-validate_ternable <- function(data, alternative_col_chr) {
-  alt_data <- data[, alternative_col_chr, drop = FALSE]
+validate_ternable <- function(data, item_col_chr) {
+  alt_data <- data[, item_col_chr, drop = FALSE]
 
-  # At least 3 alternatives
+  # At least 3 items
   if (ncol(alt_data) < 3) {
     stop(
-      "At least 3 alternatives are required.",
+      "At least 3 items are required.",
       call. = FALSE
     )
   }
 
-  # All alternatives are numeric
+  # All items are numeric
   if (!all(sapply(alt_data, is.numeric))) {
     stop(
-      "All alternative columns must be numeric.",
+      "All item columns must be numeric.",
       call. = FALSE
     )
   }
@@ -96,7 +96,7 @@ validate_ternable <- function(data, alternative_col_chr) {
   # No negative values allowed
   if (any(alt_data < 0, na.rm = TRUE)) {
     stop(
-      "Alternative values cannot be negative.",
+      "Item values cannot be negative.",
       call. = FALSE
     )
   }
@@ -107,10 +107,10 @@ validate_ternable <- function(data, alternative_col_chr) {
   
   if (!all(abs(row_sums - 1) < tolerance)) {
     warning(
-      "Not all rows sum to 1. Normalizing alternatives automatically.",
+      "Not all rows sum to 1. Normalizing items automatically.",
       call. = FALSE
     )
-    data[, alternative_col_chr] <- alt_data / row_sums
+    data[, item_col_chr] <- alt_data / row_sums
   }
 
   invisible(data)
@@ -123,27 +123,27 @@ validate_ternable <- function(data, alternative_col_chr) {
 #' Users should use [ternable()] instead.
 #'
 #' @param data A validated data frame
-#' @param alternative_col_chr Character vector of alternative column names
+#' @param item_col_chr Character vector of item column names
 #' @param ... Additional arguments (unused for now)
 #'
 #' @return A ternable object
 #'
 #' @keywords internal
 #' @noRd
-new_ternable <- function(data, alternative_col_chr, ...) {
+new_ternable <- function(data, item_col_chr, ...) {
   stopifnot(is.data.frame(data))
-  stopifnot(is.character(alternative_col_chr))
+  stopifnot(is.character(item_col_chr))
 
   # Get ternary coordinates of the data
-  cart_df <- helmert_transform(data, alternatives = alternative_col_chr)
+  cart_df <- helmert_transform(data, items = item_col_chr)
 
   # Define the simplex
-  simp <- geozoo::simplex(p = length(alternative_col_chr) - 1)
+  simp <- geozoo::simplex(p = length(item_col_chr) - 1)
   simp_points <- data.frame(simp$points)
   colnames(simp_points) <- paste0("x", 1:ncol(simp_points))
 
   # Define the vertex labels
-  simp_points$labels <- alternative_col_chr
+  simp_points$labels <- item_col_chr
 
   structure(
     list(
@@ -151,7 +151,7 @@ new_ternable <- function(data, alternative_col_chr, ...) {
       ternary_coord = cart_df,
       simplex_vertices = simp_points,
       simplex_edges = as.matrix(simp$edges),
-      alternatives = alternative_col_chr
+      vertex_labels = item_col_chr
     ),
     class = "ternable"
   )
@@ -168,7 +168,7 @@ new_ternable <- function(data, alternative_col_chr, ...) {
 print.ternable <- function(x, ...) {
   cat("Ternable object\n")
   cat("----------------\n")
-  cat("Alternatives:", paste(x$alternatives, collapse = ", "), "\n")
+  cat("Items:", paste(x$vertex_labels, collapse = ", "), "\n")
   cat("Vertices:", nrow(x$simplex_vertices), "\n")
   cat("Edges:", nrow(x$simplex_edges), "\n")
   invisible(x)

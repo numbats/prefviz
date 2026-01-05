@@ -94,7 +94,7 @@ dop_irv <- function(x, value_type = c("percentage", "count"), ...) {
 #' @param key_cols Columns that identify unique observations, e.g., DivisionNm, CountNumber
 #' @param value_col Numeric and non-negative. Column containing the numeric values to aggregate, 
 #'  e.g., CalculationValue, Votes. 
-#' @param alternative_col Column name containing the alternative of the election, 
+#' @param item_col Column name containing the items (candidates/parties) of the election, 
 #'  e.g., Party, Candidate. This column will become column names in the output wide format.
 #' @param normalize Logical. If \code{TRUE} (default), normalizes values within
 #'   each group to sum to 1. If \code{FALSE}, returns raw aggregated values.
@@ -113,7 +113,7 @@ dop_irv <- function(x, value_type = c("percentage", "count"), ...) {
 #' @return A data frame in wide format with:
 #'   \itemize{
 #'     \item Key columns identifying each observation
-#'     \item Columns for each alternative containing aggregated/normalized values
+#'     \item Columns for each item (candidate/party) containing aggregated/normalized values
 #'     \item Winner column (if \code{winner_col} was specified)
 #'   }
 #' @examples
@@ -133,7 +133,7 @@ dop_irv <- function(x, value_type = c("percentage", "count"), ...) {
 #'   data = aec_dop_2025,
 #'   key_cols = DivisionNm, CountNumber,
 #'   value_col = CalculationValue,
-#'   alternative_col = Party,
+#'   item_col = Party,
 #'   winner_col = Elected
 #' )
 #' @export
@@ -141,7 +141,7 @@ dop_irv <- function(x, value_type = c("percentage", "count"), ...) {
 dop_transform <- function(data,
                           key_cols,
                           value_col,
-                          alternative_col,
+                          item_col,
                           normalize = TRUE,
                           scale = 1,
                           fill_value = 0,
@@ -159,7 +159,7 @@ dop_transform <- function(data,
   key_cols_chr <- names(key_cols_sel)
   
   value_col_chr <- rlang::as_label(rlang::ensym(value_col))
-  alternative_col_chr <- rlang::as_label(rlang::ensym(alternative_col))
+  item_col_chr <- rlang::as_label(rlang::ensym(item_col))
   
   if (!is.null(rlang::enexpr(winner_col))) {
     winner_col_chr <- rlang::as_label(rlang::ensym(winner_col))
@@ -168,7 +168,7 @@ dop_transform <- function(data,
   }
   
   # Check if columns exist
-  required_cols <- c(key_cols_chr, value_col_chr, alternative_col_chr)
+  required_cols <- c(key_cols_chr, value_col_chr, item_col_chr)
   if (!is.null(winner_col_chr)) {
     required_cols <- c(required_cols, winner_col_chr)
   }
@@ -188,10 +188,8 @@ dop_transform <- function(data,
     stop("'value_col' contains negative values. Compositional data must be non-negative.")
   }
   
-  # Prepare grouping columns
-  group_cols <- c(key_cols_chr, alternative_col_chr)
-  
   # Aggregate data
+  group_cols <- c(key_cols_chr, item_col_chr)
   df_agg <- data |>
     dplyr::group_by(dplyr::across(all_of(group_cols))) |>
     dplyr::summarise(
@@ -203,21 +201,21 @@ dop_transform <- function(data,
   df_wide <- df_agg |>
     tidyr::pivot_wider(
       id_cols = all_of(key_cols_chr),
-      names_from = all_of(alternative_col_chr),
+      names_from = all_of(item_col_chr),
       values_from = aggregated_value,
       values_fill = fill_value
     )
   
-  # Get alternative column names
-  alternative_names <- setdiff(names(df_wide), key_cols_chr)
+  # Get item column names
+  item_names <- setdiff(names(df_wide), key_cols_chr)
   
   # Apply normalization or scaling
   if (normalize) {
     df_wide <- df_wide |>
       dplyr::mutate(
-        row_total = rowSums(dplyr::across(all_of(alternative_names)), na.rm = TRUE),
+        row_total = rowSums(dplyr::across(all_of(item_names)), na.rm = TRUE),
         dplyr::across(
-          all_of(alternative_names),
+          all_of(item_names),
           ~ .x / row_total
         )
       ) |>
@@ -227,7 +225,7 @@ dop_transform <- function(data,
     df_wide <- df_wide |>
       dplyr::mutate(
         dplyr::across(
-          all_of(alternative_names),
+          all_of(item_names),
           ~ if_else(is.nan(.x) | is.infinite(.x), 0, .x)
         )
       )
@@ -235,7 +233,7 @@ dop_transform <- function(data,
   } else if (scale != 1) {
     df_wide <- df_wide |>
       dplyr::mutate(
-        dplyr::across(all_of(alternative_names), ~ .x / scale)
+        dplyr::across(all_of(item_names), ~ .x / scale)
       )
   }
   
@@ -243,9 +241,9 @@ dop_transform <- function(data,
   if (!is.null(winner_col_chr)) {
     winner_data <- data |>
       dplyr::filter(.data[[winner_col_chr]] == winner_identifier) |>
-      dplyr::select(all_of(c(key_cols_chr, alternative_col_chr))) |>
+      dplyr::select(all_of(c(key_cols_chr, item_col_chr))) |>
       dplyr::distinct() |>
-      dplyr::rename(Winner = all_of(alternative_col_chr))
+      dplyr::rename(Winner = all_of(item_col_chr))
     
     df_wide <- df_wide |>
       dplyr::left_join(winner_data, by = key_cols_chr)
