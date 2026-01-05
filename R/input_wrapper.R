@@ -42,7 +42,7 @@ dop_irv <- function(x, value_type = c("percentage", "count"), ...) {
   value_type <- match.arg(value_type)
   
   # Implement IRV to get round results
-  irv_result <- pref_irv(x, ...)
+  irv_result <- prefio::pref_irv(x, ...)
   
   percent_df <- tibble::tibble()
   

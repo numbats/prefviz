@@ -25,7 +25,7 @@ This vignette shows you how to build a ternary plot on 2 and higher dimensions, 
 
 Both 2D and high-dimensional (HD) ternary plots require the following 3 components:
 
-- Cartesian coordinates of the observations: The original Barycentric coordinates of the observations must be transformed into Cartesian coordinates using the Helmert matrix.
+- Coordinates of the observations: Your n-part compositional data must be transformed into (n-1)-dimensional space via Helmert matrix.
 - Vertices: The point coordinates that define the vertices of the simplex
 - Edges: How the vertices are connected to create the simplex
 

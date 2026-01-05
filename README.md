@@ -1,7 +1,138 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# prefviz
+# Overview
 
-This is a package for visualising preference data, such as from
-elections where voters rank candidates.
+Ternary plot is one of the popular ways to visualize preference data,
+such as from preferential elections where voters rank candidates
+ordinally. Traditionally, ternary plot works with 3-part compositional
+variables, representing as 3 vertices of a 2D equilateral triangle.
+However, in many cases, preference data consists of more than 3
+alternatives, making the 2D ternary plot inadequate to visualize the
+data.
+
+`previz` provides a solution for creating ternary plots of both two and
+higher dimensions. These plots are made compatible with other
+interactivity R packages, allowing users to explore their ternary plot
+interactively.
+
+# Installation
+
+You can install the development version of `previz` via:
+
+``` r
+# install.packages("devtools")
+remotes::install_github("numbats/previz")
+```
+
+# Usage
+
+## Prepare your data
+
+For optimal compatibility, we suggest your data have its
+alternatives/composition in columns and these columns sum to 1.
+
+``` r
+aecdop22_transformed <- prefviz:::aecdop22_transformed
+head(aecdop22_transformed) |> select(-CountNumber, -ElectedParty)
+```
+
+You can explore the wrapper functions `dop_irv()` and `dop_transform()`
+that assist your transformation.
+
+## Prepare components for ternary plot
+
+Every ternary plot is made up of 3 components:
+
+1.  Coordinates of the observations: Your n-part compositional data must
+    be transformed into (n-1)-dimensional space via Helmert matrix.
+2.  Vertices: The point coordinates that define the vertices of the
+    simplex
+3.  Edges: How the vertices are connected to create the simplex
+
+These components are provided in a `ternable` object, and can be
+accessed directly through the object or via getter functions
+`get_tern_*()`. These `get_tern_*()` functions transform the components
+of the `ternable` object into suitable input data for `ggplot2` and
+`tourr`.
+
+Consider the distribution of first-round preferences in the 2022
+Australian Federal Election:
+
+``` r
+aecdop22_transformed <- prefviz:::aecdop22_transformed
+head(aecdop22_transformed)
+```
+
+We can create a `ternable` object using the `ternable()` function:
+
+``` r
+tern22 <- ternable(aecdop22_transformed, ALP:Other)
+tern22
+```
+
+## Draw a 2D ternary plot
+
+``` r
+# Get the input data
+input_df <- get_tern_data(tern22, plot_type = "2D")
+head(input_df)
+
+# Visualize
+ggplot(input_df, aes(x = x1, y = x2)) +
+  geom_ternary_cart() +
+  geom_ternary_region(
+    vertex_labels = tern22$alternatives,
+    aes(fill = after_stat(vertex_labels)), 
+    alpha = 0.3, color = "grey50",
+    show.legend = FALSE
+  ) +
+  geom_point(aes(color = ElectedParty)) +
+  add_vertex_labels(tern22$simplex_vertices) +
+  scale_fill_manual(
+    values = c("ALP" = "red", "LNP" = "blue", "Other" = "grey70"),
+    aesthetics = c("fill", "colour")
+  ) +
+  labs(title = "First preference in 2022 Australian Federal election")
+```
+
+## Draw a high-dimensional ternary plot
+
+``` r
+# Load the data
+aecdop25_transformed <- prefviz:::aecdop25_transformed
+head(aecdop25_transformed)
+
+# Create ternable object
+tern25 <- ternable(aecdop25_transformed, ALP:IND)
+
+# Add colors to the points
+party_colors <- c(
+  "ALP" = "#E13940",    # Red
+  "LNP" = "#1C4F9C",    # Blue
+  "GRN" = "#10C25B",    # Green
+  "IND" = "#F39C12",    # Orange
+  "Other" = "#95A5A6"   # Gray
+)
+
+# Map to your data (assuming your column is called elected_party)
+color_vector <- c(rep("black", 5),
+  party_colors[aecdop25_transformed$ElectedParty])
+
+# Animate the tour
+animate_xy(
+  get_tern_data(tern25, plot_type = "HD"), 
+  edges = get_tern_edges(tern25),
+  obs_labels  = get_tern_labels(tern25),
+  col = color_vector,
+  axes = "bottomleft"
+)
+```
+
+![](images\vignette_hd_plot.gif)
+
+# References
+
+Cook D., Laa, U. (2024) Interactively exploring high-dimensional data
+and models in R, <https://dicook>. github.io/mulgar_book/, accessed on
+2025/12/20.
