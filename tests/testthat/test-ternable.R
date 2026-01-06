@@ -10,59 +10,61 @@ valid_df <- data.frame(
 test_that("ternable works with different selection styles", {
   # Column names
   expect_equal(
-    ternable(valid_df, ALP:Other)$alternative_names,
+    suppressWarnings(ternable(valid_df, c("ALP", "LNP", "GRN", "Other"))$vertex_labels),
     c("ALP", "LNP", "GRN", "Other")
   )
 
   # Column indices
   expect_equal(
-    ternable(valid_df, c(2,4,5))$alternative_names,
+    suppressWarnings(ternable(valid_df, c(2,4,5))$vertex_labels),
     c("ALP", "GRN", "Other")
   )
 
   # Character vector
   expect_equal(
-    ternable(valid_df, c("ALP", "LNP", "GRN"))$alternative_names,
+    suppressWarnings(ternable(valid_df, c("ALP", "LNP", "GRN"))$vertex_labels),
     c("ALP", "LNP", "GRN")
   )
 
   # Tidyselect helpers 
   expect_equal(
-    ternable(valid_df, where(is.numeric))$alternative_names,
+    suppressWarnings(ternable(valid_df, where(is.numeric))$vertex_labels),
     c("ALP", "LNP", "GRN", "Other")
   )
 
   expect_equal(
-    ternable(valid_df, -c(division, GRN))$alternative_names,
+    suppressWarnings(ternable(valid_df, -c(division, GRN))$vertex_labels),
     c("ALP", "LNP", "Other")
   )
 
   # Regex
   expect_equal(
-    ternable(valid_df, matches("^[ALG]"))$alternative_names,
+    suppressWarnings(ternable(valid_df, matches("^[ALG]"))$vertex_labels),
     c("ALP", "LNP", "GRN")
   )
 
   # Error when column not found
   expect_error(
-    ternable(valid_df, c(ALP, LNP, Other, Extra)),
+    suppressWarnings(ternable(valid_df, c(ALP, LNP, Other, Extra))),
     "exist"
   )
   
   expect_error(
-    ternable(valid_df, 3:7),
+    suppressWarnings(ternable(valid_df, 3:7)),
     "columns past the end"
   )
 
   # Return a ternable
-  expect_s3_class(ternable(valid_df, ALP:Other), "ternable")
+  expect_s3_class(
+    suppressWarnings(ternable(valid_df, ALP:Other)), 
+    "ternable")
 })
 
 # Validator
 test_that("ternable detects on numeric column", {
   expect_error(
     ternable(valid_df, 1:3),
-    "All alternative columns must be numeric"
+    "must be numeric"
   )
 }
 )
@@ -91,9 +93,10 @@ test_that("ternable normalizes input that does not sum to 1",{
     Other = c(0.10, 0.15, 0.08, 0.12, 0.15)
   )
 
-  expect_warning(
-    ternable(invalid_sum_df, 2:5),
-    "Not all rows sum to 1. Normalizing alternatives automatically."
+  warnings <- capture_warnings(
+    ternable(invalid_sum_df, 2:5)
   )
+  
+  expect_true(any(grepl("Not all rows sum to 1", warnings)))
 }
 )

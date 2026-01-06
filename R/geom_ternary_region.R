@@ -159,7 +159,7 @@ geom_ternary_region <- function(mapping = NULL, position = "identity",
   ggplot2::layer(
     data = NULL, 
     mapping = mapping, 
-    geom = GeomPolygon, 
+    geom = "polygon", 
     stat = StatTernaryRegion,
     position = position,
     show.legend = show.legend, 

@@ -88,7 +88,7 @@ create_ternary_region <- function(x1, x2, x3) {
   )
 
   polygon <- rbind(r1, r2, r3) |> 
-    mutate(y = y*-1)
+    dplyr::mutate(y = y*-1)
 
   return(polygon)
 }

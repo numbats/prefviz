@@ -50,7 +50,7 @@
 #'
 #' @export
 ternable <- function(data, items = everything(), ...) {
-  stopifnot(is.data.frame(data), is.character(items))
+  stopifnot(is.data.frame(data))
 
   item_col_ind <- tidyselect::eval_select(
       rlang::enquo(items), 

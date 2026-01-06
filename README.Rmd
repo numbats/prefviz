@@ -7,7 +7,7 @@ output: github_document
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  eval = FALSE, 
+  eval = TRUE, 
   comment = "#>",
   fig.path = "man/figures/README-",
   out.width = "100%"
@@ -23,15 +23,15 @@ library(tourr)
 
 Ternary plot is one of the popular ways to visualize preference data, such as from preferential elections where voters rank candidates ordinally. Traditionally, ternary plot works with 3-part compositional variables, representing as 3 vertices of a 2D equilateral triangle. However, in many cases, preference data consists of more than 3 alternatives, making the 2D ternary plot inadequate to visualize the data. 
 
-`previz` provides a solution for creating ternary plots of both two and higher dimensions. These plots are made compatible with other interactivity R packages, allowing users to explore their ternary plot interactively. 
+`prefviz` provides a solution for creating ternary plots of both two and higher dimensions. These plots are made compatible with other interactivity R packages, allowing users to explore their ternary plot interactively. 
 
 # Installation
 
-You can install the development version of `previz` via:
+You can install the development version of `prefviz` via:
 
 ```{r}
 # install.packages("devtools")
-remotes::install_github("numbats/previz")
+remotes::install_github("numbats/prefviz")
 ```
 
 # Usage
