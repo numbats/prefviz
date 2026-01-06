@@ -14,7 +14,7 @@ add_vertex_labels(
 \arguments{
 \item{vertex_labels_df}{A data frame containing vertex coordinates and labels.
 Should have columns \code{x1}, \code{x2}, and \code{labels}. Can be specified manually or
-obtained from a ternable object: \code{ternable_object$alternatives}.}
+obtained from a ternable object: \code{ternable_object$simplex_vertices}.}
 
 \item{...}{Arguments passed to \code{\link[ggplot2:geom_text]{ggplot2::geom_text()}}, such as
 \code{size}, \code{colour}, \code{fontface}, etc.}
@@ -32,11 +32,11 @@ tern <- ternable(election_data, ALP:Other)
 # Add vertex labels
 ggplot() +
   geom_ternary_cart() +
-  add_vertex_labels(tern$alternatives)
+  add_vertex_labels(tern$simplex_vertices)
 
 # Customize label appearance
 ggplot() +
   geom_ternary_cart() +
-  add_vertex_labels(tern$alternatives, size = 5, fontface = "bold")
+  add_vertex_labels(tern$simplex_vertices, size = 5, fontface = "bold")
 
 }

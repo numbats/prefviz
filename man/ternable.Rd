@@ -4,15 +4,15 @@
 \alias{ternable}
 \title{Create a ternable object}
 \usage{
-ternable(data, alternatives = everything(), ...)
+ternable(data, items = everything(), ...)
 }
 \arguments{
-\item{data}{A data frame containing the alternative columns used to construct the ternary plot.
-All selected alternatives must be numeric and non-negative.}
+\item{data}{A data frame containing the item (alternative) columns used to construct the ternary plot.}
 
-\item{alternatives}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Columns to
-use as alternatives in calculating ternary coordinates. Default is \code{\link[tidyselect:everything]{tidyselect::everything()}},
-which selects all columns. Must select at least 3 columns.}
+\item{items}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Columns representing the
+items to be plotted as vertices of the simplex. Default is \code{\link[tidyselect:everything]{tidyselect::everything()}},
+which selects all columns. Must select at least 3 columns. All columns must be
+non-negative and sum to 1.}
 
 \item{...}{Additional arguments (currently unused, reserved for future extensions).}
 }
@@ -23,12 +23,12 @@ A ternable object (S3 class) containing:
 \item{ternary_coord}{Transformed coordinates for all observations}
 \item{simplex_vertices}{Vertex coordinates and labels for the simplex}
 \item{simplex_edges}{Edge connections for drawing the simplex boundary}
-\item{alternative_names}{Names of the alternative columns used}
+\item{vertex_labels}{Labels of the vertices, same as names of the selected item columns}
 }
 }
 \description{
-Creates a ternable object, which contains ternary coordinates, simplex vertices, and edges
-necessary for building a ternary plot in both 2D (ggplot2) and higher dimensions (tourr).
+Creates a ternable object, which contains observation coordinates, simplex vertices, and edges
+necessary for building a ternary plot in both 2 and higher dimensions.
 }
 \examples{
 
@@ -49,7 +49,7 @@ transform_df <- dop_transform(
  data = aecdop_2025,
  key_cols = c(DivisionNm, CountNumber),
  value_col = CalculationValue,
- alternative_col = Party,
+ item_col = Party,
  winner_col = Elected,
  winner_identifier = "Y")
 head(transform_df)

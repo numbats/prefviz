@@ -5,7 +5,7 @@
 \alias{geom_ternary_region}
 \alias{StatTernaryRegion}
 \alias{stat_ternary_region}
-\title{Create 3 polygonial regions in a ternary plot based on a reference point}
+\title{Create polygonal regions in a ternary plot based on a reference point}
 \format{
 An object of class \code{StatTernaryRegion} (inherits from \code{Stat}, \code{ggproto}, \code{gg}) of length 3.
 }
@@ -28,10 +28,9 @@ stat_ternary_region(
 
 geom_ternary_region(
   mapping = NULL,
-  data = NULL,
   position = "identity",
   show.legend = NA,
-  inherit.aes = TRUE,
+  inherit.aes = FALSE,
   x1 = 1/3,
   x2 = 1/3,
   x3 = 1/3,
@@ -41,8 +40,8 @@ geom_ternary_region(
 }
 \arguments{
 \item{mapping}{Set of aesthetic mappings created by \code{\link[ggplot2:aes]{ggplot2::aes()}}.
-To map aesthetics to computed variables (like region labels), use
-\code{\link[ggplot2:aes_eval]{ggplot2::after_stat()}}, e.g., \code{aes(fill = after_stat(vertex_labels))}.}
+To map aesthetics to the computed region labels, use \code{\link[ggplot2:aes_eval]{ggplot2::after_stat()}},
+e.g., \code{aes(fill = after_stat(vertex_labels))}.}
 
 \item{data}{The data to be displayed in this layer. There are three
 options:
@@ -59,8 +58,7 @@ the plot data. The return value must be a \code{data.frame}, and
 will be used as the layer data. A \code{function} can be created
 from a \code{formula} (e.g. \code{~ head(.x, 10)}).}
 
-\item{geom}{The geometric object to use display the data for \code{stat_ternary_region()}.
-Default is \code{"polygon"}.}
+\item{geom}{The geometric object to use to display the data. Default is \code{"polygon"}.}
 
 \item{position}{A position adjustment to use on the data for this layer. This
 can be used in various ways, including to prevent overplotting and
@@ -75,37 +73,21 @@ to use \code{position_jitter()}, give the position as \code{"jitter"}.
 \link[ggplot2:layer_positions]{layer position} documentation.
 }}
 
-\item{show.legend}{Logical. Determines whether this layer is included in the legends.
-\code{NA} (the default) includes if any aesthetics are mapped. \code{FALSE} never includes,
-and \code{TRUE} always includes.}
+\item{show.legend}{Logical. Should this layer be included in the legends?
+\code{NA} (default) includes it if aesthetics are mapped. \code{FALSE} never includes it;
+\code{TRUE} always includes it.}
 
-\item{inherit.aes}{If \code{FALSE}, overrides the default aesthetics, rather than
-combining with them. This is most useful for helper functions that define both
-data and aesthetics and shouldn't inherit behaviour from the default plot specification.
+\item{inherit.aes}{If \code{FALSE}, overrides the default aesthetics rather than
+combining with them.}
 
-#' @section Computed variables:
-These are calculated by \code{stat_ternary_region()}:
-\describe{
-\item{\code{x}, \code{y}}{Cartesian coordinates of polygon vertices}
-\item{\code{id}}{Numeric identifier for each points (
-\itemize{
-\item 1-3 are the vertices of the triangle
-\item 4 is the reference point
-\item 5-7 are the projection of the reference point to the edges of the triangle)}
-\item{\code{group}}{Numeric identifier for each region (1, 2, or 3)}
-\item{\code{vertex_labels}}{Label for the vertex, representing each region.
-If \code{vertex_labels} is \code{NULL}, the labels default to \verb{Region 1, Region 2, Region 3}.}
-}
-}}
+\item{x1, x2, x3}{Numeric values defining the reference point in ternary coordinates
+(proportions). Must sum to 1 (or will be normalized). Default is \code{c(1/3, 1/3, 1/3)}
+(the centroid), which divides the space into three equal regions.}
 
-\item{x1, x2, x3}{Numeric values defining the reference point in ternary coordinates.
-Must sum to 1 (or will be normalized). Default is \verb{1/3, 1/3, 1/3} (centroid),
-diving the ternary space into 3 equal regions.}
-
-\item{vertex_labels}{Character vector of length 3 giving labels for the three
-regions. The order corresponds to the three vertices of the ternary triangle
-(see Details). If \code{NULL}, regions are labeled numerically. These labels can be
-accessed in aesthetic mappings via \code{after_stat(vertex_labels)}.}
+\item{vertex_labels}{Character vector of length 3 providing names for the regions.
+The order must correspond to the three vertices of the ternary plot.
+If \code{NULL}, regions are labeled "Region 1", "Region 2", and "Region 3", starting from
+the rightmost vertex and moving clockwise.}
 
 \item{...}{Other arguments passed on to \code{\link[ggplot2:layer]{layer()}}'s \code{params} argument. These
 arguments broadly fall into one of 4 categories below. Notably, further
@@ -136,19 +118,48 @@ lists which parameters it can accept.
 }}
 }
 \description{
-\code{geom_ternary_region()} and \code{stat_ternary_region()} create three polygonal
-regions in a ternary plot via a reference point. Each region is defined by perpendicular
-projections from the reference point to the edges of the ternary triangle.
-Each region represents one of the traingular vertex that forms the corresponding region.
+\code{geom_ternary_region()} and \code{stat_ternary_region()} divide the ternary triangle
+into three polygonal regions centered around a specific reference point.
+
+Geometrically, lines are drawn from the reference point perpendicular to the
+three edges of the triangle. These lines partition the simplex into three zones,
+where each zone is associated with the closest vertex (item). This is often
+used to visualize "winning regions" or catchment areas for each item.
 }
-\section{Aesthetic mappings}{
+\section{Computed variables}{
 
-geom_ternary_region()\verb{uses [ggplot2::geom_polygon()], so it understands the  same aesthetics. The most commonly used are: \\itemize\{ \\item}fill\verb{- Fill color of regions \\item}colour\code{/}color\verb{- Border color of regions \\item}alpha\verb{- Transparency (0 = transparent, 1 = opaque) \\item}linewidth\verb{- Width of region borders \\item}linetype` - Type of border lines
+\code{stat_ternary_region()} calculates the following variables which can be accessed
+with \code{after_stat()}:
+\describe{
+\item{\code{x}, \code{y}}{Cartesian coordinates defining the polygon shapes.}
+\item{\code{id}}{Numeric identifier for the specific geometric points used to build the polygons:
+\itemize{
+\item 1-3: The main vertices of the ternary triangle.
+\item 4: The reference point (center).
+\item 5-7: The projection points on the edges.
+}
+}
+\item{\code{group}}{Integer (1, 2, or 3) identifying which region the polygon belongs to.}
+\item{\code{vertex_labels}}{The label assigned to the region (derived from the
+\code{vertex_labels} parameter).}
+}
 }
 
-However, since this geom generates its own data based on the reference point parameters, \verb{ }after_stat()\verb{is needed to access the computed variables.  The most common use case is to map aesthetics based on the three alternatives,  representing by three ternary vertices.  To do so, use}ggplot2::after_stat(vertex_labels)\verb{in your}aes()\verb{mappings.  See Computed variables section for variables calculated by}stat_ternary_region()`.
+\examples{
+aecdop22_transformed <- prefviz:::aecdop22_transformed
 
-TODO: Update with examples once geom_ternary_cart() is done
+# Get ternable
+tern22 <- ternable(aecdop22_transformed, ALP:Other)
+
+# Draw the ternary plot
+ggplot(get_tern_data(tern22, plot_type = "2D"), aes(x = x1, y = x2)) +
+  geom_ternary_cart() +
+  geom_ternary_region(
+    vertex_labels = tern22$vertex_labels,
+    aes(fill = after_stat(vertex_labels)), 
+    alpha = 0.3, color = "grey50",
+    show.legend = FALSE
+  )
+
 }
-
 \keyword{datasets}

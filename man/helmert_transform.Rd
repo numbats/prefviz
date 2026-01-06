@@ -4,25 +4,27 @@
 \alias{helmert_transform}
 \title{Transform compositional data using Helmert matrix}
 \usage{
-helmert_transform(data, alternatives = everything(), append = FALSE)
+helmert_transform(data, items = everything(), append = FALSE)
 }
 \arguments{
 \item{data}{A data frame or matrix containing the compositional data.}
 
-\item{alternatives}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Columns of compositional data to
-use. Default is \code{\link[tidyselect:everything]{tidyselect::everything()}}, which selects all columns. Must select at least 3 columns.}
+\item{items}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Columns representing the
+components of the composition. Default is \code{\link[tidyselect:everything]{tidyselect::everything()}}, which selects all columns.
+Must select at least 3 columns.}
 
 \item{append}{(Optional) A logical value indicating whether the transformed data should be appended to the original data frame.
 Default is \code{FALSE}.}
 }
 \value{
-A data frame with the original columns and additional columns
-containing the Helmert-transformed coordinates, named \code{x1}, \code{x2}, ..., \code{x(n-1)} where \code{n} is
-the number of dimensions in the compositional data.
+A data frame containing the Helmert-transformed coordinates, named
+\code{x1}, \code{x2}, ..., \code{x(n-1)}, where \code{n} is the number of items. If \code{append = TRUE},
+these columns are added to the input \code{data}.
 }
 \description{
-Transform n-dimension compositional data (all values sum to 1) to its (n-1)-dimensional space
-using the Helmert matrix.
+Transform n-dimension compositional data (all values sum to 1) into an (n-1)-dimensional Euclidean space
+using the Helmert matrix. This dimension reduction is the geometric basis for
+plotting points within the simplex.
 }
 \examples{
 \dontrun{
@@ -40,6 +42,6 @@ df <- data.frame(
   LNP = c(0.3, 0.4, 0.2),
   Other = c(0.2, 0.2, 0.2)
 )
-helmert_transform(df, alternatives = c(ALP, LNP, Other))
+helmert_transform(df, items = c(ALP, LNP, Other))
 }
 }

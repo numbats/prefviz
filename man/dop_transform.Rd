@@ -8,7 +8,7 @@ dop_transform(
   data,
   key_cols,
   value_col,
-  alternative_col,
+  item_col,
   normalize = TRUE,
   scale = 1,
   fill_value = 0,
@@ -25,7 +25,7 @@ dop_transform(
 \item{value_col}{Numeric and non-negative. Column containing the numeric values to aggregate,
 e.g., CalculationValue, Votes.}
 
-\item{alternative_col}{Column name containing the alternative of the election,
+\item{item_col}{Column name containing the items (candidates/parties) of the election,
 e.g., Party, Candidate. This column will become column names in the output wide format.}
 
 \item{normalize}{Logical. If \code{TRUE} (default), normalizes values within
@@ -50,7 +50,7 @@ Only used if \code{winner_col} is specified. Default is "Y".}
 A data frame in wide format with:
 \itemize{
 \item Key columns identifying each observation
-\item Columns for each alternative containing aggregated/normalized values
+\item Columns for each item (candidate/party) containing aggregated/normalized values
 \item Winner column (if \code{winner_col} was specified)
 }
 }
@@ -76,7 +76,7 @@ dop_transform(
   data = aec_dop_2025,
   key_cols = DivisionNm, CountNumber,
   value_col = CalculationValue,
-  alternative_col = Party,
+  item_col = Party,
   winner_col = Elected
 )
 }
