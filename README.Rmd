@@ -8,6 +8,8 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   eval = TRUE, 
+  warnings = FALSE,
+  message = FALSE,
   comment = "#>",
   fig.path = "man/figures/README-",
   out.width = "100%"
@@ -19,8 +21,6 @@ library(dplyr)
 library(tourr)
 ```
 
-# Overview
-
 Ternary plot is one of the popular ways to visualize preference data, such as from preferential elections where voters rank candidates ordinally. Traditionally, ternary plot works with 3-part compositional variables, representing as 3 vertices of a 2D equilateral triangle. However, in many cases, preference data consists of more than 3 alternatives, making the 2D ternary plot inadequate to visualize the data. 
 
 `prefviz` provides a solution for creating ternary plots of both two and higher dimensions. These plots are made compatible with other interactivity R packages, allowing users to explore their ternary plot interactively. 
@@ -30,6 +30,8 @@ Ternary plot is one of the popular ways to visualize preference data, such as fr
 You can install the development version of `prefviz` via:
 
 ```{r}
+#| eval: false
+
 # install.packages("devtools")
 remotes::install_github("numbats/prefviz")
 ```
@@ -81,7 +83,7 @@ head(input_df)
 ggplot(input_df, aes(x = x1, y = x2)) +
   geom_ternary_cart() +
   geom_ternary_region(
-    vertex_labels = tern22$alternatives,
+    vertex_labels = tern22$vertex_labels,
     aes(fill = after_stat(vertex_labels)), 
     alpha = 0.3, color = "grey50",
     show.legend = FALSE
@@ -129,8 +131,9 @@ animate_xy(
 )
 ```
 
-![](images\vignette_hd_plot.gif)
+![Gif of a ternary tour](images/vignette_hd_plot.gif)
 
 # References
 
-Cook D., Laa, U. (2024) Interactively exploring high-dimensional data and models in R, https://dicook.  github.io/mulgar_book/, accessed on 2025/12/20. 
+Cook D., Laa, U. (2024) Interactively exploring high-dimensional data and models in R, 
+  https://dicook.github.io/mulgar_book/, accessed on 2025/12/20. 

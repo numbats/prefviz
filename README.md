@@ -1,8 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Overview
-
 Ternary plot is one of the popular ways to visualize preference data,
 such as from preferential elections where voters rank candidates
 ordinally. Traditionally, ternary plot works with 3-part compositional
@@ -23,41 +21,6 @@ You can install the development version of `prefviz` via:
 ``` r
 # install.packages("devtools")
 remotes::install_github("numbats/prefviz")
-#> Using GitHub PAT from the git credential store.
-#> Downloading GitHub repo numbats/prefviz@HEAD
-#> pillar   (1.11.0 -> 1.11.1) [CRAN]
-#> magrittr (2.0.3  -> 2.0.4 ) [CRAN]
-#> stringr  (1.5.1  -> 1.6.0 ) [CRAN]
-#> purrr    (1.1.0  -> 1.2.0 ) [CRAN]
-#> tidyr    (1.3.1  -> 1.3.2 ) [CRAN]
-#> Installing 5 packages: pillar, magrittr, stringr, purrr, tidyr
-#> Installing packages into 'C:/Users/ADMIN/AppData/Local/Temp/RtmpaYxI8y/temp_libpath3828828193f'
-#> (as 'lib' is unspecified)
-#> package 'pillar' successfully unpacked and MD5 sums checked
-#> package 'magrittr' successfully unpacked and MD5 sums checked
-#> package 'stringr' successfully unpacked and MD5 sums checked
-#> package 'purrr' successfully unpacked and MD5 sums checked
-#> package 'tidyr' successfully unpacked and MD5 sums checked
-#> 
-#> The downloaded binary packages are in
-#>  C:\Users\ADMIN\AppData\Local\Temp\RtmpoZl9Zs\downloaded_packages
-#> ── R CMD build ─────────────────────────────────────────────────────────────────
-#>       ✔  checking for file 'C:\Users\ADMIN\AppData\Local\Temp\RtmpoZl9Zs\remotes919c96f65db\numbats-prefviz-2c2c0b6c3ebcd747e195282e2472fbe94494cbcb/DESCRIPTION' (404ms)
-#>       ─  preparing 'prefviz': (1s)
-#>    checking DESCRIPTION meta-information ...     checking DESCRIPTION meta-information ...   ✔  checking DESCRIPTION meta-information
-#>   Warning:     Warning: C:/Users/ADMIN/AppData/Local/Temp/RtmpiQeshg/Rbuild17a4618e7250/prefviz/man/aecdop.Rd:41: unexpected VERBATIM TEXT '(Distribution of Preferences 2022){https://results.aec.gov.au/27966/Website/HouseDownloadsMenu-27966-Csv.htm', expecting '{'
-#>    Warning: C:/Users/ADMIN/AppData/Local/Temp/RtmpiQeshg/Rbuild17a4618e7250/prefviz/man/aecdop.Rd:42: unexpected macro '\url'
-#>   Warning:     Warning: C:/Users/ADMIN/AppData/Local/Temp/RtmpiQeshg/Rbuild17a4618e7250/prefviz/man/geom_ternary_region.Rd:95: unknown macro '\item'
-#>    Warning: C:/Users/ADMIN/AppData/Local/Temp/RtmpiQeshg/Rbuild17a4618e7250/prefviz/man/geom_ternary_region.Rd:96: unknown macro '\item'
-#>    Warning: C:/Users/ADMIN/AppData/Local/Temp/RtmpiQeshg/Rbuild17a4618e7250/prefviz/man/geom_ternary_region.Rd:149: unexpected macro '\verb'
-#>    Warning: C:/Users/ADMIN/AppData/Local/Temp/RtmpiQeshg/Rbuild17a4618e7250/prefviz/man/geom_ternary_region.Rd:152: unexpected '}'
-#>       ─  checking for LF line-endings in source and make files and shell scripts (368ms)
-#>   ─  checking for empty or unneeded directories
-#>      Removed empty directory 'prefviz/inst'
-#>       ─  building 'prefviz_0.0.0.9000.tar.gz'
-#>      
-#> 
-#> Warning: package 'prefviz' is in use and will not be installed
 ```
 
 # Usage
@@ -154,7 +117,7 @@ head(input_df)
 ggplot(input_df, aes(x = x1, y = x2)) +
   geom_ternary_cart() +
   geom_ternary_region(
-    vertex_labels = tern22$alternatives,
+    vertex_labels = tern22$vertex_labels,
     aes(fill = after_stat(vertex_labels)), 
     alpha = 0.3, color = "grey50",
     show.legend = FALSE
@@ -166,10 +129,6 @@ ggplot(input_df, aes(x = x1, y = x2)) +
     aesthetics = c("fill", "colour")
   ) +
   labs(title = "First preference in 2022 Australian Federal election")
-#> Note: You've mapped aesthetics using after_stat(), but 'vertex_labels' is NULL. To create meaningful region labels for your aesthetic mapping, provide the 'vertex_labels' argument:
-#>   geom_ternary_region(vertex_labels = c('A', 'B', 'C'), ...) 
-#> If you have used object ternable, vertex_labels can be found via:
-#>   geom_ternary_region(vertex_labels = your_ternable_object$vertex_labels, ...)
 ```
 
 <img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
@@ -207,10 +166,13 @@ animate_xy(
 )
 ```
 
-![](images\vignette_hd_plot.gif)
+<figure>
+<img src="images/vignette_hd_plot.gif" alt="Gif of a ternary tour" />
+<figcaption aria-hidden="true">Gif of a ternary tour</figcaption>
+</figure>
 
 # References
 
 Cook D., Laa, U. (2024) Interactively exploring high-dimensional data
-and models in R, <https://dicook>. github.io/mulgar_book/, accessed on
+and models in R, <https://dicook.github.io/mulgar_book/>, accessed on
 2025/12/20.

@@ -143,9 +143,9 @@ geom_ternary_region <- function(mapping = NULL, position = "identity",
         
         if (has_after_stat_no_vertex_labels) {
           message(
-            "Note: You've mapped aesthetics using after_stat(), but 'vertex_labels' is NULL. ",
-            "To create meaningful region labels for your aesthetic mapping, ",
-            "provide the 'vertex_labels' argument:\n",
+            "Note: You've mapped aesthetics using after_stat(), but 'vertex_labels' is NULL. \n",
+            "vertex_labels is default to c('Region 1', 'Region 2', 'Region 3'). \n",
+            "To create meaningful labels, provide the 'vertex_labels' argument:\n",
             "  geom_ternary_region(vertex_labels = c('A', 'B', 'C'), ...) \n",
             "If you have used object ternable, vertex_labels can be found via:\n",
             "  geom_ternary_region(vertex_labels = your_ternable_object$vertex_labels, ...) \n"

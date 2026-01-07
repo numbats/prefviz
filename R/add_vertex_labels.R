@@ -31,7 +31,7 @@ add_vertex_labels <- function(vertex_labels_df,
                               nudge_x = c(-0.02, 0.02, 0),
                               nudge_y = c(-0.05, -0.05, 0.05),...) {
   vertex_labels_df <- vertex_labels_df |>
-    mutate(x2 = x2*-1)
+    dplyr::mutate(x2 = x2*-1)
   
   ggplot2::geom_text(
     data = vertex_labels_df,
