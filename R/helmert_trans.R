@@ -17,7 +17,6 @@
 #'   these columns are added to the input `data`.
 #' 
 #' @examples
-#' \dontrun{
 #' # Example 1: Transform a matrix (all columns)
 #' comp_mat <- matrix(c(0.5, 0.3, 0.2,
 #'                      0.4, 0.4, 0.2,
@@ -33,7 +32,7 @@
 #'   Other = c(0.2, 0.2, 0.2)
 #' )
 #' helmert_transform(df, items = c(ALP, LNP, Other))
-#'}
+#'
 helmert_transform <- function(data, items = everything(), append = FALSE) {
   stopifnot(is.data.frame(data) || is.matrix(data))
 

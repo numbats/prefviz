@@ -65,48 +65,6 @@
 
 #' @export
 #' @rdname geom_ternary_region
-StatTernaryRegion <- ggplot2::ggproto("StatTernaryRegion", ggplot2::Stat,
-  required_aes = character(0),
-  
-  compute_panel = function(data, scales, 
-                          x1, x2, x3,
-                          vertex_labels = NULL) {
-    
-    res <- create_ternary_region(x1, x2, x3)
-
-    if(!is.null(vertex_labels)){
-      if(length(vertex_labels) != 3){
-        stop("There must be 3 vertex labels.")
-      }
-      res$vertex_labels <- rep(vertex_labels, each = 5)
-    }
-    res
-  }
-)
-
-#' @export
-#' @rdname geom_ternary_region
-stat_ternary_region <- function(mapping = NULL, data = NULL,
-                                geom = "polygon", position = "identity", 
-                                show.legend = NA, inherit.aes = FALSE, 
-                                x1 = 1/3, x2 = 1/3, x3 = 1/3, 
-                                vertex_labels = NULL, ...) {
-  ggplot2::layer(
-    data = NULL, 
-    mapping = mapping, 
-    geom = geom,
-    stat = StatTernaryRegion, 
-    position = position,
-    show.legend = show.legend, 
-    inherit.aes = inherit.aes,
-    params = list(
-      x1 = x1, x2 = x2, x3 = x3,
-      vertex_labels = vertex_labels, ...)
-  )
-}
-
-#' @export
-#' @rdname geom_ternary_region
 geom_ternary_region <- function(mapping = NULL, position = "identity", 
                                 show.legend = NA, inherit.aes = FALSE, 
                                 x1 = 1/3, x2 = 1/3, x3 = 1/3, vertex_labels = NULL, ...) {
@@ -169,3 +127,45 @@ geom_ternary_region <- function(mapping = NULL, position = "identity",
       vertex_labels = vertex_labels, ...)
   )
 }
+
+#' @export
+#' @rdname geom_ternary_region
+stat_ternary_region <- function(mapping = NULL, data = NULL,
+                                geom = "polygon", position = "identity", 
+                                show.legend = NA, inherit.aes = FALSE, 
+                                x1 = 1/3, x2 = 1/3, x3 = 1/3, 
+                                vertex_labels = NULL, ...) {
+  ggplot2::layer(
+    data = NULL, 
+    mapping = mapping, 
+    geom = geom,
+    stat = StatTernaryRegion, 
+    position = position,
+    show.legend = show.legend, 
+    inherit.aes = inherit.aes,
+    params = list(
+      x1 = x1, x2 = x2, x3 = x3,
+      vertex_labels = vertex_labels, ...)
+  )
+}
+
+#' @export
+#' @rdname geom_ternary_region
+StatTernaryRegion <- ggplot2::ggproto("StatTernaryRegion", ggplot2::Stat,
+  required_aes = character(0),
+  
+  compute_panel = function(data, scales, 
+                          x1, x2, x3,
+                          vertex_labels = NULL) {
+    
+    res <- create_ternary_region(x1, x2, x3)
+
+    if(!is.null(vertex_labels)){
+      if(length(vertex_labels) != 3){
+        stop("There must be 3 vertex labels.")
+      }
+      res$vertex_labels <- rep(vertex_labels, each = 5)
+    }
+    res
+  }
+)

@@ -164,7 +164,8 @@ new_ternable <- function(data, item_col_chr, ...) {
 #'
 #' @return The object, invisibly
 #'
-#' @export
+#' @keywords internal
+#' @noRd
 print.ternable <- function(x, ...) {
   cat("Ternable object\n")
   cat("----------------\n")

@@ -14,7 +14,8 @@
 #' library(ggplot2)
 #' 
 #' # Create a ternable object
-#' tern <- ternable(election_data, ALP:Other)
+#' aecdop22_transformed <- prefviz:::aecdop22_transformed
+#' tern <- ternable(aecdop22_transformed, ALP:Other)
 #' 
 #' # Add vertex labels
 #' ggplot() +
