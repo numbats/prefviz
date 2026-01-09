@@ -27,7 +27,6 @@ using the Helmert matrix. This dimension reduction is the geometric basis for
 plotting points within the simplex.
 }
 \examples{
-\dontrun{
 # Example 1: Transform a matrix (all columns)
 comp_mat <- matrix(c(0.5, 0.3, 0.2,
                      0.4, 0.4, 0.2,
@@ -43,5 +42,5 @@ df <- data.frame(
   Other = c(0.2, 0.2, 0.2)
 )
 helmert_transform(df, items = c(ALP, LNP, Other))
-}
+
 }

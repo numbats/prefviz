@@ -38,8 +38,8 @@ An object of class \code{spec_tbl_df} (inherits from \code{tbl_df}, \code{tbl}, 
 }
 \source{
 Australian Electoral Commission (AEC)
-\url(Distribution of Preferences 2022){https://results.aec.gov.au/27966/Website/HouseDownloadsMenu-27966-Csv.htm}
-\url(Distribution of Preferences 2025){https://results.aec.gov.au/31496/Website/HouseDownloadsMenu-31496-Csv.htm}
+\href{https://results.aec.gov.au/27966/Website/HouseDownloadsMenu-27966-Csv.htm}{Distribution of Preferences 2022}
+\href{https://results.aec.gov.au/31496/Website/HouseDownloadsMenu-31496-Csv.htm}{Distribution of Preferences 2025}
 }
 \usage{
 aecdop_2022
@@ -64,9 +64,8 @@ data(aecdop_2022)
 data(aecdop_2025)
 
 # First preferences for Bean division in 2022
-library(dplyr)
 aecdop_2022 |> 
-  filter(DivisionNm == "Bean",
+  dplyr::filter(DivisionNm == "Bean",
          CountNumber == 0,
          CalculationType == "Preference Count")
 }

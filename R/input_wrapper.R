@@ -28,7 +28,7 @@
 #' dop_irv(votes, value_type = "count")
 #' 
 #' # Example 2: From data frame with custom column names
-#' vote_data <- tibble(
+#' vote_data <- tibble::tibble(
 #'   prefs = c("A > B > C", "B > C > A", "C > A > B"),
 #'   counts = c(100, 75, 25)
 #' )
@@ -118,11 +118,11 @@ dop_irv <- function(x, value_type = c("percentage", "count"), ...) {
 #'   }
 #' @examples
 #' # Convert AEC 2025 Distribution of Preference data to wide format
-#' data(aec_dop_2025)
+#' data(aecdop_2025)
 #' 
 #' # We are interested in the preferences of Labor, Coalition, Greens and Independent. 
 #' # The rest of the parties are aggregated as Other.
-#' aec_dop_2025 <- aec_dop_2025 |>
+#' aecdop_2025 <- aecdop_2025 |>
 #'  filter(CalculationType == "Preference Percent") |> 
 #'   mutate(PartyAb = case_when(
 #'     !(PartyAb %in% c("LP", "ALP", "NP", "LNP", "LNQ")) ~ "Other",
@@ -130,8 +130,8 @@ dop_irv <- function(x, value_type = c("percentage", "count"), ...) {
 #'    TRUE ~ PartyAb))
 #' 
 #' dop_transform(
-#'   data = aec_dop_2025,
-#'   key_cols = DivisionNm, CountNumber,
+#'   data = aecdop_2025,
+#'   key_cols = c(DivisionNm, CountNumber),
 #'   value_col = CalculationValue,
 #'   item_col = Party,
 #'   winner_col = Elected

@@ -21,6 +21,8 @@ library(dplyr)
 library(tourr)
 ```
 
+# Overview 
+
 Ternary plot is one of the popular ways to visualize preference data, such as from preferential elections where voters rank candidates ordinally. Traditionally, ternary plot works with 3-part compositional variables, representing as 3 vertices of a 2D equilateral triangle. However, in many cases, preference data consists of more than 3 alternatives, making the 2D ternary plot inadequate to visualize the data. 
 
 `prefviz` provides a solution for creating ternary plots of both two and higher dimensions. These plots are made compatible with other interactivity R packages, allowing users to explore their ternary plot interactively. 
@@ -131,7 +133,7 @@ animate_xy(
 )
 ```
 
-![Gif of a ternary tour](images/vignette_hd_plot.gif)
+![](images/vignette_hd_plot.gif)
 
 # References
 

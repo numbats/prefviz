@@ -1,6 +1,8 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+# Overview
+
 Ternary plot is one of the popular ways to visualize preference data,
 such as from preferential elections where voters rank candidates
 ordinally. Traditionally, ternary plot works with 3-part compositional
@@ -166,10 +168,7 @@ animate_xy(
 )
 ```
 
-<figure>
-<img src="images/vignette_hd_plot.gif" alt="Gif of a ternary tour" />
-<figcaption aria-hidden="true">Gif of a ternary tour</figcaption>
-</figure>
+![](images/vignette_hd_plot.gif)
 
 # References
 

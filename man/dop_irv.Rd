@@ -43,15 +43,15 @@ one round, with columns for each candidate's preference percentage and the elect
 \examples{
 # Example 1: From preference vector
 votes <- c("A > B > C", "B > A > C", "C > B > A", "A > B > C")
-percent_df <- dop_irv(votes, value_type = "count")
+dop_irv(votes, value_type = "count")
 
 # Example 2: From data frame with custom column names
-vote_data <- tibble(
+vote_data <- tibble::tibble(
   prefs = c("A > B > C", "B > C > A", "C > A > B"),
   counts = c(100, 75, 25)
 )
-percent_df <- dop_irv(vote_data, value_type = "percentage",
-                      preferences_col = prefs,
-                      frequency_col = counts)
+dop_irv(vote_data, value_type = "percentage",
+        preferences_col = prefs,
+        frequency_col = counts)
 
 }

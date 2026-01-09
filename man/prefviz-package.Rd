@@ -8,13 +8,20 @@
 \description{
 Visualises preference and ranking data by extending traditional ternary plots to support high-dimensional simplexes. It provides methods to transform compositional data into coordinates suitable for 2D and high-dimensional ternary plots. Compatibility with interacitve visualization packages such as `plotly` allows users to explore high-dimensional preference structures dynamically.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://numbats.github.io/prefviz/}
+}
+
+}
 \author{
 \strong{Maintainer}: Linh Ngo \email{Linh.Ngo2@monash.edu}
 
-Other contributors:
+Authors:
 \itemize{
-  \item Dianne Cook \email{DiCook@monash.edu} (Supervisor) [contributor]
-  \item Damjan Dvukcevic \email{Damjan@Vukcevic.net} (Supervisor) [contributor]
+  \item Dianne Cook \email{DiCook@monash.edu} (Supervisor)
+  \item Damjan Dvukcevic \email{Damjan@Vukcevic.net} (Supervisor)
 }
 
 }

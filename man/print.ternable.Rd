@@ -17,3 +17,4 @@ The object, invisibly
 \description{
 Print method for ternable objects
 }
+\keyword{internal}

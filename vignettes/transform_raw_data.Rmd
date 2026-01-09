@@ -11,7 +11,7 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   warning = FALSE,
-  message = FALSE
+  message = FALSE,
   comment = "#>"
 )
 ```
@@ -35,8 +35,8 @@ This vignette shows how to transform common voting data formats into a `ternable
 
 A `ternable`-friendly data frame must have the following characteristics:
 
-- At least 3 numeric columns representing the preferences for 3 alternatives/candidates of the election. These columns will act as the vertices of the ternary plot.
-- Values in these alternative columns must be non-negative, and sum to 1.
+- At least 3 numeric columns representing the preferences for 3 items/candidates of the election. These columns will act as the vertices of the ternary plot.
+- Values in these item/candidate columns must be non-negative, and sum to 1.
 
 ```{r}
 df <- tibble(
@@ -121,7 +121,7 @@ dop_irv(preflib_long$vote, value_type = "percentage")
 
 **Processing wide format**
 
-Consider the same example, but in wide format, with each column representing a candidate/alternative and its value representing the preference rank.
+Consider the same example, but in wide format, with each column representing an item/candidate and its value representing the preference rank.
 
 ```{r}
 #| echo: false
@@ -151,10 +151,10 @@ dop_irv(preflib_wide$vote, value_type = "percentage")
 This section applies specifically to the [AEC distribution of preferences](https://results.aec.gov.au/31496/Website/Downloads/HouseDopByDivisionDownload-31496.csv) data. However, it can also be adapted to datasets of similar format, where 
 
 - Each row represents an aggregated preference count and/or percentage for a specific candidate in a specific group/electorate.
-- There must be at least a primary key column that uniquely identifies each row, a value column representing the preference count/percentage, and an alternative column representing the alternatives/parties.
-- There may also be a column representing the electoral status of the alternative/party (elected or not elected). This is optional.
+- There must be at least a primary key column that uniquely identifies each row, a value column representing the preference count/percentage, and an item column representing the items/parties.
+- There may also be a column representing the electoral status of the item/party (elected or not elected). This is optional.
 
-In this example, we will work with 2025 Distribution of Preference data, which is included in this package as `aec_dop_2025`. We are interested in preference percentages of 4 main parties: Labor, The Coalition, Greens, and Independents. The rest is grouped into Other. 
+In this example, we will work with 2025 Distribution of Preference data, which is included in this package as `aecdop_2025`. We are interested in preference percentages of 4 main parties: Labor, The Coalition, Greens, and Independents. The rest is grouped into Other. 
 
 Before transforming the data, let's do some data wrangling to filter for relevant information.
 
@@ -176,7 +176,7 @@ The data is now ready for transformation, with the following characteristics:
 
 - `DivisionNm` and `CountNumber` columns together form the primary key that uniquely identifies each row.
 - `CalculationValue` column contains the preference percentage.
-- `Party` column contains the alternative/party.
+- `Party` column contains the item/party.
 - `Elected` column contains the elected/electoral status of the party.
 
 We will use the `dop_transform()` function to transform the data into a `ternable`-friendly format.
@@ -186,7 +186,7 @@ dop_transform(
   data = aecdop_2025,
   key_cols = c(DivisionNm, CountNumber),
   value_col = CalculationValue,
-  alternative_col = Party,
+  item_col = Party,
   winner_col = Elected,
   winner_identifier = "Y"
 )

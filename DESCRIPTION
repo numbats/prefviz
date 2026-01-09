@@ -3,14 +3,14 @@ Title: Visualizes preference data via ternary plots in 2 and higher dimensions
 Version: 0.0.0.9000
 Authors@R: c(
   person("Linh", "Ngo", email = "Linh.Ngo2@monash.edu", role = c("aut", "cre")),
-  person("Dianne", "Cook", email = "DiCook@monash.edu", role = "ctb", comment = "Supervisor"),
-  person("Damjan", "Dvukcevic", email = "Damjan@Vukcevic.net", role = "ctb", comment = "Supervisor"))
+  person("Dianne", "Cook", email = "DiCook@monash.edu", role = "aut", comment = "Supervisor"),
+  person("Damjan", "Dvukcevic", email = "Damjan@Vukcevic.net", role = "aut", comment = "Supervisor"))
 Description: Visualises preference and ranking data by extending traditional 
     ternary plots to support high-dimensional simplexes. It provides methods to 
     transform compositional data into coordinates suitable for 2D and high-dimensional
     ternary plots. Compatibility with interacitve visualization packages such as `plotly`
     allows users to explore high-dimensional preference structures dynamically.
-License: GPL (>= 2)
+License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
@@ -29,3 +29,4 @@ Depends:
     R (>= 3.5)
 LazyData: true
 VignetteBuilder: knitr
+URL: https://numbats.github.io/prefviz/

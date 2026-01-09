@@ -13,39 +13,20 @@
 #' 
 #' @return A ternable object (S3 class) containing:
 #' \itemize{
-#'   \item{data}{The validated and normalized data frame}
-#'   \item{ternary_coord}{Transformed coordinates for all observations}
-#'   \item{simplex_vertices}{Vertex coordinates and labels for the simplex}
-#'   \item{simplex_edges}{Edge connections for drawing the simplex boundary}
-#'   \item{vertex_labels}{Labels of the vertices, same as names of the selected item columns}
+#'   \item{`data`}{: The validated and normalized data frame}
+#'   \item{`ternary_coord`}{: Transformed coordinates for all observations}
+#'   \item{`simplex_vertices`}{: Vertex coordinates and labels for the simplex}
+#'   \item{`simplex_edges`}{: Edge connections for drawing the simplex boundary}
+#'   \item{`vertex_labels`}{: Labels of the vertices, same as names of the selected item columns}
 #' }
 #'
 #' @examples
 #' 
-#' ### Create a ternable object from the 2025 Australian election's Distribution of Preferences
-#' 
 #' # Load and transform the dataset
-#' df <- aecdop_2025 |> 
-#'  filter(CalculationType == "Preference Percent") |>
-#'  mutate(Party = case_when(
-#'    # all parties not in the main parties are grouped into "Other"
-#'    !(PartyAb %in% c("LP", "ALP", "NP", "LNP", "LNQ", "GRN", "IND")) ~ "Other", 
-#'    # group all parties in the Coalition into "LNP"
-#'    PartyAb %in% c("LP", "NP", "LNP", "LNQ") ~ "LNP",
-#'    TRUE ~ PartyAb
-#'  ))
-#' 
-#' transform_df <- dop_transform(
-#'  data = aecdop_2025,
-#'  key_cols = c(DivisionNm, CountNumber),
-#'  value_col = CalculationValue,
-#'  item_col = Party,
-#'  winner_col = Elected,
-#'  winner_identifier = "Y")
-#' head(transform_df)
+#' prefviz:::aecdop25_transformed
 #' 
 #' # Create the ternable object
-#' tern <- ternable(transform_df, ALP:Other)
+#' tern <- ternable(prefviz:::aecdop25_transformed, items = ALP:Other)
 #' tern
 #'
 #' @export
@@ -165,7 +146,7 @@ new_ternable <- function(data, item_col_chr, ...) {
 #' @return The object, invisibly
 #'
 #' @keywords internal
-#' @noRd
+#' @export
 print.ternable <- function(x, ...) {
   cat("Ternable object\n")
   cat("----------------\n")

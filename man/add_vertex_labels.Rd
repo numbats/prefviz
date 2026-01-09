@@ -27,14 +27,9 @@ positioning adjustments.
 library(ggplot2)
 
 # Create a ternable object
-tern <- ternable(election_data, ALP:Other)
+aecdop22_transformed <- prefviz:::aecdop22_transformed
+tern <- ternable(aecdop22_transformed, ALP:Other)
 
-# Add vertex labels
-ggplot() +
-  geom_ternary_cart() +
-  add_vertex_labels(tern$simplex_vertices)
-
-# Customize label appearance
 ggplot() +
   geom_ternary_cart() +
   add_vertex_labels(tern$simplex_vertices, size = 5, fontface = "bold")

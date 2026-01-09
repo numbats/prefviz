@@ -3,14 +3,24 @@
 \docType{data}
 \name{geom_ternary_region}
 \alias{geom_ternary_region}
-\alias{StatTernaryRegion}
 \alias{stat_ternary_region}
+\alias{StatTernaryRegion}
 \title{Create polygonal regions in a ternary plot based on a reference point}
 \format{
 An object of class \code{StatTernaryRegion} (inherits from \code{Stat}, \code{ggproto}, \code{gg}) of length 3.
 }
 \usage{
-StatTernaryRegion
+geom_ternary_region(
+  mapping = NULL,
+  position = "identity",
+  show.legend = NA,
+  inherit.aes = FALSE,
+  x1 = 1/3,
+  x2 = 1/3,
+  x3 = 1/3,
+  vertex_labels = NULL,
+  ...
+)
 
 stat_ternary_region(
   mapping = NULL,
@@ -26,39 +36,12 @@ stat_ternary_region(
   ...
 )
 
-geom_ternary_region(
-  mapping = NULL,
-  position = "identity",
-  show.legend = NA,
-  inherit.aes = FALSE,
-  x1 = 1/3,
-  x2 = 1/3,
-  x3 = 1/3,
-  vertex_labels = NULL,
-  ...
-)
+StatTernaryRegion
 }
 \arguments{
 \item{mapping}{Set of aesthetic mappings created by \code{\link[ggplot2:aes]{ggplot2::aes()}}.
 To map aesthetics to the computed region labels, use \code{\link[ggplot2:aes_eval]{ggplot2::after_stat()}},
 e.g., \code{aes(fill = after_stat(vertex_labels))}.}
-
-\item{data}{The data to be displayed in this layer. There are three
-options:
-
-If \code{NULL}, the default, the data is inherited from the plot
-data as specified in the call to \code{\link[ggplot2:ggplot]{ggplot()}}.
-
-A \code{data.frame}, or other object, will override the plot
-data. All objects will be fortified to produce a data frame. See
-\code{\link[ggplot2:fortify]{fortify()}} for which variables will be created.
-
-A \code{function} will be called with a single argument,
-the plot data. The return value must be a \code{data.frame}, and
-will be used as the layer data. A \code{function} can be created
-from a \code{formula} (e.g. \code{~ head(.x, 10)}).}
-
-\item{geom}{The geometric object to use to display the data. Default is \code{"polygon"}.}
 
 \item{position}{A position adjustment to use on the data for this layer. This
 can be used in various ways, including to prevent overplotting and
@@ -116,6 +99,23 @@ lists which parameters it can accept.
 \code{...}. This can be one of the functions described as
 \link[ggplot2:draw_key]{key glyphs}, to change the display of the layer in the legend.
 }}
+
+\item{data}{The data to be displayed in this layer. There are three
+options:
+
+If \code{NULL}, the default, the data is inherited from the plot
+data as specified in the call to \code{\link[ggplot2:ggplot]{ggplot()}}.
+
+A \code{data.frame}, or other object, will override the plot
+data. All objects will be fortified to produce a data frame. See
+\code{\link[ggplot2:fortify]{fortify()}} for which variables will be created.
+
+A \code{function} will be called with a single argument,
+the plot data. The return value must be a \code{data.frame}, and
+will be used as the layer data. A \code{function} can be created
+from a \code{formula} (e.g. \code{~ head(.x, 10)}).}
+
+\item{geom}{The geometric object to use to display the data. Default is \code{"polygon"}.}
 }
 \description{
 \code{geom_ternary_region()} and \code{stat_ternary_region()} divide the ternary triangle
