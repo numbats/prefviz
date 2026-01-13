@@ -4,7 +4,7 @@
 #' @description
 #' Computes the orthogonal projection of point `P` onto the line through
 #' points `A` and `B`. `A` and `B` are vertices of a simplex.
-#' Used internally to construct ternary region boundaries.
+#' Used internally to construct ternary region boundaries for `geom_ternary_region()`.
 #'
 #' @param A Numeric vector of coordinates for the first line point
 #' @param B Numeric vector of coordinates for the second line point  
@@ -28,6 +28,7 @@ perp_proj <- function (A, B, P) {
 #' 
 #' @description Internal function that generates polygon coordinates for
 #' three regions based on a reference point within the simplex.
+#' Used internally to construct ternary region boundaries for `geom_ternary_region()`.
 #' 
 #' @param x1,x2,x3 Barycentric coordinates of the reference point
 #' @return A data frame with columns x, y and group defining vertices of 3 polygons
@@ -91,4 +92,85 @@ create_ternary_region <- function(x1, x2, x3) {
     dplyr::mutate(y = y*-1)
 
   return(polygon)
+}
+
+
+#' Validate and order path data
+#'
+#' @description
+#' Internal helper to validate and reorder data
+#' within each group according to the `order_by` aesthetic. 
+#' Used by `stat_ordered_path()`.
+#'
+#' @param data A data frame containing at least an `order_by` column (and
+#'   optionally a `group` column created by ggplot2).
+#' @param decreasing Logical. If `TRUE`, sort `order_by` in decreasing order;
+#'   otherwise in increasing order.
+#' @param na_method Character string indicating how to handle missing values in
+#'   `order_by`. One of `"drop_na"` or `"drop_group"`.
+#'
+#' @return A data frame with the same columns as `data`, but potentially fewer
+#'   rows (after dropping rows or groups) and with rows reordered within each
+#'   group.
+#'
+#' @keywords internal
+validate_order <- function(data,
+                          decreasing = FALSE,
+                          na_method  = c("drop_na", "drop_group")) {
+  na_method <- match.arg(na_method)
+  order_col_chr <- "order_by"
+
+  process_one_group <- function(df) {
+    # NA handling
+    na_rows <- is.na(df[[order_col_chr]])
+    if (any(na_rows)) {
+      if (na_method == "drop_group") {
+        return(df[0, , drop = FALSE])
+      } else if (na_method == "drop_na") {
+        df <- df[!na_rows, , drop = FALSE]
+      }
+    }
+
+    # Duplicates handling
+    dup_logical <- duplicated(df)
+    n_dupes <- sum(dup_logical)
+    
+    if (n_dupes > 0L) {
+      df <- df[!dup_logical, , drop = FALSE]
+      warning(sprintf(
+        "Dropped %d duplicate row(s).",
+        n_dupes
+      ), call. = FALSE)
+    }
+
+    # Ties handling
+    if (nrow(df) > 1L) {
+      ties_logical <- duplicated(df[[order_col_chr]]) | duplicated(df[[order_col_chr]], fromLast = TRUE)
+      if (any(ties_logical)) {
+        ties_sum <- sum(ties_logical)
+        warning(
+          sprintf(
+            "%d ties detected for order_by values",
+            ties_sum
+          ),
+          "Row order is preserved for tied values.",
+          call. = FALSE
+        )
+      }
+    }
+
+    o <- order(df[[order_col_chr]], decreasing = decreasing, na.last = TRUE)
+    return(df[o, , drop = FALSE])
+  }
+
+  if ("group" %in% names(data)) {
+    res <- data |> 
+      dplyr::group_by(group) |>
+      dplyr::group_modify(~ process_one_group(.x)) |> 
+      dplyr::ungroup()
+  } else {
+    res <- process_one_group(data)
+  }
+
+  return(res)
 }
