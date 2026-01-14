@@ -114,15 +114,19 @@ create_ternary_region <- function(x1, x2, x3) {
 #'   group.
 #'
 #' @keywords internal
-validate_order <- function(data,
+ordered_path_df <- function(data,
+                          group,
+                          order_by,
                           decreasing = FALSE,
                           na_method  = c("drop_na", "drop_group")) {
+
+  group_chr <- rlang::as_label(rlang::ensym(group))
+  order_chr <- rlang::as_label(rlang::ensym(order_by))
   na_method <- match.arg(na_method)
-  order_col_chr <- "order_by"
 
   process_one_group <- function(df) {
     # NA handling
-    na_rows <- is.na(df[[order_col_chr]])
+    na_rows <- is.na(df[[order_chr]])
     if (any(na_rows)) {
       if (na_method == "drop_group") {
         return(df[0, , drop = FALSE])
@@ -145,12 +149,12 @@ validate_order <- function(data,
 
     # Ties handling
     if (nrow(df) > 1L) {
-      ties_logical <- duplicated(df[[order_col_chr]]) | duplicated(df[[order_col_chr]], fromLast = TRUE)
+      ties_logical <- duplicated(df[[order_chr]]) | duplicated(df[[order_chr]], fromLast = TRUE)
       if (any(ties_logical)) {
         ties_sum <- sum(ties_logical)
         warning(
           sprintf(
-            "%d ties detected for order_by values",
+            "%d ties detected for order_by values. ",
             ties_sum
           ),
           "Row order is preserved for tied values.",
@@ -159,14 +163,14 @@ validate_order <- function(data,
       }
     }
 
-    o <- order(df[[order_col_chr]], decreasing = decreasing, na.last = TRUE)
+    o <- order(df[[order_chr]], decreasing = decreasing, na.last = TRUE)
     return(df[o, , drop = FALSE])
   }
 
-  if ("group" %in% names(data)) {
-    res <- data |> 
-      dplyr::group_by(group) |>
-      dplyr::group_modify(~ process_one_group(.x)) |> 
+  if (!is.null(group_chr)) {
+    res <- data |>
+      dplyr::group_by(.data[[group_chr]]) |>
+      dplyr::group_modify(~ process_one_group(.x)) |>
       dplyr::ungroup()
   } else {
     res <- process_one_group(data)

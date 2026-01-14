@@ -96,8 +96,14 @@ StatOrderedPath <- ggplot2::ggproto("StatOrdered", ggplot2::Stat,
   compute_group = function(data, scales, 
                            decreasing, 
                            na_method) {
-    validate_order(
+
+    #group_chr <- "group"
+    #order_chr <- "order_by"
+
+    ordered_path_df(
       data = data,
+      group = "group",
+      order_by = "order_by",
       decreasing = decreasing,
       na_method = na_method
     )
