@@ -30,7 +30,9 @@
 #' tern
 #'
 #' @export
-ternable <- function(data, items = everything(), ...) {
+ternable <- function(data, 
+                    items = everything(), 
+                    group = NULL, ...) {
   stopifnot(is.data.frame(data))
 
   item_col_ind <- tidyselect::eval_select(
@@ -38,9 +40,11 @@ ternable <- function(data, items = everything(), ...) {
       data)
   item_col_chr <- colnames(data)[item_col_ind]
 
+  group_quo <- rlang::enquo(group)
+
   validate_df <- validate_ternable(data, item_col_chr)
 
-  new_ternable(validate_df, item_col_chr)
+  new_ternable(validate_df, item_col_chr, group_quo, ...)
 }
 
 #' Validate input for ternable
@@ -111,7 +115,7 @@ validate_ternable <- function(data, item_col_chr) {
 #'
 #' @keywords internal
 #' @noRd
-new_ternable <- function(data, item_col_chr, ...) {
+new_ternable <- function(data, item_col_chr, group_quo, ...) {
   stopifnot(is.data.frame(data))
   stopifnot(is.character(item_col_chr))
 
@@ -126,10 +130,14 @@ new_ternable <- function(data, item_col_chr, ...) {
   # Define the vertex labels
   simp_points$labels <- item_col_chr
 
+  # Define data edges
+  data_edges <- add_data_edges(data, group = group_quo)
+
   structure(
     list(
       data = data, # validated & normalized data
       ternary_coord = cart_df,
+      data_edges = data_edges,
       simplex_vertices = simp_points,
       simplex_edges = as.matrix(simp$edges),
       vertex_labels = item_col_chr

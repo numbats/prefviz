@@ -40,6 +40,35 @@ party_colors <- c(
 color_vector <- c(rep("black", 5),
   party_colors[pref_2025$Winner])
 
+# Add data edges
+
+add_data_edges <- function(data, group) {
+  group_quo <- rlang::enquo(group)
+
+  if (rlang::quo_is_null(group_quo)) {
+    data_edges <- data |>
+      dplyr::mutate(
+        Var1 = dplyr::row_number(),
+        Var2 = dplyr::lead(Var1, default = dplyr::last(Var1))
+      ) |>
+      dplyr::select(Var1, Var2)
+  } else {
+    data_edges <- data |>
+      dplyr::mutate(
+        Var1 = dplyr::row_number(),
+        Var2 = dplyr::if_else(
+          !!group_quo == dplyr::lead(!!group_quo, default = dplyr::last(!!group_quo)),
+          dplyr::lead(Var1, default = dplyr::last(Var1)),
+          Var1
+        )
+      ) |>
+      dplyr::select(Var1, Var2)
+  }
+
+  return(data_edges)
+}
+
+
 # Animate the tour
 animate_xy(
   get_tern_data(tern25, plot_type = "HD"), 
@@ -65,3 +94,5 @@ p <- ggplot(df, aes(x = x1, y = x2)) +
   stat_ordered_path(aes(order_by = CountNumber, group = DivisionNm)) +
   add_vertex_labels(tern22$simplex_vertices)
 layer_data(p, 3)
+
+ternable(pref_2022, ALP:Other, group = DivisionNm)

@@ -178,3 +178,31 @@ ordered_path_df <- function(data,
 
   return(res)
 }
+
+#' Add data edges
+#' @keywords internal
+add_data_edges <- function(data, group) {
+  group_quo <- rlang::enquo(group)
+
+  if (rlang::quo_is_null(group_quo)) {
+    data_edges <- data |>
+      dplyr::mutate(
+        Var1 = dplyr::row_number(),
+        Var2 = dplyr::lead(Var1, default = dplyr::last(Var1))
+      ) |>
+      dplyr::select(Var1, Var2)
+  } else {
+    data_edges <- data |>
+      dplyr::mutate(
+        Var1 = dplyr::row_number(),
+        Var2 = dplyr::if_else(
+          !!group_quo == dplyr::lead(!!group_quo, default = dplyr::last(!!group_quo)),
+          dplyr::lead(Var1, default = dplyr::last(Var1)),
+          Var1
+        )
+      ) |>
+      dplyr::select(Var1, Var2)
+  }
+
+  return(data_edges)
+}
