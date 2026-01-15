@@ -42,6 +42,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/numbats/prefviz/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -58,17 +59,12 @@
       <h1>Transforming voting data to ternable-friendly format</h1>
             
       
-
+      <small class="dont-index">Source: <a href="https://github.com/numbats/prefviz/blob/main/vignettes/transform_raw_data.Rmd" class="external-link"><code>vignettes/transform_raw_data.Rmd</code></a></small>
       <div class="d-none name"><code>transform_raw_data.Rmd</code></div>
     </div>
 
     
     
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://numbats.github.io/prefviz/">prefviz</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/fleverest/prefio/" class="external-link">prefio</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://haozhu233.github.io/kableExtra/" class="external-link">kableExtra</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -96,8 +92,8 @@ of the ternary plot.</li>
 <li>Values in these item/candidate columns must be non-negative, and sum
 to 1.</li>
 </ul>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span></span>
 <span>  electorate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span><span class="op">)</span>,</span>
 <span>  PartyA <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.4</span>, <span class="fl">0.6</span><span class="op">)</span>,</span>
 <span>  PartyB <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.4</span>, <span class="fl">0.2</span><span class="op">)</span>,</span>
@@ -125,8 +121,8 @@ easily downloaded using <code><a href="https://fleverest.github.io/prefio/refere
 function.</p>
 <p>In this example, we will use the <a href="https://preflib.github.io/PrefLib-Jekyll/dataset/00058" class="external-link">NSW
 Legislative Assembly Election dataset</a>.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">nswla</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://fleverest.github.io/prefio/reference/read_preflib.html" class="external-link">read_preflib</a></span><span class="op">(</span><span class="st">"00058 - nswla/00058-00000171.soi"</span>, from_preflib <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">nswla</span> <span class="op">&lt;-</span> <span class="fu">read_preflib</span><span class="op">(</span><span class="st">"00058 - nswla/00058-00000171.soi"</span>, from_preflib <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">nswla</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1,104 × 2</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1,094 more rows</span></span></span>
@@ -143,7 +139,7 @@ preferences for each candidate, and then transform the data into a
 that it does not handle ties in preferences given a ballot, which works
 fine under Australian IRV rules, but may not be appropriate for other
 electoral systems.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/dop_irv.html">dop_irv</a></span><span class="op">(</span></span>
 <span>  <span class="va">nswla</span>, value_type <span class="op">=</span> <span class="st">"percentage"</span>,</span>
 <span>  preferences_col <span class="op">=</span> <span class="va">preferences</span>,</span>
@@ -267,7 +263,7 @@ Other, and a typical column for preference rank.</p>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Convert to PrefLib format</span></span>
 <span><span class="va">preflib_long</span> <span class="op">&lt;-</span> <span class="fu">prefio</span><span class="fu">::</span><span class="fu"><a href="https://fleverest.github.io/prefio/reference/preferences.html" class="external-link">long_preferences</a></span><span class="op">(</span></span>
 <span>  <span class="va">ballot_long</span>,</span>
@@ -334,7 +330,7 @@ rank.</p>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Convert to PrefLib format</span></span>
 <span><span class="va">preflib_wide</span> <span class="op">&lt;-</span> <span class="fu">prefio</span><span class="fu">::</span><span class="fu"><a href="https://fleverest.github.io/prefio/reference/preferences.html" class="external-link">wide_preferences</a></span><span class="op">(</span><span class="va">ballot_wide</span>, <span class="va">vote</span>, <span class="va">ALP</span><span class="op">:</span><span class="va">Other</span><span class="op">)</span></span>
 <span></span>
@@ -367,12 +363,12 @@ are interested in preference percentages of 4 main parties: Labor, The
 Coalition, Greens, and Independents. The rest is grouped into Other.</p>
 <p>Before transforming the data, let’s do some data wrangling to filter
 for relevant information.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># only include preference percentage and parties of interest</span></span>
 <span></span>
 <span><span class="va">aecdop_2025</span> <span class="op">&lt;-</span> <span class="va">aecdop_2025</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">CalculationType</span> <span class="op">==</span> <span class="st">"Preference Percent"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Party <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">CalculationType</span> <span class="op">==</span> <span class="st">"Preference Percent"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>Party <span class="op">=</span> <span class="fu">case_when</span><span class="op">(</span></span>
 <span>    <span class="co"># all parties not in the main parties are grouped into "Other"</span></span>
 <span>    <span class="op">!</span><span class="op">(</span><span class="va">PartyAb</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LP"</span>, <span class="st">"ALP"</span>, <span class="st">"NP"</span>, <span class="st">"LNP"</span>, <span class="st">"LNQ"</span>, <span class="st">"GRN"</span>, <span class="st">"IND"</span><span class="op">)</span><span class="op">)</span> <span class="op">~</span> <span class="st">"Other"</span>, </span>
 <span>    <span class="co"># group all parties in the Coalition into "LNP"</span></span>
@@ -396,7 +392,7 @@ the party.</li>
 </ul>
 <p>We will use the <code><a href="../reference/dop_transform.html">dop_transform()</a></code> function to transform
 the data into a <code>ternable</code>-friendly format.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/dop_transform.html">dop_transform</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">aecdop_2025</span>,</span>
 <span>  key_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">DivisionNm</span>, <span class="va">CountNumber</span><span class="op">)</span>,</span>

@@ -12,12 +12,15 @@
 
 ## Citation
 
+Source:
+[`DESCRIPTION`](https://github.com/numbats/prefviz/blob/main/DESCRIPTION)
+
 Ngo L, Cook D, Dvukcevic D (2026). *prefviz: Visualizes preference data
-via ternary plots in 2 and higher dimensions*. R package version
+via ternary plots in two and higher dimensions*. R package version
 0.0.0.9000, <https://numbats.github.io/prefviz/>.
 
     @Manual{,
-      title = {prefviz: Visualizes preference data via ternary plots in 2 and higher dimensions},
+      title = {prefviz: Visualizes preference data via ternary plots in two and higher dimensions},
       author = {Linh Ngo and Dianne Cook and Damjan Dvukcevic},
       year = {2026},
       note = {R package version 0.0.0.9000},

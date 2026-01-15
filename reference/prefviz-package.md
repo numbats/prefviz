@@ -1,4 +1,4 @@
-# prefviz: Visualizes preference data via ternary plots in 2 and higher dimensions
+# prefviz: Visualizes preference data via ternary plots in two and higher dimensions
 
 Visualises preference and ranking data by extending traditional ternary
 plots to support high-dimensional simplexes. It provides methods to

@@ -9,7 +9,7 @@ high-dimensional ternary plots with `tourr`.
 ``` r
 get_tern_data(ternable, plot_type = c("2D", "HD"))
 
-get_tern_edges(ternable)
+get_tern_edges(ternable, include_data = FALSE)
 
 get_tern_labels(ternable)
 ```
@@ -39,10 +39,17 @@ get_tern_labels(ternable)
     labels). Used as input data for `tourr`.
 
 - `get_tern_edges()`: A matrix of simplex edge connections for drawing
-  the simplex boundary. Equivalent to `ternable$simplex_edges`.
+  the simplex boundary.
+
+  - If `include_data = FALSE`, the matrix contains only the simplex
+    edges. Equivalent to `ternable$simplex_edges`.
+
+  - If `include_data = TRUE`, the matrix combines the simplex edges with
+    the data edges. Used when you want to draw lines between the data
+    points.
 
 - `get_tern_labels()`: A character vector containing vertex labels. Used
-  as vertex labels for `tourr`, via argument `obs_labels`.
+  as vertex labels for `tourr`, via argument `vertex_labels`.
 
 ## Details
 

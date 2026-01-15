@@ -42,6 +42,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/numbats/prefviz/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -58,7 +59,7 @@
       <h1>Using `ternable` object to draw ternary plots</h1>
             
       
-
+      <small class="dont-index">Source: <a href="https://github.com/numbats/prefviz/blob/main/vignettes/draw_ternary_plot.Rmd" class="external-link"><code>vignettes/draw_ternary_plot.Rmd</code></a></small>
       <div class="d-none name"><code>draw_ternary_plot.Rmd</code></div>
     </div>
 
@@ -89,7 +90,11 @@ components:</p>
 <code>data</code>: Stores input data after being validated and
 normalized</li>
 <li>
-<code>ternary_coord</code>: Stores the coordinates for all
+<code>data_coord</code>: Stores the coordinates for all
+observations.</li>
+<li>
+<code>data_edges</code>: Stores the connections between the
+observations. Useful when you want to create paths between
 observations.</li>
 <li>
 <code>simplex_vertices</code>: Stores the simplex vertices’
@@ -98,8 +103,8 @@ coordinates.</li>
 <code>simplex_edges</code>: Stores the connections between the
 simplex vertices.</li>
 <li>
-<code>items</code>: Stores the item names in the order provided in
-the argument <code>items</code>.</li>
+<code>vertex_labels</code>: Stores the vertex labels/item names in
+the order provided in the argument <code>items</code>.</li>
 </ul>
 <p>To create a <code>ternable</code> object, simply call the function
 <code><a href="../reference/ternable.html">ternable()</a></code>. <code><a href="../reference/ternable.html">ternable()</a></code> takes 2 arguments:</p>

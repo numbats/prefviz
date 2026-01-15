@@ -21,11 +21,13 @@ object.
 useful for ternary plots, including the following components:
 
 - `data`: Stores input data after being validated and normalized
-- `ternary_coord`: Stores the coordinates for all observations.
+- `data_coord`: Stores the coordinates for all observations.
+- `data_edges`: Stores the connections between the observations. Useful
+  when you want to create paths between observations.
 - `simplex_vertices`: Stores the simplex vertices’ coordinates.
 - `simplex_edges`: Stores the connections between the simplex vertices.
-- `items`: Stores the item names in the order provided in the argument
-  `items`.
+- `vertex_labels`: Stores the vertex labels/item names in the order
+  provided in the argument `items`.
 
 To create a `ternable` object, simply call the function
 [`ternable()`](https://numbats.github.io/prefviz/reference/ternable.md).

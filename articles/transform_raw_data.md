@@ -1,12 +1,5 @@
 # Transforming voting data to ternable-friendly format
 
-``` r
-library(prefviz)
-library(prefio)
-library(dplyr)
-library(kableExtra)
-```
-
 ## Introduction
 
 Raw voting data comes in all shapes and forms, and not all voting data

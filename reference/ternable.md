@@ -2,7 +2,7 @@
 
 Creates a ternable object, which contains observation coordinates,
 simplex vertices, and edges necessary for building a ternary plot in
-both 2 and higher dimensions.
+both two and higher dimensions.
 
 ## Usage
 
@@ -26,6 +26,12 @@ ternable(data, items = everything(), group = NULL, ...)
   which selects all columns. Must select at least 3 columns. All columns
   must be non-negative and sum to 1.
 
+- group:
+
+  Optional column name indicating the grouping variable. If specified,
+  the data will be grouped by this variable. This is useful for creating
+  paths between observations within each group.
+
 - ...:
 
   Additional arguments (currently unused, reserved for future
@@ -37,7 +43,9 @@ A ternable object (S3 class) containing:
 
 - `data`: The validated and normalized data frame
 
-- `ternary_coord`: Transformed coordinates for all observations
+- `data_coord`: Transformed coordinates for all observations
+
+- `data_edges`: Edge connections for drawing paths between observations
 
 - `simplex_vertices`: Vertex coordinates and labels for the simplex
 
