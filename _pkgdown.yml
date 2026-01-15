@@ -1,4 +1,47 @@
 url: https://numbats.github.io/prefviz/
+
+destination: docs 
 template:
   bootstrap: 5
+  bootswatch: cosmo
 
+authors:
+  Linh Ngo:
+    href: https://github.com/linhngo66
+  Dianne Cook:
+    href: https://github.com/dicook
+  Damjan Dvukcevic:
+    href: https://damjan.vukcevic.net/
+
+navbar:
+  structure:
+    left: [home, reference, articles]
+    right: [search, github]
+
+reference:
+  - title: Draw a 2D ternary plots
+    desc: Main plotting functions for ternary diagrams
+    contents:
+    - geom_ternary_cart
+    - geom_ternary_region
+    - stat_ternary_region
+    - add_vertex_labels
+    - stat_ordered_path
+  
+  - title: Ternable object
+    desc: Create a `ternable` object and prepare it for plotting
+    contents:
+    - ternable
+    - starts_with("get_tern_")
+
+  - title: Data transformation
+    desc: Prepare your PrefLib and distribution of preferences data for plotting
+    contents:
+    - dop_transform
+    - dop_irv
+    - helmert_transform
+  
+  - title: Data
+    contents:
+    - contains("aecdop_")
+    - contains("elb_")
