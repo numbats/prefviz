@@ -9,7 +9,7 @@
 \usage{
 get_tern_data(ternable, plot_type = c("2D", "HD"))
 
-get_tern_edges(ternable)
+get_tern_edges(ternable, include_data = FALSE)
 
 get_tern_labels(ternable)
 }
@@ -30,9 +30,15 @@ original data with those of simplex vertices (without vertex labels).
 Used as input data for \code{tourr}.
 }
 \item \code{get_tern_edges()}: A matrix of simplex edge connections for drawing
-the simplex boundary. Equivalent to \code{ternable$simplex_edges}.
+the simplex boundary.
+\itemize{
+\item If \code{include_data = FALSE}, the matrix contains only the simplex edges.
+Equivalent to \code{ternable$simplex_edges}.
+\item If \code{include_data = TRUE}, the matrix combines the simplex edges with
+the data edges. Used when you want to draw lines between the data points.
+}
 \item \code{get_tern_labels()}: A character vector containing vertex labels.
-Used as vertex labels for \code{tourr}, via argument \code{obs_labels}.
+Used as vertex labels for \code{tourr}, via argument \code{vertex_labels}.
 }
 }
 \description{

@@ -2,19 +2,23 @@
 #' 
 #' @description
 #' Creates a ternable object, which contains observation coordinates, simplex vertices, and edges
-#' necessary for building a ternary plot in both 2 and higher dimensions.
+#' necessary for building a ternary plot in both two and higher dimensions.
 #' 
 #' @param data A data frame containing the item (alternative) columns used to construct the ternary plot.
 #' @param items <[`tidy-select`][dplyr::dplyr_tidy_select]> Columns representing the 
 #'   items to be plotted as vertices of the simplex. Default is [everything()],
 #'   which selects all columns. Must select at least 3 columns. All columns must be
 #'   non-negative and sum to 1. 
+#' @param group Optional column name indicating the grouping variable. If specified, 
+#'   the data will be grouped by this variable. This is useful 
+#'   for creating paths between observations within each group.
 #' @param ... Additional arguments (currently unused, reserved for future extensions).
 #' 
 #' @return A ternable object (S3 class) containing:
 #' \itemize{
 #'   \item{`data`}{: The validated and normalized data frame}
-#'   \item{`ternary_coord`}{: Transformed coordinates for all observations}
+#'   \item{`data_coord`}{: Transformed coordinates for all observations}
+#'   \item{`data_edges`}{: Edge connections for drawing paths between observations}
 #'   \item{`simplex_vertices`}{: Vertex coordinates and labels for the simplex}
 #'   \item{`simplex_edges`}{: Edge connections for drawing the simplex boundary}
 #'   \item{`vertex_labels`}{: Labels of the vertices, same as names of the selected item columns}
@@ -41,10 +45,16 @@ ternable <- function(data,
   item_col_chr <- colnames(data)[item_col_ind]
 
   group_quo <- rlang::enquo(group)
+  if (rlang::quo_is_null(group_quo)) {
+    group_col_chr <- character(0)
+  } else {
+    group_col_ind <- tidyselect::eval_select(group_quo, data)
+    group_col_chr <- colnames(data)[group_col_ind]
+  }
 
   validate_df <- validate_ternable(data, item_col_chr)
 
-  new_ternable(validate_df, item_col_chr, group_quo, ...)
+  new_ternable(validate_df, item_col_chr, group_col_chr, ...)
 }
 
 #' Validate input for ternable
@@ -109,13 +119,14 @@ validate_ternable <- function(data, item_col_chr) {
 #'
 #' @param data A validated data frame
 #' @param item_col_chr Character vector of item column names
+#' @param group_col_chr Character vector of group column names
 #' @param ... Additional arguments (unused for now)
 #'
 #' @return A ternable object
 #'
 #' @keywords internal
 #' @noRd
-new_ternable <- function(data, item_col_chr, group_quo, ...) {
+new_ternable <- function(data, item_col_chr, group_col_chr, ...) {
   stopifnot(is.data.frame(data))
   stopifnot(is.character(item_col_chr))
 
@@ -131,13 +142,13 @@ new_ternable <- function(data, item_col_chr, group_quo, ...) {
   simp_points$labels <- item_col_chr
 
   # Define data edges
-  # data_edges <- add_data_edges(data, group = group_quo)
+  data_edges <- add_data_edges(data, group_col_chr)
 
   structure(
     list(
-      data = data, # validated & normalized data
+      data = data,
       ternary_coord = cart_df,
-      # data_edges = data_edges,
+      data_edges = as.matrix(data_edges),
       simplex_vertices = simp_points,
       simplex_edges = as.matrix(simp$edges),
       vertex_labels = item_col_chr

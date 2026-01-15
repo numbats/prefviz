@@ -4,9 +4,15 @@
 \alias{add_data_edges}
 \title{Add data edges}
 \usage{
-add_data_edges(data, group)
+add_data_edges(data, group_col_chr)
+}
+\arguments{
+\item{data}{A data frame input from \code{new_ternable()}}
+
+\item{group_col_chr}{Character vector of group column names}
 }
 \description{
-Add data edges
+Internal helper to create paths/edges between observations in a ternary plot.
+Used by \code{new_ternable()} to create the \code{data_edges} component.
 }
 \keyword{internal}

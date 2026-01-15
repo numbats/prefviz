@@ -4,7 +4,7 @@
 \name{prefviz-package}
 \alias{prefviz}
 \alias{prefviz-package}
-\title{prefviz: Visualizes preference data via ternary plots in 2 and higher dimensions}
+\title{prefviz: Visualizes preference data via ternary plots in two and higher dimensions}
 \description{
 Visualises preference and ranking data by extending traditional ternary plots to support high-dimensional simplexes. It provides methods to transform compositional data into coordinates suitable for 2D and high-dimensional ternary plots. Compatibility with interacitve visualization packages such as `plotly` allows users to explore high-dimensional preference structures dynamically.
 }

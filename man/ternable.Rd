@@ -14,13 +14,18 @@ items to be plotted as vertices of the simplex. Default is \code{\link[tidyselec
 which selects all columns. Must select at least 3 columns. All columns must be
 non-negative and sum to 1.}
 
+\item{group}{Optional column name indicating the grouping variable. If specified,
+the data will be grouped by this variable. This is useful
+for creating paths between observations within each group.}
+
 \item{...}{Additional arguments (currently unused, reserved for future extensions).}
 }
 \value{
 A ternable object (S3 class) containing:
 \itemize{
 \item{\code{data}}{: The validated and normalized data frame}
-\item{\code{ternary_coord}}{: Transformed coordinates for all observations}
+\item{\code{data_coord}}{: Transformed coordinates for all observations}
+\item{\code{data_edges}}{: Edge connections for drawing paths between observations}
 \item{\code{simplex_vertices}}{: Vertex coordinates and labels for the simplex}
 \item{\code{simplex_edges}}{: Edge connections for drawing the simplex boundary}
 \item{\code{vertex_labels}}{: Labels of the vertices, same as names of the selected item columns}
@@ -28,7 +33,7 @@ A ternable object (S3 class) containing:
 }
 \description{
 Creates a ternable object, which contains observation coordinates, simplex vertices, and edges
-necessary for building a ternary plot in both 2 and higher dimensions.
+necessary for building a ternary plot in both two and higher dimensions.
 }
 \examples{
 

@@ -180,11 +180,19 @@ ordered_path_df <- function(data,
 }
 
 #' Add data edges
+#' 
+#' @description
+#' Internal helper to create paths/edges between observations in a ternary plot.
+#' Used by `new_ternable()` to create the `data_edges` component.
+#' 
+#' @param data A data frame input from `new_ternable()`
+#' @param group_col_chr Character vector of group column names
+#' 
 #' @keywords internal
-add_data_edges <- function(data, group) {
-  group_quo <- rlang::enquo(group)
+add_data_edges <- function(data, group_col_chr) {
+  stopifnot(is.character(group_col_chr))
 
-  if (rlang::quo_is_null(group_quo)) {
+  if (length(group_col_chr) == 0) {
     data_edges <- data |>
       dplyr::mutate(
         Var1 = dplyr::row_number(),
@@ -192,15 +200,11 @@ add_data_edges <- function(data, group) {
       ) |>
       dplyr::select(Var1, Var2)
   } else {
-    data_edges <- data |>
-      dplyr::mutate(
-        Var1 = dplyr::row_number(),
-        Var2 = dplyr::if_else(
-          !!group_quo == dplyr::lead(!!group_quo, default = dplyr::last(!!group_quo)),
-          dplyr::lead(Var1, default = dplyr::last(Var1)),
-          Var1
-        )
-      ) |>
+    data_edges <- data |> 
+      dplyr::mutate(Var1 = dplyr::row_number()) |>
+      group_by(dplyr::across(all_of(group_col_chr))) |>
+      dplyr::mutate(Var2 = dplyr::lead(Var1, default = dplyr::last(Var1))) |> 
+      dplyr::ungroup() |>
       dplyr::select(Var1, Var2)
   }
 

@@ -17,11 +17,17 @@
 #'     \item If `plot_type = "HD"`, the data frame combines ternary coordinates of 
 #'     original data with those of simplex vertices (without vertex labels). 
 #'     Used as input data for `tourr`.
-#'  }
+#'   }
 #' - `get_tern_edges()`: A matrix of simplex edge connections for drawing 
-#'   the simplex boundary. Equivalent to `ternable$simplex_edges`.
+#'   the simplex boundary. 
+#'   \itemize{
+#'     \item If `include_data = FALSE`, the matrix contains only the simplex edges. 
+#'     Equivalent to `ternable$simplex_edges`.
+#'     \item If `include_data = TRUE`, the matrix combines the simplex edges with 
+#'     the data edges. Used when you want to draw lines between the data points. 
+#'   }
 #' - `get_tern_labels()`: A character vector containing vertex labels. 
-#'   Used as vertex labels for `tourr`, via argument `obs_labels`.
+#'   Used as vertex labels for `tourr`, via argument `vertex_labels`.
 #' 
 #' @details
 #' These functions are designed to work together for creating animated tours
@@ -75,11 +81,23 @@ get_tern_data <- function(ternable, plot_type = c("2D", "HD")) {
 
 #' @rdname ternary_getters
 #' @export
-get_tern_edges <- function(ternable) {
+get_tern_edges <- function(ternable, include_data = FALSE) {
   stopifnot("input should be of class `ternable`" = class(ternable) == "ternable")
 
-  edges <- ternable$simplex_edges
-  return(edges)
+  n_vertices <- length(ternable$vertex_labels)
+  se <- ternable$simplex_edges
+  de <- data.frame(ternable$data_edges) |> 
+    dplyr::mutate(
+      Var1 = Var1 + n_vertices,
+      Var2 = Var2 + n_vertices
+    )
+
+  if (include_data) {
+    edges <- dplyr::bind_rows(data.frame(se), de) |> as.matrix()
+    return(edges)
+  } else {
+    return(se)
+  }
 }
 
 #' @rdname ternary_getters

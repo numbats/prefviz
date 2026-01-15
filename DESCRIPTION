@@ -1,5 +1,5 @@
 Package: prefviz
-Title: Visualizes preference data via ternary plots in 2 and higher dimensions
+Title: Visualizes preference data via ternary plots in two and higher dimensions
 Version: 0.0.0.9000
 Authors@R: c(
   person("Linh", "Ngo", email = "Linh.Ngo2@monash.edu", role = c("aut", "cre")),
@@ -34,3 +34,4 @@ Depends:
 LazyData: true
 VignetteBuilder: knitr
 URL: https://numbats.github.io/prefviz/
+BugReports: https://github.com/numbats/prefviz/issues
