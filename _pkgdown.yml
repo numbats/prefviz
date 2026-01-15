@@ -4,11 +4,6 @@ destination: docs
 template:
   bootstrap: 5
   bootswatch: cosmo
-  theme: arrow-light
-  bslib:
-    primary: "#0072B2"
-    base_font: {google: "Roboto"}
-    heading_font: {google: "Roboto Slab"}
 
 authors:
   Linh Ngo:
