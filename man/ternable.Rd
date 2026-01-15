@@ -4,7 +4,7 @@
 \alias{ternable}
 \title{Create a ternable object}
 \usage{
-ternable(data, items = everything(), ...)
+ternable(data, items = everything(), group = NULL, ...)
 }
 \arguments{
 \item{data}{A data frame containing the item (alternative) columns used to construct the ternary plot.}

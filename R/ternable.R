@@ -131,13 +131,13 @@ new_ternable <- function(data, item_col_chr, group_quo, ...) {
   simp_points$labels <- item_col_chr
 
   # Define data edges
-  data_edges <- add_data_edges(data, group = group_quo)
+  # data_edges <- add_data_edges(data, group = group_quo)
 
   structure(
     list(
       data = data, # validated & normalized data
       ternary_coord = cart_df,
-      data_edges = data_edges,
+      # data_edges = data_edges,
       simplex_vertices = simp_points,
       simplex_edges = as.matrix(simp$edges),
       vertex_labels = item_col_chr

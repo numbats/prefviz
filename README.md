@@ -141,6 +141,15 @@ ggplot(input_df, aes(x = x1, y = x2)) +
 # Load the data
 aecdop25_transformed <- prefviz:::aecdop25_transformed
 head(aecdop25_transformed)
+#> # A tibble: 6 × 8
+#>   DivisionNm CountNumber ElectedParty   ALP    GRN   LNP Other    IND
+#>   <chr>            <dbl> <chr>        <dbl>  <dbl> <dbl> <dbl>  <dbl>
+#> 1 Adelaide             0 ALP          0.465 0.190  0.242 0.104 0     
+#> 2 Aston                0 ALP          0.373 0      0.377 0.209 0.0414
+#> 3 Ballarat             0 ALP          0.424 0      0.286 0.262 0.0281
+#> 4 Banks                0 ALP          0.364 0.119  0.391 0.106 0.0202
+#> 5 Barker               0 LNP          0.225 0.0816 0.5   0.135 0.0586
+#> 6 Barton               0 ALP          0.471 0.159  0.242 0.128 0
 
 # Create ternable object
 tern25 <- ternable(aecdop25_transformed, ALP:IND)
@@ -168,7 +177,7 @@ animate_xy(
 )
 ```
 
-![](images/vignette_hd_plot.gif)
+<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" /><img src="man/figures/README-unnamed-chunk-7-2.png" width="100%" />
 
 # References
 

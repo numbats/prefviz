@@ -102,7 +102,6 @@ ggplot(input_df, aes(x = x1, y = x2)) +
 ## Draw a high-dimensional ternary plot
 
 ```{r}
-#| eval: false
 # Load the data
 aecdop25_transformed <- prefviz:::aecdop25_transformed
 head(aecdop25_transformed)
@@ -132,8 +131,6 @@ animate_xy(
   axes = "bottomleft"
 )
 ```
-
-![](images/vignette_hd_plot.gif)
 
 # References
 

@@ -1,5 +1,6 @@
 url: https://numbats.github.io/prefviz
 
+destination: docs 
 template:
   bootstrap: 5
   bootswatch: cosmo
@@ -30,6 +31,7 @@ reference:
     - geom_ternary_region
     - stat_ternary_region
     - add_vertex_labels
+    - stat_ordered_path
   
   - title: Ternable object
     desc: Create a `ternable` object and prepare it for plotting

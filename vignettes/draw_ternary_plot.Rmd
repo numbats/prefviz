@@ -109,7 +109,7 @@ This geom takes the barycentric coordinates of a reference point as input, and d
 p + 
   geom_ternary_region(
     x1 = 1/3, x2 = 1/3, x3 = 1/3, # Default reference points. Must sum to 1
-    vertex_labels = tern22$alternatives, # Labels for the regions
+    vertex_labels = tern22$vertex_labels, # Labels for the regions
     aes(fill = after_stat(vertex_labels)), 
     alpha = 0.3, color = NA, show.legend = FALSE
   ) +
@@ -151,8 +151,6 @@ animate_xy(
 
 We can add colors to the points.
 ```{r}
-#| eval: false
-
 # Define color mapping
 party_colors <- c(
   "ALP" = "#E13940",    # Red
@@ -174,17 +172,4 @@ animate_xy(
   col = color_vector,
   axes = "bottomleft"
 )
-
-render_gif(
-  get_tern_data(tern25, plot_type = "HD"),
-  grand_tour(),
-  display_xy(
-    col = color_vector,
-    edges = get_tern_edges(tern25),
-    obs_labels = get_tern_labels(tern25),
-    axes = "bottomleft"
-  )
-)
 ```
-
-![Gif of a ternary tour](images/vignette_hd_plot.gif)
