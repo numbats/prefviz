@@ -19,7 +19,9 @@ Imports:
     prefio,
     tibble,
     tidyr,
-    rlang
+    rlang,
+    ggplot2,
+    geozoo
 Suggests: 
     knitr,
     rmarkdown,
