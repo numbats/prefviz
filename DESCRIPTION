@@ -25,6 +25,8 @@ Imports:
 Suggests: 
     knitr,
     rmarkdown,
+    tourr,
+    kableExtra,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Depends: 
