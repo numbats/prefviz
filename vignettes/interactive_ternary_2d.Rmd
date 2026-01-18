@@ -1,0 +1,186 @@
+---
+title: "interactive_ternary_2d"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{interactive_ternary_2d}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+#| echo: false
+library(prefviz)
+library(ggplot2)
+library(dplyr)
+library(crosstalk)
+library(plotly)
+library(ggthemes)
+```
+
+Since `prefviz` builds ternary plot on the Cartesian coordinate system, it is possible to use interactive packages such as `plotly` or `ggiraph` to create interactive ternary plots. In this vignette, we illustrate how to create an interactive ternary plot using `ggiraph` and link it to a map.
+
+We will look at the first preference distribution of all electorates in the Australian Federal Election in 2025. The goal is to: 
+
+1. Create an interactive ternary plot where each point represents an electorate's preference distribution
+2. Create an interactive map of parties elected in each electorate
+3. Link the two plots together
+
+## Data preparation
+```{r}
+data(elb_map)
+data(elb_centroid)
+data(aecdop_2025)
+```
+
+```{r}
+aecdop_2025_filtered <- aecdop_2025 |>
+  filter(CalculationType == "Preference Percent") |>
+  mutate(Party = case_when(
+    !(PartyAb %in% c("LP", "ALP", "NP", "LNP", "LNQ")) ~ "Other",
+    PartyAb %in% c("LP", "NP", "LNP", "LNQ") ~ "LNP",
+    TRUE ~ PartyAb
+  ))
+
+aecdop_2025_transformed <- dop_transform(
+  aecdop_2025_filtered,
+  key_cols = c(DivisionNm, CountNumber),
+  value_col = CalculationValue,
+  item_col = Party,
+  winner_col = Elected
+)
+
+first_pref25 <- aecdop_2025_transformed |>
+  filter(CountNumber == 0)
+
+# Get coordinates for the ternary plot
+ternable_obj <- ternable(first_pref25, ALP:Other)
+ternary_df <- get_tern_data(ternable_obj, plot_type = "2D")
+```
+
+```{r}
+# Join first preference and centroid
+ternary_centroid_df <- ternary_df |>
+  left_join(
+    elb_centroid |> select(elect_div, long, lat), 
+    by = c("DivisionNm" = "elect_div")) |> 
+  mutate(text = paste0(DivisionNm, "\n",
+                "ALP: ", round(ALP, 1), "%\n",
+                "LNP: ", round(LNP, 1), "%\n",
+                "Other: ", round(Other, 1), "%"))
+```
+
+```{r}
+# Share data for crosstalk
+shared_df <- ternary_centroid_df |> 
+  SharedData$new(key = ~DivisionNm)
+```
+
+## Create the ternary plot and linked map
+
+```{r}
+# Ternary plot
+p_ternary <- ggplot(shared_df$origData(), aes(x = x1, y = x2)) +
+  geom_ternary_cart() +
+  geom_ternary_region(
+    aes(fill = after_stat(vertex_labels)),
+    vertex_labels = ternable_obj$vertex_labels,
+    alpha = 0.3, color = "grey50",
+    show.legend = FALSE
+  ) +
+  geom_point(aes(color = Winner, text = text)) +
+  add_vertex_labels(ternable_obj$simplex_vertices) +
+  scale_fill_manual(
+    values = c("ALP" = "red", "LNP" = "blue", "Other" = "grey70")
+  ) +
+  scale_color_manual(
+    values = c("ALP" = "red", "LNP" = "blue", "Other" = "grey70"),
+    name = "Elected Party"
+  ) +
+  labs(title = "First preference in 2022 Australian Federal election")
+
+plotly_ternary <- ggplotly(p_ternary, tooltip = "text") |>
+  highlight(
+    on = "plotly_hover",
+    off = "plotly_doubleclick",
+    opacityDim = 0.3,
+    persistent = FALSE
+  ) |>
+  layout(dragmode = FALSE) |>  # Disable drag for smoother experience
+  config(displayModeBar = FALSE)  # Hide toolbar
+
+# Map
+p_elec_map <- ggplot() +
+  geom_polygon(
+    data = elb_map,
+    aes(x = long, y = lat, group = group),
+    fill = "grey90", color = "white"
+  ) +
+  geom_point(
+    data = shared_df$origData(),
+    aes(x = long, y = lat, color = Winner, text = text),
+    size = 1.5, alpha = 0.8
+  ) +
+  scale_color_manual(
+    values = c("ALP" = "red", "LNP" = "blue", "Other" = "grey70"),
+    name = "Elected Party") +
+  coord_equal() +
+  theme_map() +
+  labs(title = "Result by electorate (2022)")
+
+plotly_map <- ggplotly(p_elec_map, tooltip = "text") |>
+  highlight(
+    on = "plotly_hover",
+    off = "plotly_doubleclick",
+    opacityDim = 0.3,
+    persistent = FALSE
+  ) |>
+  layout(dragmode = FALSE) |>
+  config(displayModeBar = FALSE) |>
+  style(hoverinfo = "skip", traces = 1)
+
+bscols(
+  widths = c(6, 6),
+  plotly_ternary,
+  plotly_map
+)
+```
+
+## Create interactive line
+```{r}
+filtered_df <- aecdop_2025_transformed |>
+  filter(DivisionNm %in% c("Hotham", "Melbourne")) |> 
+  rename(ElectedParty = Winner) |> 
+  mutate(text = paste0(DivisionNm, "\n",
+                "Round: ", CountNumber + 1, "\n",
+                "ALP: ", round(ALP*100, 1), "%\n",
+                "LNP: ", round(LNP*100, 1), "%\n",
+                "Other: ", round(Other*100, 1), "%"))
+# Get coordinates for the ternary plot
+filtered_ternable_obj <- ternable(filtered_df, ALP:Other)
+filtered_ternary_df <- get_tern_data(filtered_ternable_obj, plot_type = "2D")
+```
+
+
+```{r}
+p_line <- filtered_ternary_df |> 
+  ggplot(aes(x = x1, y = x2)) +
+  geom_ternary_cart() +
+  geom_ternary_region(
+    aes(fill = after_stat(vertex_labels)),
+    vertex_labels = filtered_ternable_obj$vertex_labels,
+    alpha = 0.3, color = "grey50",
+    show.legend = FALSE
+  ) +
+  geom_point(aes(color = ElectedParty, text = text)) + 
+  stat_ordered_path(aes(group = DivisionNm, order_by = CountNumber, color = ElectedParty), size = 0.5) +
+  add_vertex_labels(filtered_ternable_obj$simplex_vertices)
+
+ggplotly(p_line, tooltip = "text")
+```
