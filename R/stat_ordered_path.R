@@ -55,6 +55,35 @@
 #' * group
 #' * alpha, colour, linewidth, linetype, etc. (inherited from [ggplot2::geom_path()])
 #'
+#' @examples
+#' # Data prep
+#' input_df <- prefviz:::aecdop22_widen |> 
+#'    filter(DivisionNm %in% c("Higgins", "Monash"))
+#' tern22 <- ternable(input_df, ALP:Other)
+#' 
+#' # Base plot
+#' p <- get_tern_data(tern22, plot_type = "2D") |> 
+#'   ggplot(aes(x = x1, y = x2)) +
+#'   geom_ternary_cart() +
+#'   geom_ternary_region(
+#'     aes(fill = after_stat(vertex_labels)),
+#'     vertex_labels = tern22$vertex_labels,
+#'     alpha = 0.3, color = "grey50",
+#'     show.legend = FALSE
+#'   ) +
+#'   geom_point(aes(color = ElectedParty)) +
+#'   add_vertex_labels(tern22$simplex_vertices) +
+#'   scale_color_manual(
+#'     values = c("ALP" = "red", "LNP" = "blue", "Other" = "grey70"),
+#'     aesthetics = c("fill", "colour")
+#'   )
+#' 
+#' # Add ordered paths
+#' p + 
+#'   stat_ordered_path(
+#'     aes(group = DivisionNm, order_by = CountNumber, color = ElectedParty), 
+#'     size = 0.5)
+#' 
 #' @return A ggplot2 layer that can be added to a plot object.
 #' @name stat_ordered_path
 

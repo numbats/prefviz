@@ -29,8 +29,8 @@ round_pref <- function(data) {
   return(df)
 }
 
-aecdop22_transformed <- aecdop_2022 |> 
-  filter(CalculationType == "Preference Percent", CountNumber == 0) |> 
+aecdop22_widen <- aecdop_2022 |> 
+  filter(CalculationType == "Preference Percent") |> 
   mutate(Party = case_when(
     !(PartyAb %in% c("LP", "ALP", "NP", "LNP", "LNQ")) ~ "Other",
     PartyAb %in% c("LP", "NP", "LNP", "LNQ") ~ "LNP",
@@ -41,8 +41,11 @@ aecdop22_transformed <- aecdop_2022 |>
     across(ALP:Other, ~.x/100),
     Other = ifelse(1 - ALP - LNP < 0, 0, 1 - ALP - LNP))
 
-aecdop25_transformed <- aecdop_2025 |>
-  filter(CalculationType == "Preference Percent", CountNumber == 0) |>
+aecdop22_transformed <- aecdop22_widen |>
+  filter(CountNumber == 0)
+
+aecdop25_widen <- aecdop_2025 |>
+  filter(CalculationType == "Preference Percent") |>
   mutate(Party = case_when(
     !(PartyAb %in% c("LP", "ALP", "NP", "LNP", "LNQ", "GRN", "IND")) ~ "Other",
     PartyAb %in% c("LP", "NP", "LNP", "LNQ") ~ "LNP",
@@ -54,11 +57,16 @@ aecdop25_transformed <- aecdop_2025 |>
     Other = ifelse(1 - ALP - LNP - GRN - IND < 0, 0, 1 - ALP - LNP - GRN - IND)
   )
 
+aecdop25_transformed <- aecdop25_widen |>
+  filter(CountNumber == 0)
+
 usethis::use_data(aecdop_2022, overwrite = TRUE)
 usethis::use_data(aecdop_2025, overwrite = TRUE)
 usethis::use_data(
   aecdop22_transformed, 
   aecdop25_transformed, 
+  aecdop22_widen, 
+  aecdop25_widen,
   overwrite = TRUE, 
   internal = TRUE
 )

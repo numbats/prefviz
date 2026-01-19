@@ -2,18 +2,6 @@ library(tourr)
 library(ggplot2)
 library(tidyverse)
 
-# get centroids of 3 clusters of the flea data
-f <- apply(flea[,1:6], 2, function(x) (x-mean(x))/sd(x))
-n <- nrow(f)
-set.seed(1019)
-flea_centroids <- stats::kmeans((f), 3)$centers
-flea_aug <- rbind(f, flea_centroids)
-col <- c(rep("black", n), rep("orange", 3))
-flea_edges <- matrix(c(n+1, n+2, n+1, n+3, n+2, n+3), ncol=2, byrow = TRUE)
-animate_xy(flea_aug, edges = flea_edges, 
-           col = col, edges.col = c("orange", "blue", "red"), 
-           edges.width = 3)
-
 # Get data for Aston
 pref_2025 <- read_csv("inst/dev/pref_2025.csv") |> 
   filter(DivisionNm %in% c("Aston", "Monash"))

@@ -12,6 +12,7 @@ Visualises preference and ranking data by extending traditional ternary plots to
 Useful links:
 \itemize{
   \item \url{https://numbats.github.io/prefviz/}
+  \item Report bugs at \url{https://github.com/numbats/prefviz/issues}
 }
 
 }
