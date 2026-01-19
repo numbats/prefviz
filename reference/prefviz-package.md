@@ -13,6 +13,8 @@ Useful links:
 
 - <https://numbats.github.io/prefviz/>
 
+- Report bugs at <https://github.com/numbats/prefviz/issues>
+
 ## Author
 
 **Maintainer**: Linh Ngo <Linh.Ngo2@monash.edu>

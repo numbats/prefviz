@@ -139,3 +139,39 @@ in bold).
 
 - alpha, colour, linewidth, linetype, etc. (inherited from
   [`ggplot2::geom_path()`](https://ggplot2.tidyverse.org/reference/geom_path.html))
+
+## Examples
+
+``` r
+# Data prep
+input_df <- prefviz:::aecdop22_widen |> 
+   filter(DivisionNm %in% c("Higgins", "Monash"))
+#> Error: object 'DivisionNm' not found
+tern22 <- ternable(input_df, ALP:Other)
+#> Error: object 'input_df' not found
+
+# Base plot
+p <- get_tern_data(tern22, plot_type = "2D") |> 
+  ggplot(aes(x = x1, y = x2)) +
+  geom_ternary_cart() +
+  geom_ternary_region(
+    aes(fill = after_stat(vertex_labels)),
+    vertex_labels = tern22$vertex_labels,
+    alpha = 0.3, color = "grey50",
+    show.legend = FALSE
+  ) +
+  geom_point(aes(color = ElectedParty)) +
+  add_vertex_labels(tern22$simplex_vertices) +
+  scale_color_manual(
+    values = c("ALP" = "red", "LNP" = "blue", "Other" = "grey70"),
+    aesthetics = c("fill", "colour")
+  )
+#> Error: object 'tern22' not found
+
+# Add ordered paths
+p + 
+  stat_ordered_path(
+    aes(group = DivisionNm, order_by = CountNumber, color = ElectedParty), 
+    size = 0.5)
+#> Error: object 'p' not found
+```

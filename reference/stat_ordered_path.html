@@ -165,6 +165,42 @@ bold).</p><ul><li><p><strong>x</strong></p></li>
 <li><p>alpha, colour, linewidth, linetype, etc. (inherited from <code><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">ggplot2::geom_path()</a></code>)</p></li>
 </ul></div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Data prep</span></span></span>
+<span class="r-in"><span><span class="va">input_df</span> <span class="op">&lt;-</span> <span class="fu">prefviz</span><span class="fu">:::</span><span class="va">aecdop22_widen</span> <span class="op">|&gt;</span> </span></span>
+<span class="r-in"><span>   <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">DivisionNm</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Higgins"</span>, <span class="st">"Monash"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'DivisionNm' not found</span>
+<span class="r-in"><span><span class="va">tern22</span> <span class="op">&lt;-</span> <span class="fu"><a href="ternable.html">ternable</a></span><span class="op">(</span><span class="va">input_df</span>, <span class="va">ALP</span><span class="op">:</span><span class="va">Other</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'input_df' not found</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Base plot</span></span></span>
+<span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="ternary_getters.html">get_tern_data</a></span><span class="op">(</span><span class="va">tern22</span>, plot_type <span class="op">=</span> <span class="st">"2D"</span><span class="op">)</span> <span class="op">|&gt;</span> </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x1</span>, y <span class="op">=</span> <span class="va">x2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="geom_ternary_cart.html">geom_ternary_cart</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="geom_ternary_region.html">geom_ternary_region</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes_eval.html" class="external-link">after_stat</a></span><span class="op">(</span><span class="va">vertex_labels</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    vertex_labels <span class="op">=</span> <span class="va">tern22</span><span class="op">$</span><span class="va">vertex_labels</span>,</span></span>
+<span class="r-in"><span>    alpha <span class="op">=</span> <span class="fl">0.3</span>, color <span class="op">=</span> <span class="st">"grey50"</span>,</span></span>
+<span class="r-in"><span>    show.legend <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">ElectedParty</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="add_vertex_labels.html">add_vertex_labels</a></span><span class="op">(</span><span class="va">tern22</span><span class="op">$</span><span class="va">simplex_vertices</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ALP"</span> <span class="op">=</span> <span class="st">"red"</span>, <span class="st">"LNP"</span> <span class="op">=</span> <span class="st">"blue"</span>, <span class="st">"Other"</span> <span class="op">=</span> <span class="st">"grey70"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    aesthetics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fill"</span>, <span class="st">"colour"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'tern22' not found</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Add ordered paths</span></span></span>
+<span class="r-in"><span><span class="va">p</span> <span class="op">+</span> </span></span>
+<span class="r-in"><span>  <span class="fu">stat_ordered_path</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>group <span class="op">=</span> <span class="va">DivisionNm</span>, order_by <span class="op">=</span> <span class="va">CountNumber</span>, color <span class="op">=</span> <span class="va">ElectedParty</span><span class="op">)</span>, </span></span>
+<span class="r-in"><span>    size <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'p' not found</span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 
