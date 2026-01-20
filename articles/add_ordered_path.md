@@ -1,14 +1,5 @@
 # Adding ordered path to your ternary plot
 
-    #> 
-    #> Attaching package: 'dplyr'
-    #> The following objects are masked from 'package:stats':
-    #> 
-    #>     filter, lag
-    #> The following objects are masked from 'package:base':
-    #> 
-    #>     intersect, setdiff, setequal, union
-
 Adding paths between points in a ternary space can help illustrate
 transitions or sequences in the data.
 
@@ -79,11 +70,6 @@ p + stat_ordered_path(
   aes(group = DivisionNm, order_by = CountNumber, color = ElectedParty), 
   size = 0.5
 )
-#> Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
-#> ℹ Please use `linewidth` instead.
-#> This warning is displayed once per session.
-#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-#> generated.
 ```
 
 ![](add_ordered_path_files/figure-html/unnamed-chunk-3-1.png)
@@ -154,8 +140,6 @@ animate_xy(
   obs_labels  = get_tern_labels(tern25),
   axes = "bottomleft"
 )
-#> Converting input data to the required matrix format.
-#> Using half_range 1.1
 ```
 
 ![](add_ordered_path_files/figure-html/unnamed-chunk-5-1.png)![](add_ordered_path_files/figure-html/unnamed-chunk-5-2.png)

@@ -66,14 +66,6 @@
 
     
     
-<pre><code><span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     filter, lag</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span></code></pre>
 <p>Adding paths between points in a ternary space can help illustrate
 transitions or sequences in the data.</p>
 <p>In the example of instant-runoff voting in Australian Federal
@@ -90,7 +82,7 @@ rounds in three electorates: Higgins, Monash, and Melbourne.</p>
 <p>Input data is already in a <code>ternable</code>-friendly format,
 with each row representing the preference distribution in one round of
 voting in one electorate.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aecdop22_widen</span> <span class="op">&lt;-</span> <span class="fu">prefviz</span><span class="fu">:::</span><span class="va">aecdop22_widen</span></span>
 <span><span class="va">input_df</span> <span class="op">&lt;-</span> <span class="va">aecdop22_widen</span> <span class="op">|&gt;</span> </span>
 <span>   <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">DivisionNm</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Higgins"</span>, <span class="st">"Monash"</span>, <span class="st">"Melbourne"</span><span class="op">)</span><span class="op">)</span></span>
@@ -115,7 +107,7 @@ order you want them to be connected.</p>
 <p>In this case, we want to connect the points in the order of round
 (<code>order_by = CountNumber</code>) for each electorate
 (<code>group = DivisionNm</code>).</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># The base plot</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ternary_getters.html">get_tern_data</a></span><span class="op">(</span><span class="va">tern22</span>, plot_type <span class="op">=</span> <span class="st">"2D"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x1</span>, y <span class="op">=</span> <span class="va">x2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -137,12 +129,7 @@ order you want them to be connected.</p>
 <span><span class="va">p</span> <span class="op">+</span> <span class="fu"><a href="../reference/stat_ordered_path.html">stat_ordered_path</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>group <span class="op">=</span> <span class="va">DivisionNm</span>, order_by <span class="op">=</span> <span class="va">CountNumber</span>, color <span class="op">=</span> <span class="va">ElectedParty</span><span class="op">)</span>, </span>
 <span>  size <span class="op">=</span> <span class="fl">0.5</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use `linewidth` instead.</span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once per session.</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span></code></pre></div>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="add_ordered_path_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="700"></p>
 <p>It’s interesting to see such a close win of ALP in Higgins (red line)
 since the result only flipped in the last round. Meanwhile, wins in
@@ -159,7 +146,7 @@ plotting by providing the <code>group</code> and <code>order_by</code>
 arguments when creating ternable object. Since this data is already
 ordered by round in the input data frame, we just need to provide the
 grouping variable (<code>DivisionNm</code>).</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aecdop25_widen</span> <span class="op">&lt;-</span> <span class="fu">prefviz</span><span class="fu">:::</span><span class="va">aecdop25_widen</span></span>
 <span><span class="va">input_df2</span> <span class="op">&lt;-</span> <span class="va">aecdop25_widen</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">DivisionNm</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Monash"</span>, <span class="st">"Melbourne"</span><span class="op">)</span><span class="op">)</span></span>
@@ -181,7 +168,7 @@ the <code>edges</code> arguments in <code>display_xy()</code>.
 Therefore, besides simplex edges, we need to provide the data edges to
 the <code>edges</code> argument. This can be done by setting
 <code>include_data = TRUE</code> in <code><a href="../reference/ternary_getters.html">get_tern_edges()</a></code>.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Add colors</span></span>
 <span><span class="va">party_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"ALP"</span> <span class="op">=</span> <span class="st">"#E13940"</span>,    <span class="co"># Red</span></span>
@@ -205,9 +192,7 @@ the <code>edges</code> argument. This can be done by setting
 <span>  edges.col <span class="op">=</span> <span class="va">edges_color</span>,</span>
 <span>  obs_labels  <span class="op">=</span> <span class="fu"><a href="../reference/ternary_getters.html">get_tern_labels</a></span><span class="op">(</span><span class="va">tern25</span><span class="op">)</span>,</span>
 <span>  axes <span class="op">=</span> <span class="st">"bottomleft"</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co">#&gt; Converting input data to the required matrix format.</span></span>
-<span><span class="co">#&gt; Using half_range 1.1</span></span></code></pre></div>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="add_ordered_path_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="700"><img src="add_ordered_path_files/figure-html/unnamed-chunk-5-2.png" class="r-plt" alt="" width="700"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
