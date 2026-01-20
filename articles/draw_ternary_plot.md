@@ -182,7 +182,7 @@ Please note that the order in which the labels are provided must match
 the order of the vertices in the ternary plot. The vertices are listed
 clockwise, from the right (ALP) to the left (LNP), then ending at the
 top of the triangle (Other). The best way is to get these labels from
-`ternable$alternatives` as `ternable` preserves the vertex orders.
+`ternable$vertex_labels` as `ternable` preserves the vertex orders.
 
 ## Drawing a high-dimensional ternary plot
 

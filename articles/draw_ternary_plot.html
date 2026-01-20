@@ -33,7 +33,8 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/draw_ternary_plot.html">Using `ternable` object to draw ternary plots</a></li>
+<li><a class="dropdown-item" href="../articles/add_ordered_path.html">Adding ordered path to your ternary plot</a></li>
+    <li><a class="dropdown-item" href="../articles/draw_ternary_plot.html">Using `ternable` object to draw ternary plots</a></li>
     <li><a class="dropdown-item" href="../articles/transform_raw_data.html">Transforming voting data to ternable-friendly format</a></li>
   </ul>
 </li>
@@ -243,7 +244,7 @@ layer because you only need to specify the customization once.</p>
 match the order of the vertices in the ternary plot. The vertices are
 listed clockwise, from the right (ALP) to the left (LNP), then ending at
 the top of the triangle (Other). The best way is to get these labels
-from <code>ternable$alternatives</code> as <code>ternable</code>
+from <code>ternable$vertex_labels</code> as <code>ternable</code>
 preserves the vertex orders.</p>
 </div>
 <div class="section level2">

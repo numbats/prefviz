@@ -35,7 +35,8 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/draw_ternary_plot.html">Using `ternable` object to draw ternary plots</a></li>
+<li><a class="dropdown-item" href="articles/add_ordered_path.html">Adding ordered path to your ternary plot</a></li>
+    <li><a class="dropdown-item" href="articles/draw_ternary_plot.html">Using `ternable` object to draw ternary plots</a></li>
     <li><a class="dropdown-item" href="articles/transform_raw_data.html">Transforming voting data to ternable-friendly format</a></li>
   </ul>
 </li>
@@ -189,7 +190,7 @@
 <span>  <span class="st">"Other"</span> <span class="op">=</span> <span class="st">"#95A5A6"</span>   <span class="co"># Gray</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Map to your data (assuming your column is called elected_party)</span></span>
+<span><span class="co"># Map to your data</span></span>
 <span><span class="va">color_vector</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"black"</span>, <span class="fl">5</span><span class="op">)</span>,</span>
 <span>  <span class="va">party_colors</span><span class="op">[</span><span class="va">aecdop25_transformed</span><span class="op">$</span><span class="va">ElectedParty</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
