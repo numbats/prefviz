@@ -163,7 +163,7 @@ party_colors <- c(
   "Other" = "#95A5A6"   # Gray
 )
 
-# Map to your data (assuming your column is called elected_party)
+# Map to your data
 color_vector <- c(rep("black", 5),
   party_colors[aecdop25_transformed$ElectedParty])
 

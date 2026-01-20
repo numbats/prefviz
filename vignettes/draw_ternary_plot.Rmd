@@ -122,7 +122,7 @@ p +
 
 `vertex_labels` argument is used to specify the vertex of which the region belongs to. This is helpful when you want to "sync" the aesthetic mapping of `geom_ternary_region()` with the base layer because you only need to specify the customization once. 
 
-Please note that the order in which the labels are provided must match the order of the vertices in the ternary plot. The vertices are listed clockwise, from the right (ALP) to the left (LNP), then ending at the top of the triangle (Other). The best way is to get these labels from `ternable$alternatives` as `ternable` preserves the vertex orders.
+Please note that the order in which the labels are provided must match the order of the vertices in the ternary plot. The vertices are listed clockwise, from the right (ALP) to the left (LNP), then ending at the top of the triangle (Other). The best way is to get these labels from `ternable$vertex_labels` as `ternable` preserves the vertex orders.
 
 # Drawing a high-dimensional ternary plot
 
