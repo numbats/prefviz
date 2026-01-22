@@ -8,7 +8,7 @@ the simplex.
 ## Usage
 
 ``` r
-helmert_transform(data, items = everything(), append = FALSE)
+helmert_transform(data, items = dplyr::everything(), append = FALSE)
 ```
 
 ## Arguments

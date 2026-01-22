@@ -7,7 +7,15 @@ both two and higher dimensions.
 ## Usage
 
 ``` r
-ternable(data, items = everything(), group = NULL, ...)
+ternable(
+  data,
+  items = dplyr::everything(),
+  group = NULL,
+  order_by = NULL,
+  decreasing = FALSE,
+  na_method = c("drop_na", "drop_group"),
+  ...
+)
 ```
 
 ## Arguments
@@ -32,6 +40,27 @@ ternable(data, items = everything(), group = NULL, ...)
   the data will be grouped by this variable. This is useful for creating
   paths between observations within each group.
 
+- order_by:
+
+  Optional column name indicating the order variable. If specified, the
+  data will be ordered by this variable. This is useful for creating
+  paths between observations within each group.
+
+- decreasing:
+
+  Logical. If `TRUE`, paths are ordered in decreasing order of
+  `order_by`. If `FALSE` (default), ordering is increasing.
+
+- na_method:
+
+  Character string specifying how to handle missing values in
+  `order_by`. One of:
+
+  - `"drop_na"` (default): drop only rows where `order_by` is `NA`;
+
+  - `"drop_group"`: drop entire groups that contain any `NA` in
+    `order_by`.
+
 - ...:
 
   Additional arguments (currently unused, reserved for future
@@ -41,18 +70,29 @@ ternable(data, items = everything(), group = NULL, ...)
 
 A ternable object (S3 class) containing:
 
-- `data`: The validated and normalized data frame
+- `data`:
 
-- `data_coord`: Transformed coordinates for all observations
+  : The validated and normalized data frame
 
-- `data_edges`: Edge connections for drawing paths between observations
+- `data_coord`:
 
-- `simplex_vertices`: Vertex coordinates and labels for the simplex
+  : Transformed coordinates for all observations
 
-- `simplex_edges`: Edge connections for drawing the simplex boundary
+- `data_edges`:
 
-- `vertex_labels`: Labels of the vertices, same as names of the selected
-  item columns
+  : Edge connections for drawing paths between observations
+
+- `simplex_vertices`:
+
+  : Vertex coordinates and labels for the simplex
+
+- `simplex_edges`:
+
+  : Edge connections for drawing the simplex boundary
+
+- `vertex_labels`:
+
+  : Labels of the vertices, same as names of the selected item columns
 
 ## Examples
 

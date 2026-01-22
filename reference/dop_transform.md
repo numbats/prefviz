@@ -26,8 +26,8 @@ dop_transform(
 - data:
 
   A data frame containing preference or vote distribution data, with
-  format similar to
-  https://results.aec.gov.au/31496/Website/Downloads/HouseDopByDivisionDownload-31496.csv
+  format similar to [AEC Distribution of Preferences
+  2022](https://results.aec.gov.au/27966/Website/HouseDownloadsMenu-27966-Csv.htm)
 
 - key_cols:
 
@@ -87,6 +87,15 @@ A data frame in wide format with:
 ## Examples
 
 ``` r
+library(dplyr)
+#> 
+#> Attaching package: ‘dplyr’
+#> The following objects are masked from ‘package:stats’:
+#> 
+#>     filter, lag
+#> The following objects are masked from ‘package:base’:
+#> 
+#>     intersect, setdiff, setequal, union
 # Convert AEC 2025 Distribution of Preference data to wide format
 data(aecdop_2025)
 
@@ -94,11 +103,10 @@ data(aecdop_2025)
 # The rest of the parties are aggregated as Other.
 aecdop_2025 <- aecdop_2025 |>
  filter(CalculationType == "Preference Percent") |> 
-  mutate(PartyAb = case_when(
+ mutate(Party = case_when(
     !(PartyAb %in% c("LP", "ALP", "NP", "LNP", "LNQ")) ~ "Other",
     PartyAb %in% c("LP", "NP", "LNP", "LNQ") ~ "LNP",
    TRUE ~ PartyAb))
-#> Error in mutate(filter(aecdop_2025, CalculationType == "Preference Percent"),     PartyAb = case_when(!(PartyAb %in% c("LP", "ALP", "NP", "LNP",         "LNQ")) ~ "Other", PartyAb %in% c("LP", "NP", "LNP",         "LNQ") ~ "LNP", TRUE ~ PartyAb)): could not find function "mutate"
 
 dop_transform(
   data = aecdop_2025,
@@ -107,5 +115,18 @@ dop_transform(
   item_col = Party,
   winner_col = Elected
 )
-#> Error in dop_transform(data = aecdop_2025, key_cols = c(DivisionNm, CountNumber),     value_col = CalculationValue, item_col = Party, winner_col = Elected): Columns not found in data: Party
+#> # A tibble: 976 × 6
+#>    DivisionNm CountNumber   ALP   LNP Other Winner
+#>    <chr>            <dbl> <dbl> <dbl> <dbl> <chr> 
+#>  1 Adelaide             0 0.465 0.242 0.294 ALP   
+#>  2 Adelaide             1 0.467 0.242 0.291 ALP   
+#>  3 Adelaide             2 0.476 0.244 0.279 ALP   
+#>  4 Adelaide             3 0.483 0.249 0.268 ALP   
+#>  5 Adelaide             4 0.493 0.285 0.222 ALP   
+#>  6 Adelaide             5 0.691 0.309 0     ALP   
+#>  7 Aston                0 0.373 0.377 0.251 ALP   
+#>  8 Aston                1 0.373 0.378 0.249 ALP   
+#>  9 Aston                2 0.376 0.380 0.244 ALP   
+#> 10 Aston                3 0.378 0.384 0.238 ALP   
+#> # ℹ 966 more rows
 ```

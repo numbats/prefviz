@@ -15,7 +15,6 @@ stat_ordered_path(
   data = NULL,
   geom = "path",
   position = "identity",
-  na.rm = FALSE,
   show.legend = NA,
   inherit.aes = TRUE,
   decreasing = TRUE,
@@ -143,12 +142,12 @@ in bold).
 ## Examples
 
 ``` r
+library(ggplot2)
+library(dplyr)
 # Data prep
 input_df <- prefviz:::aecdop22_widen |> 
    filter(DivisionNm %in% c("Higgins", "Monash"))
-#> Error: object 'DivisionNm' not found
 tern22 <- ternable(input_df, ALP:Other)
-#> Error: object 'input_df' not found
 
 # Base plot
 p <- get_tern_data(tern22, plot_type = "2D") |> 
@@ -166,12 +165,13 @@ p <- get_tern_data(tern22, plot_type = "2D") |>
     values = c("ALP" = "red", "LNP" = "blue", "Other" = "grey70"),
     aesthetics = c("fill", "colour")
   )
-#> Error: object 'tern22' not found
 
 # Add ordered paths
 p + 
   stat_ordered_path(
     aes(group = DivisionNm, order_by = CountNumber, color = ElectedParty), 
     size = 0.5)
-#> Error: object 'p' not found
+#> Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+#> ℹ Please use `linewidth` instead.
+
 ```

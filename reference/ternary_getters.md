@@ -27,6 +27,11 @@ get_tern_labels(ternable)
   plot to be drawn. Either "2D" for a 2D ternary plot or "HD" for a
   high-dimensional ternary plot.
 
+- include_data:
+
+  Logical. Only in `get_tern_edges()`. If `TRUE`, return data edges,
+  along with simplex edges. If `FALSE`, only return simplex edges.
+
 ## Value
 
 - `get_tern_data()`: A data frame as input for `ggplot2` or `tourr`.
@@ -71,6 +76,7 @@ for creating ternable objects
 
 ``` r
 if (FALSE) { # \dontrun{
+library(ggplot2)
 # Create a ternable object
 tern <- ternable(election_data, ALP:Other)
 

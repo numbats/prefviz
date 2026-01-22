@@ -197,6 +197,7 @@ accessed with
 ## Examples
 
 ``` r
+library(ggplot2)
 aecdop22_transformed <- prefviz:::aecdop22_transformed
 
 # Get ternable

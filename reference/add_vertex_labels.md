@@ -22,6 +22,16 @@ add_vertex_labels(
   columns `x1`, `x2`, and `labels`. Can be specified manually or
   obtained from a ternable object: `ternable_object$simplex_vertices`.
 
+- nudge_x:
+
+  Numeric vector of length 3 specifying horizontal nudges for each
+  vertex label.
+
+- nudge_y:
+
+  Numeric vector of length 3 specifying vertical nudges for each vertex
+  label.
+
 - ...:
 
   Arguments passed to

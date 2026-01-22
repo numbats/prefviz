@@ -94,7 +94,7 @@ of the ternary plot.</li>
 to 1.</li>
 </ul>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  electorate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span><span class="op">)</span>,</span>
 <span>  PartyA <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.4</span>, <span class="fl">0.6</span><span class="op">)</span>,</span>
 <span>  PartyB <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.4</span>, <span class="fl">0.2</span><span class="op">)</span>,</span>
@@ -368,8 +368,8 @@ for relevant information.</p>
 <code class="sourceCode R"><span><span class="co"># only include preference percentage and parties of interest</span></span>
 <span></span>
 <span><span class="va">aecdop_2025</span> <span class="op">&lt;-</span> <span class="va">aecdop_2025</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">CalculationType</span> <span class="op">==</span> <span class="st">"Preference Percent"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">mutate</span><span class="op">(</span>Party <span class="op">=</span> <span class="fu">case_when</span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">CalculationType</span> <span class="op">==</span> <span class="st">"Preference Percent"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Party <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
 <span>    <span class="co"># all parties not in the main parties are grouped into "Other"</span></span>
 <span>    <span class="op">!</span><span class="op">(</span><span class="va">PartyAb</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LP"</span>, <span class="st">"ALP"</span>, <span class="st">"NP"</span>, <span class="st">"LNP"</span>, <span class="st">"LNQ"</span>, <span class="st">"GRN"</span>, <span class="st">"IND"</span><span class="op">)</span><span class="op">)</span> <span class="op">~</span> <span class="st">"Other"</span>, </span>
 <span>    <span class="co"># group all parties in the Coalition into "LNP"</span></span>

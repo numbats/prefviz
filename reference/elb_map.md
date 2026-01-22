@@ -55,7 +55,6 @@ Australian Electoral Commission (AEC)
 ``` r
 library(ggplot2)
 library(ggthemes)
-#> Error in library(ggthemes): there is no package called ‘ggthemes’
 
 # Load the dataset
 data(elb_map)
@@ -66,5 +65,4 @@ ggplot(elb_map) +
     aes(x = long, y = lat, group = group),
     fill = "grey90", color = "white") +
   theme_map()
-#> Error in theme_map(): could not find function "theme_map"
 ```

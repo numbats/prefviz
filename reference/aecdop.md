@@ -70,14 +70,21 @@ A tibble of 14 columns:
 
   Type of calculation:
 
-  - Preference CountNumber of votes received
+  Preference Count
 
-  - Preference PercentPercentage of votes received
+  :   Number of votes received
 
-  - Transfer CountNumber of votes transferred from other candidates
+  Preference Percent
 
-  - Transfer PercentPercentage of votes transferred from other
-    candidates
+  :   Percentage of votes received
+
+  Transfer Count
+
+  :   Number of votes transferred from other candidates
+
+  Transfer Percent
+
+  :   Percentage of votes transferred from other candidates
 
 - CalculationValue:
 

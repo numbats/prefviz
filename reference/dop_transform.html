@@ -69,7 +69,7 @@ into format ready for ternary plots.</p>
 
 <dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p>A data frame containing preference or vote distribution data, with format similar to
-https://results.aec.gov.au/31496/Website/Downloads/HouseDopByDivisionDownload-31496.csv</p></dd>
+<a href="https://results.aec.gov.au/27966/Website/HouseDownloadsMenu-27966-Csv.htm" class="external-link">AEC Distribution of Preferences 2022</a></p></dd>
 
 
 <dt id="arg-key-cols">key_cols<a class="anchor" aria-label="anchor" href="#arg-key-cols"></a></dt>
@@ -123,18 +123,26 @@ Only used if <code>winner_col</code> is specified. Default is "Y".</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Convert AEC 2025 Distribution of Preference data to wide format</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘dplyr’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:stats’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     filter, lag</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:base’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     intersect, setdiff, setequal, union</span>
+<span class="r-in"><span><span class="co"># Convert AEC 2025 Distribution of Preference data to wide format</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">aecdop_2025</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># We are interested in the preferences of Labor, Coalition, Greens and Independent. </span></span></span>
 <span class="r-in"><span><span class="co"># The rest of the parties are aggregated as Other.</span></span></span>
 <span class="r-in"><span><span class="va">aecdop_2025</span> <span class="op">&lt;-</span> <span class="va">aecdop_2025</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">CalculationType</span> <span class="op">==</span> <span class="st">"Preference Percent"</span><span class="op">)</span> <span class="op">|&gt;</span> </span></span>
-<span class="r-in"><span>  <span class="fu">mutate</span><span class="op">(</span>PartyAb <span class="op">=</span> <span class="fu">case_when</span><span class="op">(</span></span></span>
+<span class="r-in"><span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">CalculationType</span> <span class="op">==</span> <span class="st">"Preference Percent"</span><span class="op">)</span> <span class="op">|&gt;</span> </span></span>
+<span class="r-in"><span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Party <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="op">!</span><span class="op">(</span><span class="va">PartyAb</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LP"</span>, <span class="st">"ALP"</span>, <span class="st">"NP"</span>, <span class="st">"LNP"</span>, <span class="st">"LNQ"</span><span class="op">)</span><span class="op">)</span> <span class="op">~</span> <span class="st">"Other"</span>,</span></span>
 <span class="r-in"><span>    <span class="va">PartyAb</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LP"</span>, <span class="st">"NP"</span>, <span class="st">"LNP"</span>, <span class="st">"LNQ"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"LNP"</span>,</span></span>
 <span class="r-in"><span>   <span class="cn">TRUE</span> <span class="op">~</span> <span class="va">PartyAb</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in mutate(filter(aecdop_2025, CalculationType == "Preference Percent"),     PartyAb = case_when(!(PartyAb %in% c("LP", "ALP", "NP", "LNP",         "LNQ")) ~ "Other", PartyAb %in% c("LP", "NP", "LNP",         "LNQ") ~ "LNP", TRUE ~ PartyAb)):</span> could not find function "mutate"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">dop_transform</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">aecdop_2025</span>,</span></span>
@@ -143,7 +151,20 @@ Only used if <code>winner_col</code> is specified. Default is "Y".</p></dd>
 <span class="r-in"><span>  item_col <span class="op">=</span> <span class="va">Party</span>,</span></span>
 <span class="r-in"><span>  winner_col <span class="op">=</span> <span class="va">Elected</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in dop_transform(data = aecdop_2025, key_cols = c(DivisionNm, CountNumber),     value_col = CalculationValue, item_col = Party, winner_col = Elected):</span> Columns not found in data: Party</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 976 × 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    DivisionNm CountNumber   ALP   LNP Other Winner</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> Adelaide             0 0.465 0.242 0.294 ALP   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> Adelaide             1 0.467 0.242 0.291 ALP   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> Adelaide             2 0.476 0.244 0.279 ALP   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> Adelaide             3 0.483 0.249 0.268 ALP   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> Adelaide             4 0.493 0.285 0.222 ALP   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> Adelaide             5 0.691 0.309 0     ALP   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> Aston                0 0.373 0.377 0.251 ALP   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Aston                1 0.373 0.378 0.249 ALP   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> Aston                2 0.376 0.380 0.244 ALP   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Aston                3 0.378 0.384 0.238 ALP   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 966 more rows</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
