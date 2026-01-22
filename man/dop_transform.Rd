@@ -18,7 +18,7 @@ dop_transform(
 }
 \arguments{
 \item{data}{A data frame containing preference or vote distribution data, with format similar to
-\link[AEC Distribution of Preferences]{https://results.aec.gov.au/31496/Website/Downloads/HouseDopByDivisionDownload-31496.csv}}
+\href{https://results.aec.gov.au/27966/Website/HouseDownloadsMenu-27966-Csv.htm}{AEC Distribution of Preferences 2022}}
 
 \item{key_cols}{Columns that identify unique observations, e.g., DivisionNm, CountNumber}
 
@@ -60,6 +60,7 @@ This function is useful for converting all distribution of preference data with 
 into format ready for ternary plots.
 }
 \examples{
+library(dplyr)
 # Convert AEC 2025 Distribution of Preference data to wide format
 data(aecdop_2025)
 
@@ -67,7 +68,7 @@ data(aecdop_2025)
 # The rest of the parties are aggregated as Other.
 aecdop_2025 <- aecdop_2025 |>
  filter(CalculationType == "Preference Percent") |> 
-  mutate(PartyAb = case_when(
+ mutate(Party = case_when(
     !(PartyAb \%in\% c("LP", "ALP", "NP", "LNP", "LNQ")) ~ "Other",
     PartyAb \%in\% c("LP", "NP", "LNP", "LNQ") ~ "LNP",
    TRUE ~ PartyAb))

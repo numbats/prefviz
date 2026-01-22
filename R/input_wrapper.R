@@ -90,7 +90,7 @@ dop_irv <- function(x, value_type = c("percentage", "count"), ...) {
 #' into format ready for ternary plots. 
 #' 
 #' @param data A data frame containing preference or vote distribution data, with format similar to
-#'   \link[AEC Distribution of Preferences]{https://results.aec.gov.au/31496/Website/Downloads/HouseDopByDivisionDownload-31496.csv}
+#'  \href{https://results.aec.gov.au/27966/Website/HouseDownloadsMenu-27966-Csv.htm}{AEC Distribution of Preferences 2022}
 #' @param key_cols Columns that identify unique observations, e.g., DivisionNm, CountNumber
 #' @param value_col Numeric and non-negative. Column containing the numeric values to aggregate, 
 #'  e.g., CalculationValue, Votes. 
@@ -116,7 +116,9 @@ dop_irv <- function(x, value_type = c("percentage", "count"), ...) {
 #'     \item Columns for each item (candidate/party) containing aggregated/normalized values
 #'     \item Winner column (if \code{winner_col} was specified)
 #'   }
+#' 
 #' @examples
+#' library(dplyr)
 #' # Convert AEC 2025 Distribution of Preference data to wide format
 #' data(aecdop_2025)
 #' 
@@ -124,7 +126,7 @@ dop_irv <- function(x, value_type = c("percentage", "count"), ...) {
 #' # The rest of the parties are aggregated as Other.
 #' aecdop_2025 <- aecdop_2025 |>
 #'  filter(CalculationType == "Preference Percent") |> 
-#'   mutate(PartyAb = case_when(
+#'  mutate(Party = case_when(
 #'     !(PartyAb %in% c("LP", "ALP", "NP", "LNP", "LNQ")) ~ "Other",
 #'     PartyAb %in% c("LP", "NP", "LNP", "LNQ") ~ "LNP",
 #'    TRUE ~ PartyAb))
@@ -191,7 +193,7 @@ dop_transform <- function(data,
   # Aggregate data
   group_cols <- c(key_cols_chr, item_col_chr)
   df_agg <- data |>
-    dplyr::group_by(dplyr::across(all_of(group_cols))) |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(group_cols))) |>
     dplyr::summarise(
       aggregated_value = sum(.data[[value_col_chr]], na.rm = TRUE),
       .groups = "drop"
@@ -200,8 +202,8 @@ dop_transform <- function(data,
   # Pivot wider
   df_wide <- df_agg |>
     tidyr::pivot_wider(
-      id_cols = all_of(key_cols_chr),
-      names_from = all_of(item_col_chr),
+      id_cols = dplyr::all_of(key_cols_chr),
+      names_from = dplyr::all_of(item_col_chr),
       values_from = aggregated_value,
       values_fill = fill_value
     )
@@ -213,9 +215,9 @@ dop_transform <- function(data,
   if (normalize) {
     df_wide <- df_wide |>
       dplyr::mutate(
-        row_total = rowSums(dplyr::across(all_of(item_names)), na.rm = TRUE),
+        row_total = rowSums(dplyr::across(dplyr::all_of(item_names)), na.rm = TRUE),
         dplyr::across(
-          all_of(item_names),
+          dplyr::all_of(item_names),
           ~ .x / row_total
         )
       ) |>
@@ -225,7 +227,7 @@ dop_transform <- function(data,
     df_wide <- df_wide |>
       dplyr::mutate(
         dplyr::across(
-          all_of(item_names),
+          dplyr::all_of(item_names),
           ~ if_else(is.nan(.x) | is.infinite(.x), 0, .x)
         )
       )
@@ -233,7 +235,7 @@ dop_transform <- function(data,
   } else if (scale != 1) {
     df_wide <- df_wide |>
       dplyr::mutate(
-        dplyr::across(all_of(item_names), ~ .x / scale)
+        dplyr::across(dplyr::all_of(item_names), ~ .x / scale)
       )
   }
   
@@ -241,9 +243,9 @@ dop_transform <- function(data,
   if (!is.null(winner_col_chr)) {
     winner_data <- data |>
       dplyr::filter(.data[[winner_col_chr]] == winner_identifier) |>
-      dplyr::select(all_of(c(key_cols_chr, item_col_chr))) |>
+      dplyr::select(dplyr::all_of(c(key_cols_chr, item_col_chr))) |>
       dplyr::distinct() |>
-      dplyr::rename(Winner = all_of(item_col_chr))
+      dplyr::rename(Winner = dplyr::all_of(item_col_chr))
     
     df_wide <- df_wide |>
       dplyr::left_join(winner_data, by = key_cols_chr)

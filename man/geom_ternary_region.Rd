@@ -146,6 +146,7 @@ with \code{after_stat()}:
 }
 
 \examples{
+library(ggplot2)
 aecdop22_transformed <- prefviz:::aecdop22_transformed
 
 # Get ternable

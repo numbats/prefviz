@@ -34,7 +34,7 @@
 #' helmert_transform(df, items = c(ALP, LNP, Other))
 #'
 #' @export
-helmert_transform <- function(data, items = everything(), append = FALSE) {
+helmert_transform <- function(data, items = dplyr::everything(), append = FALSE) {
   stopifnot(is.data.frame(data) || is.matrix(data))
 
   input_df <- data.frame(data)

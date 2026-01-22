@@ -16,6 +16,10 @@ add_vertex_labels(
 Should have columns \code{x1}, \code{x2}, and \code{labels}. Can be specified manually or
 obtained from a ternable object: \code{ternable_object$simplex_vertices}.}
 
+\item{nudge_x}{Numeric vector of length 3 specifying horizontal nudges for each vertex label.}
+
+\item{nudge_y}{Numeric vector of length 3 specifying vertical nudges for each vertex label.}
+
 \item{...}{Arguments passed to \code{\link[ggplot2:geom_text]{ggplot2::geom_text()}}, such as
 \code{size}, \code{colour}, \code{fontface}, etc.}
 }

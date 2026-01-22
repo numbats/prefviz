@@ -4,7 +4,15 @@
 \alias{ternable}
 \title{Create a ternable object}
 \usage{
-ternable(data, items = everything(), group = NULL, ...)
+ternable(
+  data,
+  items = dplyr::everything(),
+  group = NULL,
+  order_by = NULL,
+  decreasing = FALSE,
+  na_method = c("drop_na", "drop_group"),
+  ...
+)
 }
 \arguments{
 \item{data}{A data frame containing the item (alternative) columns used to construct the ternary plot.}
@@ -18,18 +26,30 @@ non-negative and sum to 1.}
 the data will be grouped by this variable. This is useful
 for creating paths between observations within each group.}
 
+\item{order_by}{Optional column name indicating the order variable. If specified,
+the data will be ordered by this variable. This is useful
+for creating paths between observations within each group.}
+
+\item{decreasing}{Logical. If \code{TRUE}, paths are ordered in decreasing order
+of \code{order_by}. If \code{FALSE} (default), ordering is increasing.}
+
+\item{na_method}{Character string specifying how to handle missing values in
+\code{order_by}. One of:
+\itemize{
+\item \code{"drop_na"} (default): drop only rows where \code{order_by} is \code{NA};
+\item \code{"drop_group"}: drop entire groups that contain any \code{NA} in \code{order_by}.
+}}
+
 \item{...}{Additional arguments (currently unused, reserved for future extensions).}
 }
 \value{
 A ternable object (S3 class) containing:
-\itemize{
 \item{\code{data}}{: The validated and normalized data frame}
 \item{\code{data_coord}}{: Transformed coordinates for all observations}
 \item{\code{data_edges}}{: Edge connections for drawing paths between observations}
 \item{\code{simplex_vertices}}{: Vertex coordinates and labels for the simplex}
 \item{\code{simplex_edges}}{: Edge connections for drawing the simplex boundary}
 \item{\code{vertex_labels}}{: Labels of the vertices, same as names of the selected item columns}
-}
 }
 \description{
 Creates a ternable object, which contains observation coordinates, simplex vertices, and edges

@@ -25,7 +25,7 @@
 #'   \item{Elected}{Whether the candidate was elected: "Y" (yes) or "N" (no)}
 #'   \item{HistoricElected}{Whether the candidate was elected in the previous election: "Y" (yes) or "N" (no)}
 #'   \item{CalculationType}{Type of calculation: 
-#'     \itemize{  
+#'     \describe{  
 #'       \item{Preference Count}{Number of votes received}
 #'       \item{Preference Percent}{Percentage of votes received}
 #'       \item{Transfer Count}{Number of votes transferred from other candidates}

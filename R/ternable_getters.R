@@ -8,6 +8,8 @@
 #' @param ternable A ternable object created by [ternable()].
 #' @param plot_type Only in `get_tern_data()`. Character string specifying the type of plot to be drawn. 
 #'   Either "2D" for a 2D ternary plot or "HD" for a high-dimensional ternary plot.
+#' @param include_data Logical. Only in `get_tern_edges()`. If `TRUE`, return data edges, along with simplex edges. 
+#'   If `FALSE`, only return simplex edges.
 #'
 #' @return 
 #' - `get_tern_data()`: A data frame as input for `ggplot2` or `tourr`.
@@ -38,6 +40,7 @@
 #'
 #' @examples
 #' \dontrun{
+#' library(ggplot2)
 #' # Create a ternable object
 #' tern <- ternable(election_data, ALP:Other)
 #' 

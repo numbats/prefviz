@@ -14,7 +14,6 @@ stat_ordered_path(
   data = NULL,
   geom = "path",
   position = "identity",
-  na.rm = FALSE,
   show.legend = NA,
   inherit.aes = TRUE,
   decreasing = TRUE,
@@ -108,6 +107,8 @@ bold).
 }
 
 \examples{
+library(ggplot2)
+library(dplyr)
 # Data prep
 input_df <- prefviz:::aecdop22_widen |> 
    filter(DivisionNm \%in\% c("Higgins", "Monash"))

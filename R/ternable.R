@@ -24,14 +24,12 @@
 #' @param ... Additional arguments (currently unused, reserved for future extensions).
 #' 
 #' @return A ternable object (S3 class) containing:
-#' \itemize{
 #'   \item{`data`}{: The validated and normalized data frame}
 #'   \item{`data_coord`}{: Transformed coordinates for all observations}
 #'   \item{`data_edges`}{: Edge connections for drawing paths between observations}
 #'   \item{`simplex_vertices`}{: Vertex coordinates and labels for the simplex}
 #'   \item{`simplex_edges`}{: Edge connections for drawing the simplex boundary}
 #'   \item{`vertex_labels`}{: Labels of the vertices, same as names of the selected item columns}
-#' }
 #'
 #' @examples
 #' 
@@ -44,7 +42,7 @@
 #'
 #' @export
 ternable <- function(data, 
-                    items = everything(), 
+                    items = dplyr::everything(), 
                     group = NULL, 
                     order_by = NULL, 
                     decreasing = FALSE,

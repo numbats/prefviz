@@ -18,6 +18,9 @@ get_tern_labels(ternable)
 
 \item{plot_type}{Only in \code{get_tern_data()}. Character string specifying the type of plot to be drawn.
 Either "2D" for a 2D ternary plot or "HD" for a high-dimensional ternary plot.}
+
+\item{include_data}{Logical. Only in \code{get_tern_edges()}. If \code{TRUE}, return data edges, along with simplex edges.
+If \code{FALSE}, only return simplex edges.}
 }
 \value{
 \itemize{
@@ -57,6 +60,7 @@ of high-dimensional ternary data:
 }
 \examples{
 \dontrun{
+library(ggplot2)
 # Create a ternable object
 tern <- ternable(election_data, ALP:Other)
 

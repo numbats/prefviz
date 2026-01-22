@@ -1,0 +1,13 @@
+utils::globalVariables(c(
+  "Var1",
+  "Var2", 
+  "aggregated_value",
+  "candidate",
+  "pref_value",
+  "row_total",
+  "value",
+  "x1",
+  "x2",
+  "y",
+  ".data"
+))

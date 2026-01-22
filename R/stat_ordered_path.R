@@ -56,6 +56,8 @@
 #' * alpha, colour, linewidth, linetype, etc. (inherited from [ggplot2::geom_path()])
 #'
 #' @examples
+#' library(ggplot2)
+#' library(dplyr)
 #' # Data prep
 #' input_df <- prefviz:::aecdop22_widen |> 
 #'    filter(DivisionNm %in% c("Higgins", "Monash"))
@@ -90,9 +92,8 @@
 #' @export
 #' @rdname stat_ordered_path
 stat_ordered_path <- function(mapping = NULL, data = NULL, geom = "path",
-                         position = "identity", na.rm = FALSE, 
-                         show.legend = NA, inherit.aes = TRUE, 
-                         decreasing = TRUE,
+                         position = "identity", show.legend = NA, 
+                         inherit.aes = TRUE, decreasing = TRUE,
                          na_method = c("drop_na", "drop_group"),
                          ...) {
   

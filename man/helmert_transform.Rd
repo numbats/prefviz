@@ -4,7 +4,7 @@
 \alias{helmert_transform}
 \title{Transform compositional data using Helmert matrix}
 \usage{
-helmert_transform(data, items = everything(), append = FALSE)
+helmert_transform(data, items = dplyr::everything(), append = FALSE)
 }
 \arguments{
 \item{data}{A data frame or matrix containing the compositional data.}
