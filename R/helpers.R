@@ -120,13 +120,31 @@ ordered_path_df <- function(data,
                           decreasing = FALSE,
                           na_method  = c("drop_na", "drop_group")) {
 
-  group_chr <- rlang::as_label(rlang::ensym(group))
-  order_chr <- rlang::as_label(rlang::ensym(order_by))
+  # group_chr <- rlang::as_label(rlang::ensym(group))
+  # order_chr <- rlang::as_label(rlang::ensym(order_by))
+  # na_method <- match.arg(na_method)
+
+  group_quo <- rlang::enquo(group)
+  if (rlang::quo_is_null(group_quo)) {
+    group_col_chr <- character(0)
+  } else {
+    group_col_ind <- tidyselect::eval_select(group_quo, data)
+    group_col_chr <- colnames(data)[group_col_ind]
+  }
+
+  order_quo <- rlang::enquo(order_by)
+  if (rlang::quo_is_null(order_quo)) {
+    order_col_chr <- character(0)
+  } else {
+    order_col_ind <- tidyselect::eval_select(order_quo, data)
+    order_col_chr <- colnames(data)[order_col_ind]
+  }
+  
   na_method <- match.arg(na_method)
 
   process_one_group <- function(df) {
     # NA handling
-    na_rows <- is.na(df[[order_chr]])
+    na_rows <- is.na(df[[order_col_chr]])
     if (any(na_rows)) {
       if (na_method == "drop_group") {
         return(df[0, , drop = FALSE])
@@ -149,7 +167,7 @@ ordered_path_df <- function(data,
 
     # Ties handling
     if (nrow(df) > 1L) {
-      ties_logical <- duplicated(df[[order_chr]]) | duplicated(df[[order_chr]], fromLast = TRUE)
+      ties_logical <- duplicated(df[[order_col_chr]]) | duplicated(df[[order_col_chr]], fromLast = TRUE)
       if (any(ties_logical)) {
         ties_sum <- sum(ties_logical)
         warning(
@@ -163,13 +181,13 @@ ordered_path_df <- function(data,
       }
     }
 
-    o <- order(df[[order_chr]], decreasing = decreasing, na.last = TRUE)
+    o <- order(df[[order_col_chr]], decreasing = decreasing, na.last = TRUE)
     return(df[o, , drop = FALSE])
   }
 
-  if (!is.null(group_chr)) {
+  if (length(group_col_chr) > 0) {
     res <- data |>
-      dplyr::group_by(.data[[group_chr]]) |>
+      dplyr::group_by(.data[[group_col_chr]]) |>
       dplyr::group_modify(~ process_one_group(.x)) |>
       dplyr::ungroup()
   } else {
@@ -202,7 +220,7 @@ add_data_edges <- function(data, group_col_chr) {
   } else {
     data_edges <- data |> 
       dplyr::mutate(Var1 = dplyr::row_number()) |>
-      group_by(dplyr::across(all_of(group_col_chr))) |>
+      dplyr::group_by(dplyr::across(dplyr::all_of(group_col_chr))) |>
       dplyr::mutate(Var2 = dplyr::lead(Var1, default = dplyr::last(Var1))) |> 
       dplyr::ungroup() |>
       dplyr::select(Var1, Var2)

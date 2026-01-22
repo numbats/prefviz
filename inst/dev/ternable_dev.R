@@ -4,7 +4,7 @@ library(ggplot2)
 pref_2022 <- read_csv("inst/dev/pref_2022.csv") |> filter(CountNumber == 0)
 pref_2025 <- read_csv("inst/dev/pref_2025.csv")
 
-ternary_tour22 <- ternable(pref_2022, ALP:Other)
+ternary_tour22 <- ternable(pref_2022, ALP:Other, group = CountNumber, order_by = ALP, decreasing = TRUE)
 ternary_tour25 <- ternable(pref_2025, 3:7)
 
 tern_data <- cbind(ternary_tour22$data, ternary_tour22$ternary_coord)

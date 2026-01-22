@@ -51,15 +51,6 @@ add_data_edges(pref_2022, "DivisionNm")
 
 #----- Detour
 
-# Color
-colors <- c(
-  "ALP" = "red",    # Red
-  "LNP" = "blue",    # Blue
-  "GRN" = "green",    # Green
-  "IND" = "orange",    # Orange
-  "Other" = "gray"   # Gray
-)
-
 # First preference scatter
 first_pref_2025 <- read_csv("inst/dev/pref_2025.csv") |> 
   filter(CountNumber == 0)
@@ -69,19 +60,9 @@ tern_first_pref <- ternable(first_pref_2025, ALP:IND)
 col_first_pref <- c(rep("black", 5),
   party_colors[first_pref_2025$Winner])
 
-animate_xy(
-  get_tern_data(tern_first_pref, plot_type = "HD"), 
-  edges = get_tern_edges(tern_first_pref),
-  obs_labels  = get_tern_labels(tern_first_pref),
-  col = col_first_pref,
-  axes = "bottomleft"
-)
-
-d_edges <- get_tern_edges(tern_first_pref)
 dtour_data <- tern_first_pref$simplex_vertices |>
-  mutate(
-    Winner = labels
-  ) |> 
+  mutate(Winner = labels) |> 
+  mutate(Winner = factor(Winner, levels = c("ALP", "LNP", "GRN", "IND", "Other"))) |>
   bind_rows(get_tern_data(tern_first_pref, plot_type = "2D")) |> 
   mutate(text = if_else(
     is.na(labels), 

@@ -12,6 +12,15 @@
 #' @param group Optional column name indicating the grouping variable. If specified, 
 #'   the data will be grouped by this variable. This is useful 
 #'   for creating paths between observations within each group.
+#' @param order_by Optional column name indicating the order variable. If specified, 
+#'   the data will be ordered by this variable. This is useful 
+#'   for creating paths between observations within each group.
+#' @param decreasing Logical. If `TRUE`, paths are ordered in decreasing order
+#'   of `order_by`. If `FALSE` (default), ordering is increasing.
+#' @param na_method Character string specifying how to handle missing values in
+#'   `order_by`. One of:
+#'   * `"drop_na"` (default): drop only rows where `order_by` is `NA`;
+#'   * `"drop_group"`: drop entire groups that contain any `NA` in `order_by`.
 #' @param ... Additional arguments (currently unused, reserved for future extensions).
 #' 
 #' @return A ternable object (S3 class) containing:
@@ -36,7 +45,10 @@
 #' @export
 ternable <- function(data, 
                     items = everything(), 
-                    group = NULL, ...) {
+                    group = NULL, 
+                    order_by = NULL, 
+                    decreasing = FALSE,
+                    na_method  = c("drop_na", "drop_group"),...) {
   stopifnot(is.data.frame(data))
 
   item_col_ind <- tidyselect::eval_select(
@@ -52,9 +64,23 @@ ternable <- function(data,
     group_col_chr <- colnames(data)[group_col_ind]
   }
 
+  order_quo <- rlang::enquo(order_by)
+  if (rlang::quo_is_null(order_quo)) {
+    order_col_chr <- character(0)
+  } else {
+    order_col_ind <- tidyselect::eval_select(order_quo, data)
+    order_col_chr <- colnames(data)[order_col_ind]
+  }
+
   validate_df <- validate_ternable(data, item_col_chr)
 
-  new_ternable(validate_df, item_col_chr, group_col_chr, ...)
+  new_ternable(validate_df, 
+    item_col_chr, 
+    group_col_chr, 
+    order_col_chr,
+    decreasing,
+    na_method,
+    ...)
 }
 
 #' Validate input for ternable
@@ -126,9 +152,17 @@ validate_ternable <- function(data, item_col_chr) {
 #'
 #' @keywords internal
 #' @noRd
-new_ternable <- function(data, item_col_chr, group_col_chr, ...) {
+new_ternable <- function(data, item_col_chr, group_col_chr, 
+                        order_col_chr, decreasing, na_method,...) {
   stopifnot(is.data.frame(data))
   stopifnot(is.character(item_col_chr))
+  stopifnot(is.character(group_col_chr))
+  stopifnot(is.character(order_col_chr))
+
+  # Reorder data if order_by is specified
+  if (length(order_col_chr) > 0) {
+    data <- ordered_path_df(data, group_col_chr, order_col_chr, decreasing, na_method)
+  }
 
   # Get ternary coordinates of the data
   cart_df <- helmert_transform(data, items = item_col_chr)
