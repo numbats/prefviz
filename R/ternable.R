@@ -167,8 +167,8 @@ new_ternable <- function(data, item_col_chr, group_col_chr,
 
   # Define the simplex
   simp <- geozoo::simplex(p = length(item_col_chr) - 1)
-  simp_points <- data.frame(simp$points)
-  colnames(simp_points) <- paste0("x", 1:ncol(simp_points))
+  simp_points <- tibble::as_tibble(simp$points) |> 
+    dplyr::rename_with(~paste0("x", seq_along(.)))
 
   # Define the vertex labels
   simp_points$labels <- item_col_chr

@@ -37,7 +37,7 @@
 helmert_transform <- function(data, items = dplyr::everything(), append = FALSE) {
   stopifnot(is.data.frame(data) || is.matrix(data))
 
-  input_df <- data.frame(data)
+  input_df <- tibble::as_tibble(data)
 
   item_col_ind <- tidyselect::eval_select(
       rlang::enquo(items), 
@@ -54,9 +54,12 @@ helmert_transform <- function(data, items = dplyr::everything(), append = FALSE)
   
   # Combine with original data
   if (append) {
-    res <- cbind(data.frame(data), data.frame(cart_output))
+    res <- dplyr::bind_cols(
+      input_df,
+      tibble::as_tibble(cart_output)
+    )
   } else {
-    res <- data.frame(cart_output)
+    res <- tibble::as_tibble(cart_output)
   }
 
   return(res)
