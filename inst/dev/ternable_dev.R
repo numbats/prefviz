@@ -16,7 +16,7 @@ ggplot(
 ) +
   geom_ternary_cart() +
   geom_ternary_region(
-    vertex_labels = ternary_tour22$alternatives,
+    vertex_labels = ternary_tour22$vertex_labels,
     aes(fill = after_stat(vertex_labels)), 
     alpha = 0.5, color = "grey50",
     show.legend = FALSE
@@ -31,11 +31,11 @@ sp <- ternary_tour25$simplex_vertices |>
 tern_data25 <- rbind(sp, ternary_tour25$ternary_coord)
 labels <- c(ternary_tour25$simplex_vertices$labels, rep("", nrow(ternary_tour25$ternary_coord)))
 
-tourr::animate_xy(
-  tern_data25,
-  edges = ternary_tour25$simplex_edges,
-  obs_labels = labels
-)
+# tourr::animate_xy(
+#   tern_data25,
+#   edges = ternary_tour25$simplex_edges,
+#   obs_labels = labels
+# )
 
 # Different alphabetical order
 
@@ -44,14 +44,3 @@ pref_2025_trunc <- pref_2025 |>
   select(Winner, ALP, LNP, IND)
 
 ttern_2025 <- ternable(pref_2025_trunc, ALP:IND)
-
-ggtern_cart2d(ttern_2025$data, alternatives = c("ALP", "LNP", "IND")) +
-  geom_ternary_region(
-    vertex_labels = ttern_2025$alternatives,
-    aes(fill = after_stat(vertex_labels)), 
-    alpha = 0.5, color = "grey50"
-  ) +
-  geom_point(aes(color = Winner)) +
-  scale_fill_manual(
-    values = c("ALP" = "#009E73", "LNP" = "#D55E00", "IND" = "#CC79A7"),
-    aesthetics = c("fill", "colour")) 
