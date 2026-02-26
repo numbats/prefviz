@@ -37,11 +37,11 @@
 #' prefviz:::aecdop25_transformed
 #' 
 #' # Create the ternable object
-#' tern <- ternable(prefviz:::aecdop25_transformed, items = ALP:Other)
+#' tern <- as_ternable(prefviz:::aecdop25_transformed, items = ALP:Other)
 #' tern
 #'
 #' @export
-ternable <- function(data, 
+as_ternable <- function(data, 
                     items = dplyr::everything(), 
                     group = NULL, 
                     order_by = NULL, 
@@ -139,7 +139,7 @@ validate_ternable <- function(data, item_col_chr) {
 #'
 #' @description
 #' Constructor that builds the ternable object after validation. 
-#' Users should use [ternable()] instead.
+#' Users should use [as_ternable()] instead.
 #'
 #' @param data A validated data frame
 #' @param item_col_chr Character vector of item column names
@@ -167,8 +167,8 @@ new_ternable <- function(data, item_col_chr, group_col_chr,
 
   # Define the simplex
   simp <- geozoo::simplex(p = length(item_col_chr) - 1)
-  simp_points <- tibble::as_tibble(simp$points) |> 
-    dplyr::rename_with(~paste0("x", seq_along(.)))
+  colnames(simp$points) <- paste0("x", seq_len(ncol(simp$points)))
+  simp_points <- tibble::as_tibble(simp$points)
 
   # Define the vertex labels
   simp_points$labels <- item_col_chr

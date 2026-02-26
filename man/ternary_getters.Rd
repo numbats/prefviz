@@ -14,7 +14,7 @@ get_tern_edges(ternable, include_data = FALSE)
 get_tern_labels(ternable)
 }
 \arguments{
-\item{ternable}{A ternable object created by \code{\link[=ternable]{ternable()}}.}
+\item{ternable}{A ternable object created by \code{\link[=as_ternable]{as_ternable()}}.}
 
 \item{plot_type}{Only in \code{get_tern_data()}. Character string specifying the type of plot to be drawn.
 Either "2D" for a 2D ternary plot or "HD" for a high-dimensional ternary plot.}
@@ -62,7 +62,7 @@ of high-dimensional ternary data:
 \dontrun{
 library(ggplot2)
 # Create a ternable object
-tern <- ternable(election_data, ALP:Other)
+tern <- as_ternable(election_data, ALP:Other)
 
 # Use with tourr (example)
 tourr::animate_xy(
@@ -79,5 +79,5 @@ ggplot(get_tern_data(tern, plot_type = "2D"), aes(x = x1, y = x2)) +
 
 }
 \seealso{
-\code{\link[=ternable]{ternable()}} for creating ternable objects
+\code{\link[=as_ternable]{as_ternable()}} for creating ternable objects
 }

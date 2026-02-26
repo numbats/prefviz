@@ -41,7 +41,7 @@ input_df <- aecdop22_widen |>
 head(input_df)
 
 # Create ternable object
-tern22 <- ternable(input_df, ALP:Other)
+tern22 <- as_ternable(input_df, ALP:Other)
 ```
 
 For 2D ternary plots, adding ordered paths is straightforward using the `stat_ordered_path()` function, and providing the `order_by` aesthetic. This is equivalent to `geom_path()` when you pre-order your data points in the order you want them to be connected. 
@@ -88,7 +88,7 @@ input_df2 <- aecdop25_widen |>
 head(input_df2)
 
 # Create ternable object
-tern25 <- ternable(input_df2, ALP:IND, group = DivisionNm)
+tern25 <- as_ternable(input_df2, ALP:IND, group = DivisionNm)
 ```
 
 Adding paths in a high-dimensional ternary plot is made possible by the `edges` arguments in `display_xy()`. Therefore, besides simplex edges, we need to provide the data edges to the `edges` argument. This can be done by setting `include_data = TRUE` in `get_tern_edges()`.

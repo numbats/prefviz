@@ -82,18 +82,10 @@ head(aecdop22_transformed)
 #> 6 Barton               0 ALP          0.504 0.262 0.234
 ```
 
-We can create a `ternable` object using the `ternable()` function:
+We can create a `ternable` object using the `as_ternable()` function:
 
 ``` r
-tern22 <- ternable(aecdop22_transformed, ALP:Other)
-#> Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if
-#> `.name_repair` is omitted as of tibble 2.0.0.
-#> ℹ Using compatibility `.name_repair`.
-#> ℹ The deprecated feature was likely used in the prefviz package.
-#>   Please report the issue at <https://github.com/numbats/prefviz/issues>.
-#> This warning is displayed once per session.
-#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-#> generated.
+tern22 <- as_ternable(aecdop22_transformed, ALP:Other)
 tern22
 #> Ternable object
 #> ----------------
@@ -160,7 +152,7 @@ head(aecdop25_transformed)
 #> 6 Barton               0 ALP          0.471 0.159  0.242 0.128 0
 
 # Create ternable object
-tern25 <- ternable(aecdop25_transformed, ALP:IND)
+tern25 <- as_ternable(aecdop25_transformed, ALP:IND)
 
 # Add colors to the points
 party_colors <- c(

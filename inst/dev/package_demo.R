@@ -27,7 +27,7 @@ pref25_2d <- dop_transform(
 )
 
 # Ternable
-tern_2d <- ternable(pref25_2d, items = ALP:Other)
+tern_2d <- as_ternable(pref25_2d, items = ALP:Other)
 
 # Plot
 input_data <- get_tern_data(tern_2d, plot_type = "2D") |> 
@@ -129,7 +129,7 @@ pref25_hd <- dop_transform(
 )
 
 # Ternable
-tern_hd <- ternable(pref25_hd, ALP:IND)
+tern_hd <- as_ternable(pref25_hd, ALP:IND)
 
 # Detour
 party_colors <- c(

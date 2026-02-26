@@ -50,7 +50,7 @@
 #' aecdop22_transformed <- prefviz:::aecdop22_transformed
 #' 
 #' # Get ternable
-#' tern22 <- ternable(aecdop22_transformed, ALP:Other)
+#' tern22 <- as_ternable(aecdop22_transformed, ALP:Other)
 #' 
 #' # Draw the ternary plot
 #' ggplot(get_tern_data(tern22, plot_type = "2D"), aes(x = x1, y = x2)) +

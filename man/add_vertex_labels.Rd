@@ -32,7 +32,7 @@ library(ggplot2)
 
 # Create a ternable object
 aecdop22_transformed <- prefviz:::aecdop22_transformed
-tern <- ternable(aecdop22_transformed, ALP:Other)
+tern <- as_ternable(aecdop22_transformed, ALP:Other)
 
 ggplot() +
   add_ternary_base() +

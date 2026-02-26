@@ -32,7 +32,7 @@ This vignette shows how to transform common voting data formats into a `ternable
 
 # `ternable`-friendly data
 
-`ternable()` creates a `ternable` object, which is a S3 object that contains the data and metadata necessary for ternary plots. 
+`as_ternable()` creates a `ternable` object, which is a S3 object that contains the data and metadata necessary for ternary plots. 
 
 A `ternable`-friendly data frame must have the following characteristics:
 

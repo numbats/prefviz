@@ -112,7 +112,7 @@ library(dplyr)
 # Data prep
 input_df <- prefviz:::aecdop22_widen |> 
    filter(DivisionNm \%in\% c("Higgins", "Monash"))
-tern22 <- ternable(input_df, ALP:Other)
+tern22 <- as_ternable(input_df, ALP:Other)
 
 # Base plot
 p <- get_tern_data(tern22, plot_type = "2D") |> 

@@ -45,7 +45,7 @@ You can access all these components conveniently via a `ternable` object.
 - `simplex_edges`: Stores the connections between the simplex vertices.
 - `vertex_labels`: Stores the vertex labels/item names in the order provided in the argument `items`.
 
-To create a `ternable` object, simply call the function `ternable()`. `ternable()` takes 2 arguments:
+To create a `ternable` object, simply call the function `as_ternable()`. `as_ternable()` takes 2 arguments:
 
 - `data`: The input data, which must be in a `ternable`-friendly format. For more details on how to transform your raw data into a `ternable`-friendly format, please refer to `vignette("transform_raw_data")`
 - `items`: The item names in the order you want them to appear in the ternary plot. The default takes all the columns in `data`.
@@ -54,7 +54,7 @@ To create a `ternable` object, simply call the function `ternable()`. `ternable(
 aecdop22_transformed <- prefviz:::aecdop22_transformed
 head(aecdop22_transformed)
 
-tern22 <- ternable(data = aecdop22_transformed, items = ALP:Other)
+tern22 <- as_ternable(data = aecdop22_transformed, items = ALP:Other)
 tern22
 ```
 
@@ -74,10 +74,10 @@ There are 3 `get_tern_*()` functions:
 
 Take the example of the 2022 Australian Federal Election, we would like to take a look at the first preference distribution between the 2 major parties: Labor and the Coalition, and other parties. 
 
-The dataset `aecdop22_transformed` is already in a `ternable`-friendly format, so we can directly pass it to `ternable()` to create a `ternable` object.
+The dataset `aecdop22_transformed` is already in a `ternable`-friendly format, so we can directly pass it to `as_ternable()` to create a `ternable` object.
 
 ```{r}
-tern22 <- ternable(aecdop22_transformed, ALP:Other)
+tern22 <- as_ternable(aecdop22_transformed, ALP:Other)
 ```
 
 Now we can use the `get_tern_data()` function to get the input data for `ggplot2`.
@@ -139,7 +139,7 @@ A ternary tour requires the following components:
 aecdop25_transformed <- prefviz:::aecdop25_transformed
 head(aecdop25_transformed)
 
-tern25 <- ternable(aecdop25_transformed, ALP:IND)
+tern25 <- as_ternable(aecdop25_transformed, ALP:IND)
 
 # Animate the tour
 animate_xy(

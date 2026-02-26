@@ -68,9 +68,9 @@ aecdop22_transformed <- prefviz:::aecdop22_transformed
 head(aecdop22_transformed)
 ```
 
-We can create a `ternable` object using the `ternable()` function:
+We can create a `ternable` object using the `as_ternable()` function:
 ```{r}
-tern22 <- ternable(aecdop22_transformed, ALP:Other)
+tern22 <- as_ternable(aecdop22_transformed, ALP:Other)
 tern22
 ```
 
@@ -107,7 +107,7 @@ aecdop25_transformed <- prefviz:::aecdop25_transformed
 head(aecdop25_transformed)
 
 # Create ternable object
-tern25 <- ternable(aecdop25_transformed, ALP:IND)
+tern25 <- as_ternable(aecdop25_transformed, ALP:IND)
 
 # Add colors to the points
 party_colors <- c(
