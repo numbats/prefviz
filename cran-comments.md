@@ -5,7 +5,7 @@ First release
 ## R CMD check results
 
 ── R CMD check results ───────────────────────────────── prefviz 0.1.0 ────
-Duration: 56.8s
+Duration: 53s
 
 ❯ checking for future file timestamps ... NOTE
   unable to verify current time

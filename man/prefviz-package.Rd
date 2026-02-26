@@ -6,7 +6,7 @@
 \alias{prefviz-package}
 \title{prefviz: Visualizes preference data via ternary plots in two and higher dimensions}
 \description{
-Visualises preference and ranking data by extending traditional ternary plots to support high-dimensional simplexes. It provides methods to transform compositional data into coordinates suitable for 2D and high-dimensional ternary plots. Compatibility with interacitve visualization packages such as `plotly` allows users to explore high-dimensional preference structures dynamically.
+Visualises preference and ranking data by extending traditional ternary plots to support high-dimensional simplexes. The package provides methods to transform compositional data into coordinates suitable for 2D and high-dimensional ternary plots. Compatibility with interactive visualization packages such as `plotly` or `detourr` allows users to explore high-dimensional preference structures dynamically.
 }
 \seealso{
 Useful links:
@@ -21,8 +21,8 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Dianne Cook \email{DiCook@monash.edu} (Supervisor)
-  \item Damjan Dvukcevic \email{Damjan@Vukcevic.net} (Supervisor)
+  \item Dianne Cook \email{DiCook@monash.edu} (\href{https://orcid.org/0000-0002-3813-7155}{ORCID})
+  \item Damjan Dvukcevic \email{Damjan@Vukcevic.net} (\href{https://orcid.org/0000-0001-7780-9586}{ORCID})
 }
 
 }

@@ -61,7 +61,7 @@ necessary for building a ternary plot in both two and higher dimensions.
 prefviz:::aecdop25_transformed
 
 # Create the ternable object
-tern <- as_ternable(prefviz:::aecdop25_transformed, items = ALP:Other)
+tern <- as_ternable(prefviz:::aecdop25_transformed, items = ALP:IND)
 tern
 
 }
