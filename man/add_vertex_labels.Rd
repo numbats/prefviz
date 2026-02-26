@@ -35,7 +35,7 @@ aecdop22_transformed <- prefviz:::aecdop22_transformed
 tern <- ternable(aecdop22_transformed, ALP:Other)
 
 ggplot() +
-  geom_ternary_cart() +
+  add_ternary_base() +
   add_vertex_labels(tern$simplex_vertices, size = 5, fontface = "bold")
 
 }

@@ -54,7 +54,7 @@
 #' 
 #' # Draw the ternary plot
 #' ggplot(get_tern_data(tern22, plot_type = "2D"), aes(x = x1, y = x2)) +
-#'   geom_ternary_cart() +
+#'   add_ternary_base() +
 #'   geom_ternary_region(
 #'     vertex_labels = tern22$vertex_labels,
 #'     aes(fill = after_stat(vertex_labels)), 

@@ -92,7 +92,7 @@ The output is a data frame where the original columns are combined with the coor
 ```{r}
 p <- ggplot(input_df, aes(x = x1, y = x2)) +
   # Draw the ternary space as an equilateral triangle
-  geom_ternary_cart() + 
+  add_ternary_base() + 
   # Plot the observations as points
   geom_point(aes(color = ElectedParty)) + 
   # Add vertex labels, taken from the ternable object

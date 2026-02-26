@@ -10,13 +10,13 @@
 #' library(ggplot2)
 #' 
 #' # Basic simplex
-#' ggplot() + geom_ternary_cart()
+#' ggplot() + add_ternary_base()
 #' 
 #' # Customize appearance
-#' ggplot() + geom_ternary_cart(colour = "blue", linewidth = 1.5)
+#' ggplot() + add_ternary_base(colour = "blue", linewidth = 1.5)
 #'
 #' @export
-geom_ternary_cart <- function(...) {
+add_ternary_base <- function(...) {
   vert <- geozoo::simplex(p = 2)$points
   vert_df <- as.data.frame(vert)
   colnames(vert_df) <- c("x", "y")
@@ -27,7 +27,6 @@ geom_ternary_cart <- function(...) {
       data = vert_df,
       mapping = ggplot2::aes(x = .data$x, y = .data$y),
       fill = NA,
-      colour = "black",
       inherit.aes = FALSE,
       ...
     ),

@@ -73,7 +73,7 @@ tourr::animate_xy(
 
 # Use with ggplot2 (example)
 ggplot(get_tern_data(tern, plot_type = "2D"), aes(x = x1, y = x2)) +
-  geom_ternary_cart() +
+  add_ternary_base() +
   geom_point(aes(color = ElectedParty))
 }
 

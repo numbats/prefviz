@@ -86,6 +86,14 @@ We can create a `ternable` object using the `ternable()` function:
 
 ``` r
 tern22 <- ternable(aecdop22_transformed, ALP:Other)
+#> Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if
+#> `.name_repair` is omitted as of tibble 2.0.0.
+#> ℹ Using compatibility `.name_repair`.
+#> ℹ The deprecated feature was likely used in the prefviz package.
+#>   Please report the issue at <https://github.com/numbats/prefviz/issues>.
+#> This warning is displayed once per session.
+#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+#> generated.
 tern22
 #> Ternable object
 #> ----------------
@@ -117,7 +125,7 @@ head(input_df)
 
 # Visualize
 ggplot(input_df, aes(x = x1, y = x2)) +
-  geom_ternary_cart() +
+  add_ternary_base() +
   geom_ternary_region(
     vertex_labels = tern22$vertex_labels,
     aes(fill = after_stat(vertex_labels)), 

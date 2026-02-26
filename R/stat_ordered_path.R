@@ -66,7 +66,7 @@
 #' # Base plot
 #' p <- get_tern_data(tern22, plot_type = "2D") |> 
 #'   ggplot(aes(x = x1, y = x2)) +
-#'   geom_ternary_cart() +
+#'   add_ternary_base() +
 #'   geom_ternary_region(
 #'     aes(fill = after_stat(vertex_labels)),
 #'     vertex_labels = tern22$vertex_labels,

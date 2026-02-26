@@ -83,7 +83,7 @@ head(input_df)
 
 # Visualize
 ggplot(input_df, aes(x = x1, y = x2)) +
-  geom_ternary_cart() +
+  add_ternary_base() +
   geom_ternary_region(
     vertex_labels = tern22$vertex_labels,
     aes(fill = after_stat(vertex_labels)), 
