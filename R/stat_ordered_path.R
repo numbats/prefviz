@@ -83,8 +83,7 @@
 #' # Add ordered paths
 #' p + 
 #'   stat_ordered_path(
-#'     aes(group = DivisionNm, order_by = CountNumber, color = ElectedParty), 
-#'     size = 0.5)
+#'     aes(group = DivisionNm, order_by = CountNumber, color = ElectedParty))
 #' 
 #' @return A ggplot2 layer that can be added to a plot object.
 #' @name stat_ordered_path

@@ -49,8 +49,7 @@ po/*~
 rsconnect/
 /.quarto/
 
-# Heavy shapefile
-data-raw/2025_ELB
+# Dev files
 inst/doc
 /doc/
 /Meta/

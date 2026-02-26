@@ -134,8 +134,7 @@ p <- get_tern_data(tern22, plot_type = "2D") |>
 # Add ordered paths
 p + 
   stat_ordered_path(
-    aes(group = DivisionNm, order_by = CountNumber, color = ElectedParty), 
-    size = 0.5)
+    aes(group = DivisionNm, order_by = CountNumber, color = ElectedParty))
 
 }
 \keyword{datasets}
