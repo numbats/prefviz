@@ -22,7 +22,7 @@ reference:
   - title: Draw a 2D ternary plots
     desc: Main plotting functions for ternary diagrams
     contents:
-    - geom_ternary_cart
+    - add_ternary_base
     - geom_ternary_region
     - stat_ternary_region
     - add_vertex_labels
