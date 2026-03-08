@@ -19,7 +19,7 @@ get_tern_labels(ternable)
 - ternable:
 
   A ternable object created by
-  [`ternable()`](https://numbats.github.io/prefviz/reference/ternable.md).
+  [`as_ternable()`](https://numbats.github.io/prefviz/reference/as_ternable.md).
 
 - plot_type:
 
@@ -69,7 +69,7 @@ tours of high-dimensional ternary data:
 
 ## See also
 
-[`ternable()`](https://numbats.github.io/prefviz/reference/ternable.md)
+[`as_ternable()`](https://numbats.github.io/prefviz/reference/as_ternable.md)
 for creating ternable objects
 
 ## Examples
@@ -78,7 +78,7 @@ for creating ternable objects
 if (FALSE) { # \dontrun{
 library(ggplot2)
 # Create a ternable object
-tern <- ternable(election_data, ALP:Other)
+tern <- as_ternable(election_data, ALP:Other)
 
 # Use with tourr (example)
 tourr::animate_xy(
@@ -89,7 +89,7 @@ tourr::animate_xy(
 
 # Use with ggplot2 (example)
 ggplot(get_tern_data(tern, plot_type = "2D"), aes(x = x1, y = x2)) +
-  geom_ternary_cart() +
+  add_ternary_base() +
   geom_point(aes(color = ElectedParty))
 } # }
 ```

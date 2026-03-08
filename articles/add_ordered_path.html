@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">prefviz</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -98,7 +98,7 @@ voting in one electorate.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> Higgins              5 ALP          0.300 0.448 0.252</span></span>
 <span></span>
 <span><span class="co"># Create ternable object</span></span>
-<span><span class="va">tern22</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ternable.html">ternable</a></span><span class="op">(</span><span class="va">input_df</span>, <span class="va">ALP</span><span class="op">:</span><span class="va">Other</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">tern22</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_ternable.html">as_ternable</a></span><span class="op">(</span><span class="va">input_df</span>, <span class="va">ALP</span><span class="op">:</span><span class="va">Other</span><span class="op">)</span></span></code></pre></div>
 <p>For 2D ternary plots, adding ordered paths is straightforward using
 the <code><a href="../reference/stat_ordered_path.html">stat_ordered_path()</a></code> function, and providing the
 <code>order_by</code> aesthetic. This is equivalent to
@@ -111,7 +111,7 @@ order you want them to be connected.</p>
 <code class="sourceCode R"><span><span class="co"># The base plot</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ternary_getters.html">get_tern_data</a></span><span class="op">(</span><span class="va">tern22</span>, plot_type <span class="op">=</span> <span class="st">"2D"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x1</span>, y <span class="op">=</span> <span class="va">x2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/geom_ternary_cart.html">geom_ternary_cart</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/add_ternary_base.html">add_ternary_base</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_ternary_region.html">geom_ternary_region</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes_eval.html" class="external-link">after_stat</a></span><span class="op">(</span><span class="va">vertex_labels</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    vertex_labels <span class="op">=</span> <span class="va">tern22</span><span class="op">$</span><span class="va">vertex_labels</span>,</span>
@@ -162,7 +162,7 @@ grouping variable (<code>DivisionNm</code>).</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> Melbourne            5 ALP          0.530     0 0     0.470 0</span></span>
 <span></span>
 <span><span class="co"># Create ternable object</span></span>
-<span><span class="va">tern25</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ternable.html">ternable</a></span><span class="op">(</span><span class="va">input_df2</span>, <span class="va">ALP</span><span class="op">:</span><span class="va">IND</span>, group <span class="op">=</span> <span class="va">DivisionNm</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">tern25</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_ternable.html">as_ternable</a></span><span class="op">(</span><span class="va">input_df2</span>, <span class="va">ALP</span><span class="op">:</span><span class="va">IND</span>, group <span class="op">=</span> <span class="va">DivisionNm</span><span class="op">)</span></span></code></pre></div>
 <p>Adding paths in a high-dimensional ternary plot is made possible by
 the <code>edges</code> arguments in <code>display_xy()</code>.
 Therefore, besides simplex edges, we need to provide the data edges to

@@ -44,10 +44,8 @@ comp_mat <- matrix(c(0.5, 0.3, 0.2,
                      0.6, 0.2, 0.2),
                    ncol = 3, byrow = TRUE)
 helmert_transform(comp_mat)
-#>             x1        x2
-#> 1 1.414214e-01 0.1632993
-#> 2 2.671291e-18 0.1632993
-#> 3 2.828427e-01 0.1632993
+#> Error in helmert_transform(comp_mat): Names can't be empty.
+#> ✖ Empty names found at locations 1, 2, and 3.
 
 # Example 2: Transform specific columns in a data frame
 df <- data.frame(
@@ -57,8 +55,10 @@ df <- data.frame(
   Other = c(0.2, 0.2, 0.2)
 )
 helmert_transform(df, items = c(ALP, LNP, Other))
-#>             x1        x2
-#> 1 1.414214e-01 0.1632993
-#> 2 2.671291e-18 0.1632993
-#> 3 2.828427e-01 0.1632993
+#> # A tibble: 3 × 2
+#>         x1    x2
+#>      <dbl> <dbl>
+#> 1 1.41e- 1 0.163
+#> 2 2.67e-18 0.163
+#> 3 2.83e- 1 0.163
 ```

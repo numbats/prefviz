@@ -4,7 +4,7 @@
 
 Main plotting functions for ternary diagrams
 
-- [`geom_ternary_cart()`](https://numbats.github.io/prefviz/reference/geom_ternary_cart.md)
+- [`add_ternary_base()`](https://numbats.github.io/prefviz/reference/add_ternary_base.md)
   : Draw the 2D ternary simplex
 - [`geom_ternary_region()`](https://numbats.github.io/prefviz/reference/geom_ternary_region.md)
   [`stat_ternary_region()`](https://numbats.github.io/prefviz/reference/geom_ternary_region.md)
@@ -21,7 +21,7 @@ Main plotting functions for ternary diagrams
 
 Create a `ternable` object and prepare it for plotting
 
-- [`ternable()`](https://numbats.github.io/prefviz/reference/ternable.md)
+- [`as_ternable()`](https://numbats.github.io/prefviz/reference/as_ternable.md)
   : Create a ternable object
 - [`get_tern_data()`](https://numbats.github.io/prefviz/reference/ternary_getters.md)
   [`get_tern_edges()`](https://numbats.github.io/prefviz/reference/ternary_getters.md)

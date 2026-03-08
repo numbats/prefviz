@@ -201,11 +201,11 @@ library(ggplot2)
 aecdop22_transformed <- prefviz:::aecdop22_transformed
 
 # Get ternable
-tern22 <- ternable(aecdop22_transformed, ALP:Other)
+tern22 <- as_ternable(aecdop22_transformed, ALP:Other)
 
 # Draw the ternary plot
 ggplot(get_tern_data(tern22, plot_type = "2D"), aes(x = x1, y = x2)) +
-  geom_ternary_cart() +
+  add_ternary_base() +
   geom_ternary_region(
     vertex_labels = tern22$vertex_labels,
     aes(fill = after_stat(vertex_labels)), 

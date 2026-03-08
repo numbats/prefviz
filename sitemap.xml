@@ -7,14 +7,16 @@
 <url><loc>https://numbats.github.io/prefviz/articles/transform_raw_data.html</loc></url>
 <url><loc>https://numbats.github.io/prefviz/authors.html</loc></url>
 <url><loc>https://numbats.github.io/prefviz/index.html</loc></url>
+<url><loc>https://numbats.github.io/prefviz/news/index.html</loc></url>
 <url><loc>https://numbats.github.io/prefviz/reference/add_data_edges.html</loc></url>
+<url><loc>https://numbats.github.io/prefviz/reference/add_ternary_base.html</loc></url>
 <url><loc>https://numbats.github.io/prefviz/reference/add_vertex_labels.html</loc></url>
 <url><loc>https://numbats.github.io/prefviz/reference/aecdop.html</loc></url>
+<url><loc>https://numbats.github.io/prefviz/reference/as_ternable.html</loc></url>
 <url><loc>https://numbats.github.io/prefviz/reference/dop_irv.html</loc></url>
 <url><loc>https://numbats.github.io/prefviz/reference/dop_transform.html</loc></url>
 <url><loc>https://numbats.github.io/prefviz/reference/elb_centroid.html</loc></url>
 <url><loc>https://numbats.github.io/prefviz/reference/elb_map.html</loc></url>
-<url><loc>https://numbats.github.io/prefviz/reference/geom_ternary_cart.html</loc></url>
 <url><loc>https://numbats.github.io/prefviz/reference/geom_ternary_region.html</loc></url>
 <url><loc>https://numbats.github.io/prefviz/reference/helmert_transform.html</loc></url>
 <url><loc>https://numbats.github.io/prefviz/reference/index.html</loc></url>
@@ -22,7 +24,6 @@
 <url><loc>https://numbats.github.io/prefviz/reference/prefviz-package.html</loc></url>
 <url><loc>https://numbats.github.io/prefviz/reference/print.ternable.html</loc></url>
 <url><loc>https://numbats.github.io/prefviz/reference/stat_ordered_path.html</loc></url>
-<url><loc>https://numbats.github.io/prefviz/reference/ternable.html</loc></url>
 <url><loc>https://numbats.github.io/prefviz/reference/ternary_getters.html</loc></url>
 </urlset>
 

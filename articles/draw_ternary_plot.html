@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">prefviz</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -108,7 +108,8 @@ simplex vertices.</li>
 the order provided in the argument <code>items</code>.</li>
 </ul>
 <p>To create a <code>ternable</code> object, simply call the function
-<code><a href="../reference/ternable.html">ternable()</a></code>. <code><a href="../reference/ternable.html">ternable()</a></code> takes 2 arguments:</p>
+<code><a href="../reference/as_ternable.html">as_ternable()</a></code>. <code><a href="../reference/as_ternable.html">as_ternable()</a></code> takes 2
+arguments:</p>
 <ul>
 <li>
 <code>data</code>: The input data, which must be in a
@@ -134,7 +135,7 @@ appear in the ternary plot. The default takes all the columns in
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Barker               0 LNP          0.209 0.556 0.235</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> Barton               0 ALP          0.504 0.262 0.234</span></span>
 <span></span>
-<span><span class="va">tern22</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ternable.html">ternable</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">aecdop22_transformed</span>, items <span class="op">=</span> <span class="va">ALP</span><span class="op">:</span><span class="va">Other</span><span class="op">)</span></span>
+<span><span class="va">tern22</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_ternable.html">as_ternable</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">aecdop22_transformed</span>, items <span class="op">=</span> <span class="va">ALP</span><span class="op">:</span><span class="va">Other</span><span class="op">)</span></span>
 <span><span class="va">tern22</span></span>
 <span><span class="co">#&gt; Ternable object</span></span>
 <span><span class="co">#&gt; ----------------</span></span>
@@ -176,9 +177,9 @@ like to take a look at the first preference distribution between the 2
 major parties: Labor and the Coalition, and other parties.</p>
 <p>The dataset <code>aecdop22_transformed</code> is already in a
 <code>ternable</code>-friendly format, so we can directly pass it to
-<code><a href="../reference/ternable.html">ternable()</a></code> to create a <code>ternable</code> object.</p>
+<code><a href="../reference/as_ternable.html">as_ternable()</a></code> to create a <code>ternable</code> object.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">tern22</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ternable.html">ternable</a></span><span class="op">(</span><span class="va">aecdop22_transformed</span>, <span class="va">ALP</span><span class="op">:</span><span class="va">Other</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">tern22</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_ternable.html">as_ternable</a></span><span class="op">(</span><span class="va">aecdop22_transformed</span>, <span class="va">ALP</span><span class="op">:</span><span class="va">Other</span><span class="op">)</span></span></code></pre></div>
 <p>Now we can use the <code><a href="../reference/ternary_getters.html">get_tern_data()</a></code> function to get the
 input data for <code>ggplot2</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -205,7 +206,7 @@ use <code>ggplot2</code> to draw the ternary plot.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">input_df</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x1</span>, y <span class="op">=</span> <span class="va">x2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># Draw the ternary space as an equilateral triangle</span></span>
-<span>  <span class="fu"><a href="../reference/geom_ternary_cart.html">geom_ternary_cart</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="../reference/add_ternary_base.html">add_ternary_base</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="co"># Plot the observations as points</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">ElectedParty</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="co"># Add vertex labels, taken from the ternable object</span></span>
@@ -277,7 +278,7 @@ tour)</li>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Barker               0 LNP          0.225 0.081<span style="text-decoration: underline;">6</span> 0.5   0.135 0.058<span style="text-decoration: underline;">6</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> Barton               0 ALP          0.471 0.159  0.242 0.128 0</span></span>
 <span></span>
-<span><span class="va">tern25</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ternable.html">ternable</a></span><span class="op">(</span><span class="va">aecdop25_transformed</span>, <span class="va">ALP</span><span class="op">:</span><span class="va">IND</span><span class="op">)</span></span>
+<span><span class="va">tern25</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_ternable.html">as_ternable</a></span><span class="op">(</span><span class="va">aecdop25_transformed</span>, <span class="va">ALP</span><span class="op">:</span><span class="va">IND</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Animate the tour</span></span>
 <span><span class="fu">animate_xy</span><span class="op">(</span></span>

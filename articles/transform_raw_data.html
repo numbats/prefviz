@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">prefviz</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,9 +81,9 @@ wide forms, and AEC distribution of preference data.</p>
 <h2 id="ternable-friendly-data">
 <code>ternable</code>-friendly data<a class="anchor" aria-label="anchor" href="#ternable-friendly-data"></a>
 </h2>
-<p><code><a href="../reference/ternable.html">ternable()</a></code> creates a <code>ternable</code> object, which
-is a S3 object that contains the data and metadata necessary for ternary
-plots.</p>
+<p><code><a href="../reference/as_ternable.html">as_ternable()</a></code> creates a <code>ternable</code> object,
+which is a S3 object that contains the data and metadata necessary for
+ternary plots.</p>
 <p>A <code>ternable</code>-friendly data frame must have the following
 characteristics:</p>
 <ul>
@@ -369,7 +369,7 @@ for relevant information.</p>
 <span></span>
 <span><span class="va">aecdop_2025</span> <span class="op">&lt;-</span> <span class="va">aecdop_2025</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">CalculationType</span> <span class="op">==</span> <span class="st">"Preference Percent"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Party <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Party <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case-and-replace-when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
 <span>    <span class="co"># all parties not in the main parties are grouped into "Other"</span></span>
 <span>    <span class="op">!</span><span class="op">(</span><span class="va">PartyAb</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LP"</span>, <span class="st">"ALP"</span>, <span class="st">"NP"</span>, <span class="st">"LNP"</span>, <span class="st">"LNQ"</span>, <span class="st">"GRN"</span>, <span class="st">"IND"</span><span class="op">)</span><span class="op">)</span> <span class="op">~</span> <span class="st">"Other"</span>, </span>
 <span>    <span class="co"># group all parties in the Coalition into "LNP"</span></span>

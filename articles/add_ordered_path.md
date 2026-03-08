@@ -34,7 +34,7 @@ head(input_df)
 #> 6 Higgins              5 ALP          0.300 0.448 0.252
 
 # Create ternable object
-tern22 <- ternable(input_df, ALP:Other)
+tern22 <- as_ternable(input_df, ALP:Other)
 ```
 
 For 2D ternary plots, adding ordered paths is straightforward using the
@@ -51,7 +51,7 @@ In this case, we want to connect the points in the order of round
 # The base plot
 p <- get_tern_data(tern22, plot_type = "2D") |> 
   ggplot(aes(x = x1, y = x2)) +
-  geom_ternary_cart() +
+  add_ternary_base() +
   geom_ternary_region(
     aes(fill = after_stat(vertex_labels)),
     vertex_labels = tern22$vertex_labels,
@@ -106,7 +106,7 @@ head(input_df2)
 #> 6 Melbourne            5 ALP          0.530     0 0     0.470 0
 
 # Create ternable object
-tern25 <- ternable(input_df2, ALP:IND, group = DivisionNm)
+tern25 <- as_ternable(input_df2, ALP:IND, group = DivisionNm)
 ```
 
 Adding paths in a high-dimensional ternary plot is made possible by the

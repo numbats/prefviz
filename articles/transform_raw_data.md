@@ -12,7 +12,7 @@ and AEC distribution of preference data.
 
 ## `ternable`-friendly data
 
-[`ternable()`](https://numbats.github.io/prefviz/reference/ternable.md)
+[`as_ternable()`](https://numbats.github.io/prefviz/reference/as_ternable.md)
 creates a `ternable` object, which is a S3 object that contains the data
 and metadata necessary for ternary plots.
 

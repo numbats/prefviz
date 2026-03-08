@@ -11,8 +11,8 @@
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Visualizes preference data via ternary plots in two and higher dimensions">
-<meta name="description" content="Visualises preference and ranking data by extending traditional ternary plots to support high-dimensional simplexes. It provides methods to transform compositional data into coordinates suitable for 2D and high-dimensional ternary plots. Compatibility with interacitve visualization packages such as `plotly` allows users to explore high-dimensional preference structures dynamically.">
-<meta property="og:description" content="Visualises preference and ranking data by extending traditional ternary plots to support high-dimensional simplexes. It provides methods to transform compositional data into coordinates suitable for 2D and high-dimensional ternary plots. Compatibility with interacitve visualization packages such as `plotly` allows users to explore high-dimensional preference structures dynamically.">
+<meta name="description" content="Visualises preference and ranking data by extending traditional ternary plots to support high-dimensional simplexes. The package provides methods to transform compositional data into coordinates suitable for 2D and high-dimensional ternary plots. Compatibility with interactive visualization packages such as `plotly` or `detourr` allows users to explore high-dimensional preference structures dynamically.">
+<meta property="og:description" content="Visualises preference and ranking data by extending traditional ternary plots to support high-dimensional simplexes. The package provides methods to transform compositional data into coordinates suitable for 2D and high-dimensional ternary plots. Compatibility with interactive visualization packages such as `plotly` or `detourr` allows users to explore high-dimensional preference structures dynamically.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">prefviz</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -111,9 +111,9 @@
 <span><span class="co">#&gt; 4 Banks                0 LNP          0.353 0.452 0.195</span></span>
 <span><span class="co">#&gt; 5 Barker               0 LNP          0.209 0.556 0.235</span></span>
 <span><span class="co">#&gt; 6 Barton               0 ALP          0.504 0.262 0.234</span></span></code></pre></div>
-<p>We can create a <code>ternable</code> object using the <code><a href="reference/ternable.html">ternable()</a></code> function:</p>
+<p>We can create a <code>ternable</code> object using the <code><a href="reference/as_ternable.html">as_ternable()</a></code> function:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">tern22</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ternable.html">ternable</a></span><span class="op">(</span><span class="va">aecdop22_transformed</span>, <span class="va">ALP</span><span class="op">:</span><span class="va">Other</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">tern22</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_ternable.html">as_ternable</a></span><span class="op">(</span><span class="va">aecdop22_transformed</span>, <span class="va">ALP</span><span class="op">:</span><span class="va">Other</span><span class="op">)</span></span>
 <span><span class="va">tern22</span></span>
 <span><span class="co">#&gt; Ternable object</span></span>
 <span><span class="co">#&gt; ----------------</span></span>
@@ -145,7 +145,7 @@
 <span></span>
 <span><span class="co"># Visualize</span></span>
 <span><span class="fu">ggplot</span><span class="op">(</span><span class="va">input_df</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">x1</span>, y <span class="op">=</span> <span class="va">x2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="reference/geom_ternary_cart.html">geom_ternary_cart</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/add_ternary_base.html">add_ternary_base</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="reference/geom_ternary_region.html">geom_ternary_region</a></span><span class="op">(</span></span>
 <span>    vertex_labels <span class="op">=</span> <span class="va">tern22</span><span class="op">$</span><span class="va">vertex_labels</span>,</span>
 <span>    <span class="fu">aes</span><span class="op">(</span>fill <span class="op">=</span> <span class="fu">after_stat</span><span class="op">(</span><span class="va">vertex_labels</span><span class="op">)</span><span class="op">)</span>, </span>
@@ -179,7 +179,7 @@
 <span><span class="co">#&gt; 6 Barton               0 ALP          0.471 0.159  0.242 0.128 0</span></span>
 <span></span>
 <span><span class="co"># Create ternable object</span></span>
-<span><span class="va">tern25</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ternable.html">ternable</a></span><span class="op">(</span><span class="va">aecdop25_transformed</span>, <span class="va">ALP</span><span class="op">:</span><span class="va">IND</span><span class="op">)</span></span>
+<span><span class="va">tern25</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_ternable.html">as_ternable</a></span><span class="op">(</span><span class="va">aecdop25_transformed</span>, <span class="va">ALP</span><span class="op">:</span><span class="va">IND</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Add colors to the points</span></span>
 <span><span class="va">party_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -241,10 +241,9 @@
 <li>
 <a href="https://github.com/linhngo66" class="external-link">Linh Ngo</a> <br><small class="roles"> Author, maintainer </small>   </li>
 <li>
-<a href="https://github.com/dicook" class="external-link">Dianne Cook</a> <br><small class="roles"> Author </small>   </li>
+<a href="https://github.com/dicook" class="external-link">Dianne Cook</a> <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-3813-7155" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 <li>
-<a href="https://damjan.vukcevic.net/" class="external-link">Damjan Dvukcevic</a> <br><small class="roles"> Author </small>   </li>
-<li><a href="authors.html">More about authors...</a></li>
+<a href="https://damjan.vukcevic.net/" class="external-link">Damjan Dvukcevic</a> <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0001-7780-9586" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 </ul>
 </div>
 

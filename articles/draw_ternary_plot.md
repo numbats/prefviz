@@ -30,8 +30,8 @@ useful for ternary plots, including the following components:
   provided in the argument `items`.
 
 To create a `ternable` object, simply call the function
-[`ternable()`](https://numbats.github.io/prefviz/reference/ternable.md).
-[`ternable()`](https://numbats.github.io/prefviz/reference/ternable.md)
+[`as_ternable()`](https://numbats.github.io/prefviz/reference/as_ternable.md).
+[`as_ternable()`](https://numbats.github.io/prefviz/reference/as_ternable.md)
 takes 2 arguments:
 
 - `data`: The input data, which must be in a `ternable`-friendly format.
@@ -54,7 +54,7 @@ head(aecdop22_transformed)
 #> 5 Barker               0 LNP          0.209 0.556 0.235
 #> 6 Barton               0 ALP          0.504 0.262 0.234
 
-tern22 <- ternable(data = aecdop22_transformed, items = ALP:Other)
+tern22 <- as_ternable(data = aecdop22_transformed, items = ALP:Other)
 tern22
 #> Ternable object
 #> ----------------
@@ -94,11 +94,11 @@ parties: Labor and the Coalition, and other parties.
 
 The dataset `aecdop22_transformed` is already in a `ternable`-friendly
 format, so we can directly pass it to
-[`ternable()`](https://numbats.github.io/prefviz/reference/ternable.md)
+[`as_ternable()`](https://numbats.github.io/prefviz/reference/as_ternable.md)
 to create a `ternable` object.
 
 ``` r
-tern22 <- ternable(aecdop22_transformed, ALP:Other)
+tern22 <- as_ternable(aecdop22_transformed, ALP:Other)
 ```
 
 Now we can use the
@@ -132,7 +132,7 @@ ternary plot.
 ``` r
 p <- ggplot(input_df, aes(x = x1, y = x2)) +
   # Draw the ternary space as an equilateral triangle
-  geom_ternary_cart() + 
+  add_ternary_base() + 
   # Plot the observations as points
   geom_point(aes(color = ElectedParty)) + 
   # Add vertex labels, taken from the ternable object
@@ -212,7 +212,7 @@ head(aecdop25_transformed)
 #> 5 Barker               0 LNP          0.225 0.0816 0.5   0.135 0.0586
 #> 6 Barton               0 ALP          0.471 0.159  0.242 0.128 0
 
-tern25 <- ternable(aecdop25_transformed, ALP:IND)
+tern25 <- as_ternable(aecdop25_transformed, ALP:IND)
 
 # Animate the tour
 animate_xy(

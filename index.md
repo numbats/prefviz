@@ -83,11 +83,11 @@ head(aecdop22_transformed)
 ```
 
 We can create a `ternable` object using the
-[`ternable()`](https://numbats.github.io/prefviz/reference/ternable.md)
+[`as_ternable()`](https://numbats.github.io/prefviz/reference/as_ternable.md)
 function:
 
 ``` r
-tern22 <- ternable(aecdop22_transformed, ALP:Other)
+tern22 <- as_ternable(aecdop22_transformed, ALP:Other)
 tern22
 #> Ternable object
 #> ----------------
@@ -119,7 +119,7 @@ head(input_df)
 
 # Visualize
 ggplot(input_df, aes(x = x1, y = x2)) +
-  geom_ternary_cart() +
+  add_ternary_base() +
   geom_ternary_region(
     vertex_labels = tern22$vertex_labels,
     aes(fill = after_stat(vertex_labels)), 
@@ -154,7 +154,7 @@ head(aecdop25_transformed)
 #> 6 Barton               0 ALP          0.471 0.159  0.242 0.128 0
 
 # Create ternable object
-tern25 <- ternable(aecdop25_transformed, ALP:IND)
+tern25 <- as_ternable(aecdop25_transformed, ALP:IND)
 
 # Add colors to the points
 party_colors <- c(

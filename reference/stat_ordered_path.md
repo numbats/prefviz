@@ -147,12 +147,12 @@ library(dplyr)
 # Data prep
 input_df <- prefviz:::aecdop22_widen |> 
    filter(DivisionNm %in% c("Higgins", "Monash"))
-tern22 <- ternable(input_df, ALP:Other)
+tern22 <- as_ternable(input_df, ALP:Other)
 
 # Base plot
 p <- get_tern_data(tern22, plot_type = "2D") |> 
   ggplot(aes(x = x1, y = x2)) +
-  geom_ternary_cart() +
+  add_ternary_base() +
   geom_ternary_region(
     aes(fill = after_stat(vertex_labels)),
     vertex_labels = tern22$vertex_labels,
@@ -169,9 +169,6 @@ p <- get_tern_data(tern22, plot_type = "2D") |>
 # Add ordered paths
 p + 
   stat_ordered_path(
-    aes(group = DivisionNm, order_by = CountNumber, color = ElectedParty), 
-    size = 0.5)
-#> Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
-#> ℹ Please use `linewidth` instead.
+    aes(group = DivisionNm, order_by = CountNumber, color = ElectedParty))
 
 ```

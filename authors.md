@@ -4,11 +4,11 @@
 
 - **[Linh Ngo](https://github.com/linhngo66)**. Author, maintainer.
 
-- **[Dianne Cook](https://github.com/dicook)**. Author.  
-  Supervisor
+- **[Dianne Cook](https://github.com/dicook)**. Author.
+  [](https://orcid.org/0000-0002-3813-7155)
 
-- **[Damjan Dvukcevic](https://damjan.vukcevic.net/)**. Author.  
-  Supervisor
+- **[Damjan Dvukcevic](https://damjan.vukcevic.net/)**. Author.
+  [](https://orcid.org/0000-0001-7780-9586)
 
 ## Citation
 
@@ -17,12 +17,12 @@ Source:
 
 Ngo L, Cook D, Dvukcevic D (2026). *prefviz: Visualizes preference data
 via ternary plots in two and higher dimensions*. R package version
-0.0.0.9000, <https://numbats.github.io/prefviz/>.
+0.1.0, <https://numbats.github.io/prefviz/>.
 
     @Manual{,
       title = {prefviz: Visualizes preference data via ternary plots in two and higher dimensions},
       author = {Linh Ngo and Dianne Cook and Damjan Dvukcevic},
       year = {2026},
-      note = {R package version 0.0.0.9000},
+      note = {R package version 0.1.0},
       url = {https://numbats.github.io/prefviz/},
     }
