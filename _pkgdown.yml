@@ -31,7 +31,7 @@ reference:
   - title: Ternable object
     desc: Create a `ternable` object and prepare it for plotting
     contents:
-    - ternable
+    - as_ternable
     - starts_with("get_tern_")
 
   - title: Data transformation

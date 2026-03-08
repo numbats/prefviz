@@ -40,7 +40,7 @@ input_data <- get_tern_data(tern_2d, plot_type = "2D") |>
       )
 
 p2d <- ggplot(input_data |> filter(CountNumber == 0), aes(x = x1, y = x2)) +
-  geom_ternary_cart() + 
+  add_ternary_base() + 
   geom_ternary_region(
     x1 = 1/3, x2 = 1/3, x3 = 1/3,
     aes(fill = after_stat(vertex_labels)), 
@@ -74,7 +74,7 @@ line_input <- input_data |>
 
 # The base plot
 p2d_line <- ggplot(line_input, aes(x = x1, y = x2)) +
-  geom_ternary_cart() +
+  add_ternary_base() +
   geom_ternary_region(
     aes(fill = after_stat(vertex_labels)),
     vertex_labels = tern_2d$vertex_labels,
@@ -168,6 +168,6 @@ de <- detour(
     axes = FALSE, 
     palette = party_colors,
     edges = get_tern_edges(tern_hd),
-    size = 1.5
+    size = 1.5 
   )
 de

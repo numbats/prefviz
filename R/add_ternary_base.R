@@ -22,13 +22,20 @@ add_ternary_base <- function(...) {
   colnames(vert_df) <- c("x", "y")
   vert_df$y <- vert_df$y * -1
   
+  defaults <- list(colour = "black", fill = NA)
+  params <- utils::modifyList(defaults, rlang::list2(...))
+
   list(
-    ggplot2::geom_polygon(
-      data = vert_df,
-      mapping = ggplot2::aes(x = .data$x, y = .data$y),
-      fill = NA,
-      inherit.aes = FALSE,
-      ...
+    do.call(
+      ggplot2::geom_polygon,
+      c(
+        list(
+          data = vert_df,
+          mapping = ggplot2::aes(x = .data$x, y = .data$y),
+          inherit.aes = FALSE
+        ),
+        params
+      )
     ),
     ggplot2::coord_fixed(ratio = 1),
     ggplot2::theme_void()
