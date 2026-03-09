@@ -37,7 +37,7 @@
 helmert_transform <- function(data, items = dplyr::everything(), append = FALSE) {
   stopifnot(is.data.frame(data) || is.matrix(data))
 
-  input_df <- tibble::as_tibble(data, .name_repair = "minimal")
+  input_df <- tibble::as_tibble(data)
 
   item_col_ind <- tidyselect::eval_select(
       rlang::enquo(items), 

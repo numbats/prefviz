@@ -24,12 +24,12 @@
 #'
 #' @examples
 #' # Example 1: From preference vector
-#' votes <- c("A > B > C", "B > A > C", "C > B > A", "A > B > C")
+#' votes <- prefio::preferences(c("A > B > C", "B > A > C", "C > B > A", "A > B > C"))
 #' dop_irv(votes, value_type = "count")
 #' 
 #' # Example 2: From data frame with custom column names
 #' vote_data <- tibble::tibble(
-#'   prefs = c("A > B > C", "B > C > A", "C > A > B"),
+#'   prefs = prefio::preferences(c("A > B > C", "B > C > A", "C > A > B")),
 #'   counts = c(100, 75, 25)
 #' )
 #' dop_irv(vote_data, value_type = "percentage",
