@@ -57,17 +57,24 @@ A tibble with the following structure:
 
 ``` r
 # Example 1: From preference vector
-votes <- c("A > B > C", "B > A > C", "C > B > A", "A > B > C")
+votes <- prefio::preferences(c("A > B > C", "B > A > C", "C > B > A", "A > B > C"))
 dop_irv(votes, value_type = "count")
-#> # A tibble: 0 × 0
+#> # A tibble: 1 × 5
+#>   round     A     B     C winner
+#>   <int> <int> <int> <int> <chr> 
+#> 1     1     2     1     1 A     
 
 # Example 2: From data frame with custom column names
 vote_data <- tibble::tibble(
-  prefs = c("A > B > C", "B > C > A", "C > A > B"),
+  prefs = prefio::preferences(c("A > B > C", "B > C > A", "C > A > B")),
   counts = c(100, 75, 25)
 )
 dop_irv(vote_data, value_type = "percentage",
         preferences_col = prefs,
         frequency_col = counts)
-#> # A tibble: 0 × 0
+#> # A tibble: 2 × 5
+#>   round     A     B     C winner
+#>   <int> <dbl> <dbl> <dbl> <chr> 
+#> 1     1 0.5   0.375 0.125 A     
+#> 2     2 0.625 0.375 0     A     
 ```
