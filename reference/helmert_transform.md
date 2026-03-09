@@ -44,11 +44,10 @@ comp_mat <- matrix(c(0.5, 0.3, 0.2,
                      0.6, 0.2, 0.2),
                    ncol = 3, byrow = TRUE)
 helmert_transform(comp_mat)
-#> Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if
-#> `.name_repair` is omitted as of tibble 2.0.0.
-#> ℹ Using compatibility `.name_repair`.
-#> ℹ The deprecated feature was likely used in the prefviz package.
-#>   Please report the issue at <https://github.com/numbats/prefviz/issues>.
+#> New names:
+#> • `` -> `...1`
+#> • `` -> `...2`
+#> • `` -> `...3`
 #> # A tibble: 3 × 2
 #>         x1    x2
 #>      <dbl> <dbl>
