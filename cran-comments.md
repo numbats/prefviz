@@ -16,8 +16,8 @@ Note (‘unable to verify current time’) is due to system clock check, and unr
 
 ## Test environment
 
-R version 4.4.3 (2025-02-28) 
+R version 4.4.3 (2025-03-09) 
 
 Tests using rhub on linux, m1-san and windows: 
 
-https://github.com/numbats/prefviz/actions/runs/21237001839
+https://github.com/numbats/prefviz/actions/runs/22840446729
