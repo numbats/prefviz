@@ -24,5 +24,5 @@ Authors:
 - Dianne Cook <DiCook@monash.edu>
   ([ORCID](https://orcid.org/0000-0002-3813-7155))
 
-- Damjan Dvukcevic <Damjan@Vukcevic.net>
+- Damjan Vukcevic <damjan.vukcevic@monash.edu>
   ([ORCID](https://orcid.org/0000-0001-7780-9586))
