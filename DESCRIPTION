@@ -4,7 +4,7 @@ Version: 0.1.0
 Authors@R: c(
   person("Linh", "Ngo", email = "Linh.Ngo2@monash.edu", role = c("aut", "cre")),
   person("Dianne", "Cook", email = "DiCook@monash.edu", role = "aut", comment = c(ORCID = "0000-0002-3813-7155")),
-  person("Damjan", "Dvukcevic", email = "Damjan@Vukcevic.net", role = "aut", comment = c(ORCID = "0000-0001-7780-9586")))
+  person("Damjan", "Vukcevic", email = "damjan.vukcevic@monash.edu", role = "aut", comment = c(ORCID = "0000-0001-7780-9586")))
 Description: Visualises preference and ranking data by extending traditional 
     ternary plots to support high-dimensional simplexes. The package provides methods to 
     transform compositional data into coordinates suitable for 2D and high-dimensional

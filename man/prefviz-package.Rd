@@ -22,7 +22,7 @@ Useful links:
 Authors:
 \itemize{
   \item Dianne Cook \email{DiCook@monash.edu} (\href{https://orcid.org/0000-0002-3813-7155}{ORCID})
-  \item Damjan Dvukcevic \email{Damjan@Vukcevic.net} (\href{https://orcid.org/0000-0001-7780-9586}{ORCID})
+  \item Damjan Vukcevic \email{damjan.vukcevic@monash.edu} (\href{https://orcid.org/0000-0001-7780-9586}{ORCID})
 }
 
 }
