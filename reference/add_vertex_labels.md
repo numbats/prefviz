@@ -38,14 +38,17 @@ add_vertex_labels(
   [`ggplot2::geom_text()`](https://ggplot2.tidyverse.org/reference/geom_text.html),
   such as `size`, `colour`, `fontface`, etc.
 
+## Value
+
+A ggplot object
+
 ## Examples
 
 ``` r
 library(ggplot2)
 
 # Create a ternable object
-aecdop22_transformed <- prefviz:::aecdop22_transformed
-tern <- as_ternable(aecdop22_transformed, ALP:Other)
+tern <- as_ternable(prefviz::aecdop22_transformed, ALP:Other)
 
 ggplot() +
   add_ternary_base() +

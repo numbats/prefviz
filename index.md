@@ -30,7 +30,8 @@ For optimal compatibility, we suggest your data have its
 alternatives/composition in columns and these columns sum to 1.
 
 ``` r
-aecdop22_transformed <- prefviz:::aecdop22_transformed
+aecdop22_transformed <- prefviz::aecdop22_transformed |> 
+  filter(CountNumber == 0)
 head(aecdop22_transformed) |> select(-CountNumber, -ElectedParty)
 #> # A tibble: 6 × 4
 #>   DivisionNm   ALP   LNP Other
@@ -69,7 +70,6 @@ Consider the distribution of first-round preferences in the 2022
 Australian Federal Election:
 
 ``` r
-aecdop22_transformed <- prefviz:::aecdop22_transformed
 head(aecdop22_transformed)
 #> # A tibble: 6 × 6
 #>   DivisionNm CountNumber ElectedParty   ALP   LNP Other
@@ -141,7 +141,8 @@ ggplot(input_df, aes(x = x1, y = x2)) +
 
 ``` r
 # Load the data
-aecdop25_transformed <- prefviz:::aecdop25_transformed
+aecdop25_transformed <- prefviz::aecdop25_transformed |> 
+  filter(CountNumber == 0)
 head(aecdop25_transformed)
 #> # A tibble: 6 × 8
 #>   DivisionNm CountNumber ElectedParty   ALP    GRN   LNP Other    IND

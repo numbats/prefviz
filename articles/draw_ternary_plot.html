@@ -124,7 +124,8 @@ appear in the ternary plot. The default takes all the columns in
 <code>data</code>.</li>
 </ul>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">aecdop22_transformed</span> <span class="op">&lt;-</span> <span class="fu">prefviz</span><span class="fu">:::</span><span class="va">aecdop22_transformed</span></span>
+<code class="sourceCode R"><span><span class="va">aecdop22_transformed</span> <span class="op">&lt;-</span> <span class="fu">prefviz</span><span class="fu">::</span><span class="va"><a href="../reference/aecdop_transformed.html">aecdop22_transformed</a></span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">CountNumber</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">aecdop22_transformed</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 6</span></span></span>
 <span><span class="co">#&gt;   DivisionNm CountNumber ElectedParty   ALP   LNP Other</span></span>
@@ -267,7 +268,8 @@ tour)</li>
 </ul>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load the data</span></span>
-<span><span class="va">aecdop25_transformed</span> <span class="op">&lt;-</span> <span class="fu">prefviz</span><span class="fu">:::</span><span class="va">aecdop25_transformed</span></span>
+<span><span class="va">aecdop25_transformed</span> <span class="op">&lt;-</span> <span class="fu">prefviz</span><span class="fu">::</span><span class="va"><a href="../reference/aecdop_transformed.html">aecdop25_transformed</a></span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">CountNumber</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">aecdop25_transformed</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 8</span></span></span>
 <span><span class="co">#&gt;   DivisionNm CountNumber ElectedParty   ALP    GRN   LNP Other    IND</span></span>

@@ -100,6 +100,8 @@ of length 4.
 
 ## Value
 
+A ggplot object
+
 A ggplot2 layer that can be added to a plot object.
 
 ## Details
@@ -145,7 +147,7 @@ in bold).
 library(ggplot2)
 library(dplyr)
 # Data prep
-input_df <- prefviz:::aecdop22_widen |> 
+input_df <- prefviz::aecdop22_transformed |> 
    filter(DivisionNm %in% c("Higgins", "Monash"))
 tern22 <- as_ternable(input_df, ALP:Other)
 

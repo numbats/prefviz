@@ -19,8 +19,7 @@ representing the preference distribution in one round of voting in one
 electorate.
 
 ``` r
-aecdop22_widen <- prefviz:::aecdop22_widen
-input_df <- aecdop22_widen |> 
+input_df <- prefviz::aecdop22_transformed |> 
    filter(DivisionNm %in% c("Higgins", "Monash", "Melbourne"))
 head(input_df)
 #> # A tibble: 6 × 6
@@ -91,8 +90,7 @@ input data frame, we just need to provide the grouping variable
 (`DivisionNm`).
 
 ``` r
-aecdop25_widen <- prefviz:::aecdop25_widen
-input_df2 <- aecdop25_widen |>
+input_df2 <- prefviz::aecdop25_transformed |>
   filter(DivisionNm %in% c("Monash", "Melbourne"))
 head(input_df2)
 #> # A tibble: 6 × 8

@@ -47,6 +47,10 @@ Prepare your PrefLib and distribution of preferences data for plotting
   [`aecdop_2025`](https://numbats.github.io/prefviz/reference/aecdop.md)
   : Distribution of preferences by candidate by division in the
   Australian Federal Election (2022 and 2025)
+- [`aecdop22_transformed`](https://numbats.github.io/prefviz/reference/aecdop_transformed.md)
+  [`aecdop25_transformed`](https://numbats.github.io/prefviz/reference/aecdop_transformed.md)
+  : Distribution of preferences in wide form for selected parties (2022
+  and 2025)
 - [`elb_centroid`](https://numbats.github.io/prefviz/reference/elb_centroid.md)
   : Centroids of electoral divisions in the 2025 Australian Federal
   Election

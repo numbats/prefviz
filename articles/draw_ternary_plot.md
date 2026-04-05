@@ -42,7 +42,8 @@ takes 2 arguments:
   ternary plot. The default takes all the columns in `data`.
 
 ``` r
-aecdop22_transformed <- prefviz:::aecdop22_transformed
+aecdop22_transformed <- prefviz::aecdop22_transformed |> 
+  filter(CountNumber == 0)
 head(aecdop22_transformed)
 #> # A tibble: 6 × 6
 #>   DivisionNm CountNumber ElectedParty   ALP   LNP Other
@@ -200,7 +201,8 @@ A ternary tour requires the following components:
 
 ``` r
 # Load the data
-aecdop25_transformed <- prefviz:::aecdop25_transformed
+aecdop25_transformed <- prefviz::aecdop25_transformed |> 
+  filter(CountNumber == 0)
 head(aecdop25_transformed)
 #> # A tibble: 6 × 8
 #>   DivisionNm CountNumber ElectedParty   ALP    GRN   LNP Other    IND

@@ -129,24 +129,25 @@ of <code>order_by</code>. If <code>FALSE</code> (default), ordering is increasin
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Load and transform the dataset</span></span></span>
-<span class="r-in"><span><span class="fu">prefviz</span><span class="fu">:::</span><span class="va">aecdop25_transformed</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 150 × 8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    DivisionNm CountNumber ElectedParty   ALP    GRN   LNP Other    IND</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> Adelaide             0 ALP          0.465 0.190  0.242 0.104 0     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> Aston                0 ALP          0.373 0      0.377 0.209 0.041<span style="text-decoration: underline;">4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> Ballarat             0 ALP          0.424 0      0.286 0.262 0.028<span style="text-decoration: underline;">1</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> Banks                0 ALP          0.364 0.119  0.391 0.106 0.020<span style="text-decoration: underline;">2</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> Barker               0 LNP          0.225 0.081<span style="text-decoration: underline;">6</span> 0.5   0.135 0.058<span style="text-decoration: underline;">6</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> Barton               0 ALP          0.471 0.159  0.242 0.128 0     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> Bass                 0 ALP          0.396 0.129  0.314 0.107 0.053<span style="text-decoration: underline;">8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Bean                 0 ALP          0.410 0.095  0.230 0     0.264 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> Bendigo              0 ALP          0.335 0      0.402 0.252 0.010<span style="text-decoration: underline;">5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Bennelong            0 ALP          0.454 0.118  0.351 0.078 0     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 140 more rows</span></span>
+<span class="r-in"><span><span class="fu">prefviz</span><span class="fu">::</span><span class="va"><a href="aecdop_transformed.html">aecdop25_transformed</a></span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 976 × 8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    DivisionNm CountNumber ElectedParty   ALP   GRN   LNP     Other    IND</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> Adelaide             0 ALP          0.465 0.190 0.242 0.104     0     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> Adelaide             1 ALP          0.467 0.194 0.242 0.096<span style="text-decoration: underline;">8</span>    0     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> Adelaide             2 ALP          0.476 0.205 0.244 0.074<span style="text-decoration: underline;">5</span>    0     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> Adelaide             3 ALP          0.483 0.210 0.249 0.057<span style="text-decoration: underline;">8</span>    0     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> Adelaide             4 ALP          0.493 0.222 0.285 0.000<span style="text-decoration: underline;">100</span>0 0     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> Adelaide             5 ALP          0.691 0     0.309 0         0     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> Aston                0 ALP          0.373 0     0.377 0.209     0.041<span style="text-decoration: underline;">4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Aston                1 ALP          0.373 0     0.378 0.206     0.043<span style="text-decoration: underline;">4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> Aston                2 ALP          0.376 0     0.380 0.210     0.033<span style="text-decoration: underline;">8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Aston                3 ALP          0.378 0     0.384 0.202     0.035<span style="text-decoration: underline;">8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 966 more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create the ternable object</span></span></span>
-<span class="r-in"><span><span class="va">tern</span> <span class="op">&lt;-</span> <span class="fu">as_ternable</span><span class="op">(</span><span class="fu">prefviz</span><span class="fu">:::</span><span class="va">aecdop25_transformed</span>, items <span class="op">=</span> <span class="va">ALP</span><span class="op">:</span><span class="va">IND</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">tern</span> <span class="op">&lt;-</span> <span class="fu">as_ternable</span><span class="op">(</span><span class="fu">prefviz</span><span class="fu">::</span><span class="va"><a href="aecdop_transformed.html">aecdop25_transformed</a></span>, items <span class="op">=</span> <span class="va">ALP</span><span class="op">:</span><span class="va">IND</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Not all rows sum to 1. Normalizing items automatically.</span>
 <span class="r-in"><span><span class="va">tern</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Ternable object</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ----------------</span>

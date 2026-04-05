@@ -98,24 +98,25 @@ A ternable object (S3 class) containing:
 
 ``` r
 # Load and transform the dataset
-prefviz:::aecdop25_transformed
-#> # A tibble: 150 × 8
-#>    DivisionNm CountNumber ElectedParty   ALP    GRN   LNP Other    IND
-#>    <chr>            <dbl> <chr>        <dbl>  <dbl> <dbl> <dbl>  <dbl>
-#>  1 Adelaide             0 ALP          0.465 0.190  0.242 0.104 0     
-#>  2 Aston                0 ALP          0.373 0      0.377 0.209 0.0414
-#>  3 Ballarat             0 ALP          0.424 0      0.286 0.262 0.0281
-#>  4 Banks                0 ALP          0.364 0.119  0.391 0.106 0.0202
-#>  5 Barker               0 LNP          0.225 0.0816 0.5   0.135 0.0586
-#>  6 Barton               0 ALP          0.471 0.159  0.242 0.128 0     
-#>  7 Bass                 0 ALP          0.396 0.129  0.314 0.107 0.0538
-#>  8 Bean                 0 ALP          0.410 0.095  0.230 0     0.264 
-#>  9 Bendigo              0 ALP          0.335 0      0.402 0.252 0.0105
-#> 10 Bennelong            0 ALP          0.454 0.118  0.351 0.078 0     
-#> # ℹ 140 more rows
+prefviz::aecdop25_transformed
+#> # A tibble: 976 × 8
+#>    DivisionNm CountNumber ElectedParty   ALP   GRN   LNP     Other    IND
+#>    <chr>            <dbl> <chr>        <dbl> <dbl> <dbl>     <dbl>  <dbl>
+#>  1 Adelaide             0 ALP          0.465 0.190 0.242 0.104     0     
+#>  2 Adelaide             1 ALP          0.467 0.194 0.242 0.0968    0     
+#>  3 Adelaide             2 ALP          0.476 0.205 0.244 0.0745    0     
+#>  4 Adelaide             3 ALP          0.483 0.210 0.249 0.0578    0     
+#>  5 Adelaide             4 ALP          0.493 0.222 0.285 0.0001000 0     
+#>  6 Adelaide             5 ALP          0.691 0     0.309 0         0     
+#>  7 Aston                0 ALP          0.373 0     0.377 0.209     0.0414
+#>  8 Aston                1 ALP          0.373 0     0.378 0.206     0.0434
+#>  9 Aston                2 ALP          0.376 0     0.380 0.210     0.0338
+#> 10 Aston                3 ALP          0.378 0     0.384 0.202     0.0358
+#> # ℹ 966 more rows
 
 # Create the ternable object
-tern <- as_ternable(prefviz:::aecdop25_transformed, items = ALP:IND)
+tern <- as_ternable(prefviz::aecdop25_transformed, items = ALP:IND)
+#> Warning: Not all rows sum to 1. Normalizing items automatically.
 tern
 #> Ternable object
 #> ----------------

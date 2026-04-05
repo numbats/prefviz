@@ -16,6 +16,10 @@ add_ternary_base(...)
   [`ggplot2::geom_polygon()`](https://ggplot2.tidyverse.org/reference/geom_polygon.html),
   such as `colour`, `fill`, `linewidth`, etc.
 
+## Value
+
+A ggplot object
+
 ## Examples
 
 ``` r

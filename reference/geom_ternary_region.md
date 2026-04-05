@@ -164,6 +164,10 @@ An object of class `StatTernaryRegion` (inherits from `Stat`, `ggproto`,
   The geometric object to use to display the data. Default is
   `"polygon"`.
 
+## Value
+
+A ggplot object
+
 ## Computed variables
 
 `stat_ternary_region()` calculates the following variables which can be
@@ -198,10 +202,8 @@ accessed with
 
 ``` r
 library(ggplot2)
-aecdop22_transformed <- prefviz:::aecdop22_transformed
-
 # Get ternable
-tern22 <- as_ternable(aecdop22_transformed, ALP:Other)
+tern22 <- as_ternable(prefviz::aecdop22_transformed, ALP:Other)
 
 # Draw the ternary plot
 ggplot(get_tern_data(tern22, plot_type = "2D"), aes(x = x1, y = x2)) +
