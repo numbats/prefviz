@@ -1,6 +1,6 @@
 Package: prefviz
 Title: Visualizes Preference Data via Ternary Plots in Two and Higher dimensions
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
   person("Linh", "Ngo", email = "Linh.Ngo2@monash.edu", role = c("aut", "cre")),
   person("Dianne", "Cook", email = "DiCook@monash.edu", role = "aut", comment = c(ORCID = "0000-0002-3813-7155")),
@@ -33,7 +33,7 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Depends: 
-    R (>= 3.5)
+    R (>= 4.1.0)
 LazyData: true
 VignetteBuilder: knitr
 URL: https://numbats.github.io/prefviz/

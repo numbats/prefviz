@@ -4,9 +4,9 @@
 \name{prefviz-package}
 \alias{prefviz}
 \alias{prefviz-package}
-\title{prefviz: Visualizes Preferential Data in One and More Contests}
+\title{prefviz: Visualizes Preference Data via Ternary Plots in Two and Higher dimensions}
 \description{
-A visualization toolkit for preferential data, such as ranked-choice election results, tournament outcomes, and survey responses. The package provides methods to visualise the preference distribution of one contest with bar charts and pairwise comparisons of two contestants, as well as methods to visualise multiple contests through 2D and high-dimensional simplex plots both statically and interactively. HD simplex displays are implemented via projection methods using the 'tourr' and 'detourr' packages, enabling dynamic exploration of high-dimensional preference structure. For more details on HD simplex projection, see Wickham et al. (2011) \doi{10.21105/joss.03419}.
+Visualises preference and ranking data by extending traditional ternary plots to support high-dimensional simplexes. The package provides methods to transform compositional data into coordinates suitable for 2D and high-dimensional ternary plots (see Cook & Laa (2024) \url{https://dicook.github.io/mulgar_book/}). Compatibility with interactive visualization packages such as 'plotly' or 'detourr' allows users to explore high-dimensional preference structures dynamically.
 }
 \seealso{
 Useful links:
@@ -17,7 +17,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Linh Ngo \email{linhngo66.work@gmail.com}
+\strong{Maintainer}: Linh Ngo \email{Linh.Ngo2@monash.edu}
 
 Authors:
 \itemize{

@@ -41,7 +41,7 @@
 #' @examples
 #' library(ggplot2)
 #' # Create a ternable object
-#' tern <- as_ternable(election_data, ALP:Other)
+#' tern <- as_ternable(prefviz::aecdop22_transformed, ALP:Other)
 #' 
 #' # Use with tourr (example)
 #' tourr::animate_xy(

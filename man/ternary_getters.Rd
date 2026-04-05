@@ -59,10 +59,9 @@ of high-dimensional ternary data:
 }
 }
 \examples{
-\dontrun{
 library(ggplot2)
 # Create a ternable object
-tern <- as_ternable(election_data, ALP:Other)
+tern <- as_ternable(prefviz::aecdop22_transformed, ALP:Other)
 
 # Use with tourr (example)
 tourr::animate_xy(
@@ -75,7 +74,6 @@ tourr::animate_xy(
 ggplot(get_tern_data(tern, plot_type = "2D"), aes(x = x1, y = x2)) +
   add_ternary_base() +
   geom_point(aes(color = ElectedParty))
-}
 
 }
 \seealso{
