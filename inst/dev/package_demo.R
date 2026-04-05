@@ -126,10 +126,14 @@ pref25_hd <- dop_transform(
   item_col = Party,
   winner_col = Elected,
   winner_identifier = "Y"
-)
+) |> 
+  select(DivisionNm, CountNumber, ALP, LNP, GRN, IND, Other, Winner)
 
 # Ternable
-tern_hd <- as_ternable(pref25_hd, ALP:IND)
+tern_hd <- as_ternable(
+  pref25_hd, ALP:Other,
+  group = c(DivisionNm, CountNumber)
+)
 
 # Detour
 party_colors <- c(

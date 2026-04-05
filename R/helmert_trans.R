@@ -49,7 +49,8 @@ helmert_transform <- function(data, items = dplyr::everything(), append = FALSE)
 
   # Helmert transformation
   input_mat <- validate_df[, item_col_chr, drop = FALSE] |> as.matrix()
-  cart_output <- geozoo::f_composition(input_mat)
+  proj <- t(geozoo::f_helmert(length(item_col_chr))[-1,])
+  cart_output <- input_mat %*% proj
   colnames(cart_output) <- paste0("x", seq_len(ncol(cart_output)))
   
   # Combine with original data

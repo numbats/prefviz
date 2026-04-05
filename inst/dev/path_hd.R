@@ -11,7 +11,7 @@ pref_2025 |>
   group_by(DivisionNm) |> 
   mutate(Var2 = lead(Var1, default = Var1[n()]))
 
-tern25 <- ternable(pref_2025, ALP:IND, group = DivisionNm)
+tern25 <- as_ternable(pref_2025, ALP:IND, group = DivisionNm)
 get_tern_edges(tern25, include_data = TRUE)
 
 party_colors <- c(
