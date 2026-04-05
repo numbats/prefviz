@@ -8,8 +8,9 @@ Authors@R: c(
 Description: Visualises preference and ranking data by extending traditional 
     ternary plots to support high-dimensional simplexes. The package provides methods to 
     transform compositional data into coordinates suitable for 2D and high-dimensional
-    ternary plots. Compatibility with interactive visualization packages such as `plotly`
-    or `detourr` allows users to explore high-dimensional preference structures dynamically.
+    ternary plots (see Cook & Laa (2024) <https://dicook.github.io/mulgar_book/>). 
+    Compatibility with interactive visualization packages such as 'plotly'
+    or 'detourr' allows users to explore high-dimensional preference structures dynamically.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
