@@ -1,5 +1,5 @@
 Package: prefviz
-Title: Visualizes preference data via ternary plots in two and higher dimensions
+Title: Visualizes Preference Data via Ternary Plots in Two and Higher dimensions
 Version: 0.1.0
 Authors@R: c(
   person("Linh", "Ngo", email = "Linh.Ngo2@monash.edu", role = c("aut", "cre")),
