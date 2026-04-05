@@ -39,7 +39,6 @@
 #' - `get_tern_labels()` provides labels that align with the data rows
 #'
 #' @examples
-#' \dontrun{
 #' library(ggplot2)
 #' # Create a ternable object
 #' tern <- as_ternable(election_data, ALP:Other)
@@ -55,7 +54,6 @@
 #' ggplot(get_tern_data(tern, plot_type = "2D"), aes(x = x1, y = x2)) +
 #'   add_ternary_base() +
 #'   geom_point(aes(color = ElectedParty))
-#'}
 #' 
 #' @seealso [as_ternable()] for creating ternable objects
 #' 

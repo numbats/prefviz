@@ -35,8 +35,7 @@ Take the example of the 2022 Australian Federal Election, we would like to take 
 Input data is already in a `ternable`-friendly format, with each row representing the preference distribution in one round of voting in one electorate.
 
 ```{r}
-aecdop22_widen <- prefviz:::aecdop22_widen
-input_df <- aecdop22_widen |> 
+input_df <- prefviz::aecdop22_transformed |> 
    filter(DivisionNm %in% c("Higgins", "Monash", "Melbourne"))
 head(input_df)
 
@@ -82,8 +81,7 @@ Let's take a look at Monash and Melbourne in 2025 election, but this time we wil
 Unlike 2D ternary plots, we need to group and order the data before plotting by providing the `group` and `order_by` arguments when creating ternable object. Since this data is already ordered by round in the input data frame, we just need to provide the grouping variable (`DivisionNm`).
 
 ```{r}
-aecdop25_widen <- prefviz:::aecdop25_widen
-input_df2 <- aecdop25_widen |>
+input_df2 <- prefviz::aecdop25_transformed |>
   filter(DivisionNm %in% c("Monash", "Melbourne"))
 head(input_df2)
 

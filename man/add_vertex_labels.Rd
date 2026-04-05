@@ -23,6 +23,9 @@ obtained from a ternable object: \code{ternable_object$simplex_vertices}.}
 \item{...}{Arguments passed to \code{\link[ggplot2:geom_text]{ggplot2::geom_text()}}, such as
 \code{size}, \code{colour}, \code{fontface}, etc.}
 }
+\value{
+A ggplot object
+}
 \description{
 Adds text labels at the vertices of a ternary simplex with automatic
 positioning adjustments.
@@ -31,8 +34,7 @@ positioning adjustments.
 library(ggplot2)
 
 # Create a ternable object
-aecdop22_transformed <- prefviz:::aecdop22_transformed
-tern <- as_ternable(aecdop22_transformed, ALP:Other)
+tern <- as_ternable(prefviz::aecdop22_transformed, ALP:Other)
 
 ggplot() +
   add_ternary_base() +

@@ -51,7 +51,8 @@ To create a `ternable` object, simply call the function `as_ternable()`. `as_ter
 - `items`: The item names in the order you want them to appear in the ternary plot. The default takes all the columns in `data`.
 
 ```{r}
-aecdop22_transformed <- prefviz:::aecdop22_transformed
+aecdop22_transformed <- prefviz::aecdop22_transformed |> 
+  filter(CountNumber == 0)
 head(aecdop22_transformed)
 
 tern22 <- as_ternable(data = aecdop22_transformed, items = ALP:Other)
@@ -136,7 +137,8 @@ A ternary tour requires the following components:
 
 ```{r}
 # Load the data
-aecdop25_transformed <- prefviz:::aecdop25_transformed
+aecdop25_transformed <- prefviz::aecdop25_transformed |> 
+  filter(CountNumber == 0)
 head(aecdop25_transformed)
 
 tern25 <- as_ternable(aecdop25_transformed, ALP:IND)

@@ -117,6 +117,9 @@ from a \code{formula} (e.g. \code{~ head(.x, 10)}).}
 
 \item{geom}{The geometric object to use to display the data. Default is \code{"polygon"}.}
 }
+\value{
+A ggplot object
+}
 \description{
 \code{geom_ternary_region()} and \code{stat_ternary_region()} divide the ternary triangle
 into three polygonal regions centered around a specific reference point.
@@ -147,10 +150,8 @@ with \code{after_stat()}:
 
 \examples{
 library(ggplot2)
-aecdop22_transformed <- prefviz:::aecdop22_transformed
-
 # Get ternable
-tern22 <- as_ternable(aecdop22_transformed, ALP:Other)
+tern22 <- as_ternable(prefviz::aecdop22_transformed, ALP:Other)
 
 # Draw the ternary plot
 ggplot(get_tern_data(tern22, plot_type = "2D"), aes(x = x1, y = x2)) +

@@ -66,6 +66,8 @@ of \code{order_by}. If \code{FALSE} (default), ordering is increasing.}
 \item{...}{Additional parameters passed on to the underlying geom.}
 }
 \value{
+A ggplot object
+
 A ggplot2 layer that can be added to a plot object.
 }
 \description{
@@ -110,7 +112,7 @@ bold).
 library(ggplot2)
 library(dplyr)
 # Data prep
-input_df <- prefviz:::aecdop22_widen |> 
+input_df <- prefviz::aecdop22_transformed |> 
    filter(DivisionNm \%in\% c("Higgins", "Monash"))
 tern22 <- as_ternable(input_df, ALP:Other)
 

@@ -28,6 +28,8 @@
 #' @param inherit.aes If `FALSE`, overrides the default aesthetics rather than 
 #'   combining with them.
 #' 
+#' @return A ggplot object
+#' 
 #' @section Computed variables:
 #' `stat_ternary_region()` calculates the following variables which can be accessed 
 #' with `after_stat()`:
@@ -47,10 +49,8 @@
 #' 
 #' @examples
 #' library(ggplot2)
-#' aecdop22_transformed <- prefviz:::aecdop22_transformed
-#' 
 #' # Get ternable
-#' tern22 <- as_ternable(aecdop22_transformed, ALP:Other)
+#' tern22 <- as_ternable(prefviz::aecdop22_transformed, ALP:Other)
 #' 
 #' # Draw the ternary plot
 #' ggplot(get_tern_data(tern22, plot_type = "2D"), aes(x = x1, y = x2)) +

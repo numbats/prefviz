@@ -12,12 +12,13 @@
 #' @param ... Arguments passed to [ggplot2::geom_text()], such as
 #'   `size`, `colour`, `fontface`, etc.
 #'
+#' @return A ggplot object
+#' 
 #' @examples
 #' library(ggplot2)
 #' 
 #' # Create a ternable object
-#' aecdop22_transformed <- prefviz:::aecdop22_transformed
-#' tern <- as_ternable(aecdop22_transformed, ALP:Other)
+#' tern <- as_ternable(prefviz::aecdop22_transformed, ALP:Other)
 #' 
 #' ggplot() +
 #'   add_ternary_base() +

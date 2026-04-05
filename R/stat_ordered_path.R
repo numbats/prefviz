@@ -44,6 +44,8 @@
 #' @param inherit.aes If `FALSE`, overrides the default aesthetics, rather than
 #'   combining with them.
 #' @param ... Additional parameters passed on to the underlying geom.
+#' 
+#' @return A ggplot object
 #'
 #' @section Aesthetics:
 #' `stat_ordered_path()` understands the following aesthetics (required are in
@@ -59,7 +61,7 @@
 #' library(ggplot2)
 #' library(dplyr)
 #' # Data prep
-#' input_df <- prefviz:::aecdop22_widen |> 
+#' input_df <- prefviz::aecdop22_transformed |> 
 #'    filter(DivisionNm %in% c("Higgins", "Monash"))
 #' tern22 <- as_ternable(input_df, ALP:Other)
 #' 

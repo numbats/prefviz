@@ -10,6 +10,9 @@ add_ternary_base(...)
 \item{...}{Arguments passed to \code{\link[ggplot2:geom_polygon]{ggplot2::geom_polygon()}}, such as
 \code{colour}, \code{fill}, \code{linewidth}, etc.}
 }
+\value{
+A ggplot object
+}
 \description{
 Draws the boundary of a 2D ternary simplex as an equilateral triangle
 }

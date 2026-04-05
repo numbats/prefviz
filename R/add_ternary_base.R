@@ -5,6 +5,8 @@
 #'
 #' @param ... Arguments passed to [ggplot2::geom_polygon()], such as
 #'   `colour`, `fill`, `linewidth`, etc.
+#' 
+#' @return A ggplot object
 #'
 #' @examples
 #' library(ggplot2)

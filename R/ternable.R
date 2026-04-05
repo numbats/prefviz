@@ -34,10 +34,10 @@
 #' @examples
 #' 
 #' # Load and transform the dataset
-#' prefviz:::aecdop25_transformed
+#' prefviz::aecdop25_transformed
 #' 
 #' # Create the ternable object
-#' tern <- as_ternable(prefviz:::aecdop25_transformed, items = ALP:IND)
+#' tern <- as_ternable(prefviz::aecdop25_transformed, items = ALP:IND)
 #' tern
 #'
 #' @export
