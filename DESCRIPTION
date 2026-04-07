@@ -1,8 +1,8 @@
 Package: prefviz
-Title: Visualizes Preference Data via Ternary Plots in Two and Higher dimensions
+Title: Visualizes Preference Data via Ternary Plots in Two and Higher Dimensions
 Version: 0.1.1
 Authors@R: c(
-  person("Linh", "Ngo", email = "Linh.Ngo2@monash.edu", role = c("aut", "cre")),
+  person("Linh", "Ngo", email = "linhngo66.work@gmail.com", role = c("aut", "cre")),
   person("Dianne", "Cook", email = "DiCook@monash.edu", role = "aut", comment = c(ORCID = "0000-0002-3813-7155")),
   person("Damjan", "Vukcevic", email = "damjan.vukcevic@monash.edu", role = "aut", comment = c(ORCID = "0000-0001-7780-9586")))
 Description: Visualises preference and ranking data by extending traditional 
