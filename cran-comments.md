@@ -1,10 +1,10 @@
-## Verion 0.1.0
+## Verion 0.1.2
 
 First release
 
 ## R CMD check results
 
-── R CMD check results ────────────────────────────────────────── prefviz 0.1.0 ────
+── R CMD check results ────────────────────────────────────────── prefviz 0.1.2 ────
 Duration: 22.1s
 
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔

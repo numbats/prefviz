@@ -49,6 +49,9 @@ po/*~
 rsconnect/
 /.quarto/
 
+# Claude Code
+CLAUDE.md
+
 # Dev files
 inst/doc
 /doc/
