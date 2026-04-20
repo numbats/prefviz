@@ -154,7 +154,7 @@ library(ggplot2)
 tern22 <- as_ternable(prefviz::aecdop22_transformed, ALP:Other)
 
 # Draw the ternary plot
-ggplot(get_tern_data(tern22, plot_type = "2D"), aes(x = x1, y = x2)) +
+ggplot(get_tern_data2d(tern22), aes(x = x1, y = x2)) +
   add_ternary_base() +
   geom_ternary_region(
     vertex_labels = tern22$vertex_labels,

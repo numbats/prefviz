@@ -117,7 +117,7 @@ input_df <- prefviz::aecdop22_transformed |>
 tern22 <- as_ternable(input_df, ALP:Other)
 
 # Base plot
-p <- get_tern_data(tern22, plot_type = "2D") |> 
+p <- get_tern_data2d(tern22) |>
   ggplot(aes(x = x1, y = x2)) +
   add_ternary_base() +
   geom_ternary_region(

@@ -78,7 +78,7 @@ tern22
 
 ```{r}
 # Get the input data
-input_df <- get_tern_data(tern22, plot_type = "2D")
+input_df <- get_tern_data2d(tern22)
 head(input_df)
 
 # Visualize
@@ -124,10 +124,11 @@ color_vector <- c(rep("black", 5),
   party_colors[aecdop25_transformed$ElectedParty])
 
 # Animate the tour
+tourr_data <- get_tern_datahd(tern25)
 animate_xy(
-  get_tern_data(tern25, plot_type = "HD"), 
+  dplyr::select(tourr_data, starts_with("x")),
   edges = get_tern_edges(tern25),
-  obs_labels  = get_tern_labels(tern25),
+  obs_labels = tourr_data[["labels"]],
   col = color_vector,
   axes = "bottomleft"
 )

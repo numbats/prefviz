@@ -1,83 +1,86 @@
 #' Getter functions to extract components from ternable object for ternary plots
-#' 
+#'
 #' @description
 #' Performs additional transformations on ternable object components, making it
-#' ready for both 2D ternary plot with `ggplot2` and 
+#' ready for both 2D ternary plot with `ggplot2` and
 #' high-dimensional ternary plots with `tourr`.
-#' 
+#'
 #' @param ternable A ternable object created by [as_ternable()].
-#' @param plot_type Only in `get_tern_data()`. Character string specifying the type of plot to be drawn. 
-#'   Either "2D" for a 2D ternary plot or "HD" for a high-dimensional ternary plot.
-#' @param include_data Logical. Only in `get_tern_edges()`. If `TRUE`, return data edges, along with simplex edges. 
+#' @param include_data Logical. Only in `get_tern_edges()`. If `TRUE`, return data edges, along with simplex edges.
 #'   If `FALSE`, only return simplex edges.
 #'
-#' @return 
-#' - `get_tern_data()`: A data frame as input for `ggplot2` or `tourr`.
+#' @return
+#' - `get_tern_data2d()`: A data frame augmenting the original data with its
+#'   ternary coordinates (`x1`, `x2`). Used as input data for 2D ternary plot with `ggplot2`.
+#' - `get_tern_datahd()`: A data frame combining the simplex vertices with the
+#'   original data and ternary coordinates. The `labels` column contains labels
+#'   for the vertexes and `""` for data rows. Pass the coordinate columns
+#'   (`dplyr::select(starts_with("x"))`) to `tourr` and use the `labels` column
+#'   directly for `obs_labels`.
+#' - `get_tern_edges()`: A matrix of simplex edge connections for drawing
+#'   the simplex boundary.
 #'   \itemize{
-#'     \item If `plot_type = "2D"`, the data frame augments the original data, with
-#'     its ternary coordinates. Used as input data for `ggplot2`.
-#'     \item If `plot_type = "HD"`, the data frame combines ternary coordinates of 
-#'     original data with those of simplex vertices (without vertex labels). 
-#'     Used as input data for `tourr`.
-#'   }
-#' - `get_tern_edges()`: A matrix of simplex edge connections for drawing 
-#'   the simplex boundary. 
-#'   \itemize{
-#'     \item If `include_data = FALSE`, the matrix contains only the simplex edges. 
+#'     \item If `include_data = FALSE`, the matrix contains only the simplex edges.
 #'     Equivalent to `ternable$simplex_edges`.
-#'     \item If `include_data = TRUE`, the matrix combines the simplex edges with 
-#'     the data edges. Used when you want to draw lines between the data points. 
+#'     \item If `include_data = TRUE`, the matrix combines the simplex edges with
+#'     the data edges. Used when you want to draw lines between the data points.
 #'   }
-#' - `get_tern_labels()`: A character vector containing vertex labels. 
-#'   Used as vertex labels for `tourr`, via argument `vertex_labels`.
-#' 
+#'
 #' @details
 #' These functions are designed to work together for creating animated tours
 #' of high-dimensional ternary data:
-#' - `get_tern_data()` provides the point coordinates
+#' - `get_tern_datahd()` provides both the point coordinates and observation labels
 #' - `get_tern_edges()` provides the simplex structure
-#' - `get_tern_labels()` provides labels that align with the data rows
+#'
+#' @section Deprecated:
+#' `get_tern_labels()` is deprecated as of version 0.1.2. Use
+#' `get_tern_datahd(ternable)[["labels"]]` instead.
 #'
 #' @examples
 #' library(ggplot2)
 #' # Create a ternable object
-#' tern <- as_ternable(prefviz::aecdop22_transformed, ALP:Other)
-#' 
+#' tern <- as_ternable(aecdop22_transformed, ALP:Other)
+#'
 #' # Use with tourr (example)
+#' \dontrun{
+#' tourr_data <- get_tern_datahd(tern)
 #' tourr::animate_xy(
-#'  get_tern_data(tern, plot_type = "HD"),
-#'  edges = get_tern_edges(tern),
-#'  obs_labels  = get_tern_labels(tern),
-#'  axes = "bottomleft")
+#'   dplyr::select(tourr_data, starts_with("x")),
+#'   edges = get_tern_edges(tern),
+#'   obs_labels = tourr_data[["labels"]],
+#'   axes = "bottomleft")
+#' }
 #'
 #' # Use with ggplot2 (example)
-#' ggplot(get_tern_data(tern, plot_type = "2D"), aes(x = x1, y = x2)) +
+#' ggplot(get_tern_data2d(tern), aes(x = x1, y = x2)) +
 #'   add_ternary_base() +
 #'   geom_point(aes(color = ElectedParty))
-#' 
+#'
 #' @seealso [as_ternable()] for creating ternable objects
-#' 
+#'
 #' @name ternary_getters
 NULL
 
 #' @rdname ternary_getters
 #' @export
-get_tern_data <- function(ternable, plot_type = c("2D", "HD")) {
+get_tern_data2d <- function(ternable) {
   stopifnot("input should be of class `ternable`" = class(ternable) == "ternable")
-  plot_type <- match.arg(plot_type)
-  
-  if(plot_type == "2D"){
-    tern_coord <- ternable$ternary_coord |> 
-      dplyr::mutate(x2 = x2*-1)
-    data <- cbind(ternable$data, tern_coord)
-  } 
-  else if(plot_type == "HD"){
-    sp <- ternable$simplex_vertices |> 
-      dplyr::select(-labels)
-    data <- dplyr::bind_rows(sp, ternable$ternary_coord)
-  }
 
-  return(data)
+  tern_coord <- ternable$ternary_coord |>
+    dplyr::mutate(x2 = x2 * -1)
+  dplyr::bind_cols(ternable$data, tern_coord)
+}
+
+#' @rdname ternary_getters
+#' @export
+get_tern_datahd <- function(ternable) {
+  stopifnot("input should be of class `ternable`" = class(ternable) == "ternable")
+
+  tourr_data <- ternable$data |>
+    dplyr::bind_cols(ternable$ternary_coord)
+  ternable$simplex_vertices |>
+    dplyr::bind_rows(tourr_data) |>
+    dplyr::mutate(labels = ifelse(is.na(labels), "", labels))
 }
 
 #' @rdname ternary_getters
@@ -104,6 +107,11 @@ get_tern_edges <- function(ternable, include_data = FALSE) {
 #' @rdname ternary_getters
 #' @export
 get_tern_labels <- function(ternable) {
+  lifecycle::deprecate_warn(
+    when = "0.1.2",
+    what = "get_tern_labels()",
+    details = 'Use `get_tern_datahd(ternable)[["labels"]]` instead.'
+  )
   stopifnot("input should be of class `ternable`" = class(ternable) == "ternable")
 
   vert_labels <- ternable$vertex_labels

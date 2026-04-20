@@ -67,9 +67,13 @@ Under the hood, `get_tern_*()` perform simple data transformations, i.e., `rbind
 
 There are 3 `get_tern_*()` functions:
 
-- `get_tern_data()`: Provides input data for `ggplot2` or `tourr`.
-- `get_tern_edges()`: Provides edges of the simplex, which is required by `tourr`. 
-- `get_tern_labels()`: Provides labels for the vertices, which is helpful for distinguishing vertices in `tourr`.
+- `get_tern_data2d()`: Provides input data for `ggplot2` (2D ternary plots).
+- `get_tern_datahd()`: Provides input data for `tourr` (high-dimensional ternary plots). The returned
+  data frame includes a `labels` column containing vertex names for simplex rows and `""` for
+  observation rows, which can be passed directly to `tourr`'s `obs_labels` argument.
+- `get_tern_edges()`: Provides edges of the simplex, which is required by `tourr`.
+
+Note: `get_tern_labels()` is deprecated. Use `get_tern_datahd(tern)[["labels"]]` instead.
 
 # Drawing a 2D ternary plot
 
@@ -81,10 +85,10 @@ The dataset `aecdop22_transformed` is already in a `ternable`-friendly format, s
 tern22 <- as_ternable(aecdop22_transformed, ALP:Other)
 ```
 
-Now we can use the `get_tern_data()` function to get the input data for `ggplot2`.
+Now we can use the `get_tern_data2d()` function to get the input data for `ggplot2`.
 
 ```{r}
-input_df <- get_tern_data(tern22, plot_type = "2D")
+input_df <- get_tern_data2d(tern22)
 head(input_df)
 ```
 
@@ -144,10 +148,11 @@ head(aecdop25_transformed)
 tern25 <- as_ternable(aecdop25_transformed, ALP:IND)
 
 # Animate the tour
+tourr_data <- get_tern_datahd(tern25)
 animate_xy(
-  get_tern_data(tern25, plot_type = "HD"), # Dataframe with coordinates of the observations and vertices
+  dplyr::select(tourr_data, starts_with("x")), # Coordinates of the observations and vertices
   edges = get_tern_edges(tern25), # Edges of the simplex
-  obs_labels  = get_tern_labels(tern25), # Labels for the vertices
+  obs_labels = tourr_data[["labels"]], # Labels for the vertices
   axes = "bottomleft"
 )
 ```
@@ -167,11 +172,11 @@ party_colors <- c(
 color_vector <- c(rep("black", 5),
   party_colors[aecdop25_transformed$ElectedParty])
 
-# Animate the tour
+# Animate the tour (tourr_data already defined above)
 animate_xy(
-  get_tern_data(tern25, plot_type = "HD"), 
+  dplyr::select(tourr_data, starts_with("x")),
   edges = get_tern_edges(tern25),
-  obs_labels  = get_tern_labels(tern25),
+  obs_labels = tourr_data[["labels"]],
   col = color_vector,
   axes = "bottomleft"
 )
