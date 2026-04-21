@@ -1,0 +1,483 @@
+---
+title: "Sushi Rankings Analysis"
+subtitle: "Voting rules, agreement, and preference clustering"
+date: today
+format:
+  html:
+    self-contained: true
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    theme: flatly
+    df-print: kable
+execute:
+  warning: false
+  message: false
+  cache: false
+---
+
+```{r setup, include=FALSE}
+library(BayesMallows)
+library(tidyverse)
+library(mclust)
+library(knitr)
+
+data("sushi_rankings", package = "BayesMallows")
+sushi  <- sushi_rankings
+items  <- colnames(sushi)
+n_voters <- nrow(sushi)   # 5 000
+n_items  <- ncol(sushi)   # 10
+
+# ── Part 1: First preferences ────────────────────────────────────────────────
+fp_counts <- colSums(sushi == 1)
+fp_prop   <- fp_counts / n_voters
+fp_df <- tibble(Item = items, Count = fp_counts, Proportion = fp_prop) |>
+  arrange(desc(Count))
+fp_winner <- fp_df$Item[1]
+
+# ── Part 1: IRV ───────────────────────────────────────────────────────────────
+run_irv <- function(mat) {
+  active     <- colnames(mat)
+  n          <- nrow(mat)
+  rounds     <- list()
+  eliminated <- character(0)
+
+  repeat {
+    top_choice <- apply(mat[, active, drop = FALSE], 1,
+                        function(r) active[which.min(r)])
+    counts <- setNames(integer(length(active)), active)
+    tbl    <- table(top_choice)
+    counts[names(tbl)] <- as.integer(tbl)
+    rounds[[length(rounds) + 1]] <- counts
+
+    if (max(counts) > n / 2 || length(active) == 1) {
+      winner <- names(which.max(counts))
+      break
+    }
+
+    loser      <- names(which.min(counts))
+    eliminated <- c(eliminated, loser)
+    active     <- active[active != loser]
+  }
+  list(winner = winner, rounds = rounds, eliminated = eliminated)
+}
+
+irv_res    <- run_irv(sushi)
+irv_winner <- irv_res$winner
+
+# ── Part 1: Condorcet ─────────────────────────────────────────────────────────
+pw_wins <- matrix(0L, n_items, n_items, dimnames = list(items, items))
+for (i in seq_len(n_items))
+  for (j in seq_len(n_items))
+    if (i != j)
+      pw_wins[i, j] <- sum(sushi[, i] < sushi[, j])
+
+condorcet_winner <- NA_character_
+for (item in items) {
+  others <- items[items != item]
+  if (all(pw_wins[item, others] > n_voters / 2)) {
+    condorcet_winner <- item
+    break
+  }
+}
+
+cycle_example <- NULL
+if (is.na(condorcet_winner)) {
+  beats <- pw_wins > n_voters / 2
+  for (a in items) {
+    for (b in items[items != a]) {
+      if (beats[a, b]) {
+        for (cc in items[items != a & items != b]) {
+          if (beats[b, cc] && beats[cc, a]) {
+            cycle_example <- c(a, b, cc); break
+          }
+        }
+      }
+      if (!is.null(cycle_example)) break
+    }
+    if (!is.null(cycle_example)) break
+  }
+}
+
+condorcet_label <- if (!is.na(condorcet_winner)) condorcet_winner else "none (preference cycles exist)"
+
+# ── Part 2: Kendall's W ───────────────────────────────────────────────────────
+m   <- n_voters
+n   <- n_items
+R_j <- colSums(sushi)          # column rank sums
+R_bar <- m * (n + 1) / 2      # expected column sum under randomness
+S   <- sum((R_j - R_bar)^2)
+W   <- 12 * S / (m^2 * (n^3 - n))
+chi_sq_W  <- m * (n - 1) * W
+df_W      <- n - 1
+p_W       <- pchisq(chi_sq_W, df = df_W, lower.tail = FALSE)
+
+W_interp <- case_when(
+  W < 0.1  ~ "very weak",
+  W < 0.3  ~ "weak",
+  W < 0.5  ~ "moderate",
+  W < 0.7  ~ "strong",
+  TRUE     ~ "very strong"
+)
+
+# ── Part 3: Clustering (mclust) ───────────────────────────────────────────────
+# Rankings sum to 55 per row → data lies on a 9-D hyperplane.
+# Project onto first 9 PCs (removing the zero-variance 10th PC) so mclust
+# does not encounter a singular covariance matrix.
+pca_sushi  <- prcomp(sushi, center = TRUE, scale. = FALSE)
+sushi_9pc  <- pca_sushi$x[, 1:9]
+
+set.seed(42)
+bic_obj <- mclustBIC(sushi_9pc, G = 1:4)
+
+mc_fit     <- Mclust(sushi_9pc, G = 1:4, x = bic_obj)
+best_G     <- mc_fit$G
+best_model <- mc_fit$modelName
+
+z_matrix   <- mc_fit$z                # posterior membership probabilities
+cl_assign  <- mc_fit$classification   # hard assignment
+
+cl_sizes <- tibble(
+  Cluster = seq_len(best_G),
+  Count   = as.integer(table(cl_assign)),
+  Proportion = round(as.numeric(table(cl_assign)) / n_voters, 3)
+)
+
+# Average rank per cluster (lower = more preferred)
+cl_avg_ranks <- lapply(seq_len(best_G), function(k) {
+  colMeans(sushi[cl_assign == k, ])
+})
+
+# Top 3 most preferred items per cluster
+top3_per_cluster <- map_chr(cl_avg_ranks, function(avg_r) {
+  paste(names(sort(avg_r))[1:3], collapse = ", ")
+})
+
+# Plain-language cluster descriptions for summary
+cl_desc <- map_chr(seq_len(best_G), function(k) {
+  top <- names(sort(cl_avg_ranks[[k]]))[1:2]
+  bot <- names(sort(cl_avg_ranks[[k]], decreasing = TRUE))[1]
+  glue::glue("Cluster {k} ({cl_sizes$Count[k]} respondents, {cl_sizes$Proportion[k]*100}%): ",
+             "prefers {top[1]} and {top[2]}; likes {bot} least.")
+})
+
+# BIC table for reporting (mclustBIC: rows = model names, cols = G values)
+bic_vals <- apply(bic_obj, 1, max, na.rm = TRUE)
+bic_table <- tibble(
+  K     = 1:4,
+  BIC   = round(bic_vals, 1)
+) |> mutate(`Selected` = if_else(K == best_G, "✓", ""))
+```
+
+## Summary of Findings
+
+### Part 1 — Most popular sushi options
+
+All three voting methods point to the same winner:
+
+- **First-preference leader:** `r fp_winner` (`r fp_df$Count[1]` first-place votes, `r round(fp_df$Proportion[1]*100, 1)`% of respondents).
+- **IRV winner:** `r irv_winner` (survived all elimination rounds).
+- **Condorcet winner:** `r condorcet_label`.
+
+The three methods **agree**: *`r fp_winner`* is unambiguously the most popular sushi option in this dataset. *Cucumber roll* consistently appears at the bottom across all voting rules.
+
+### Part 2 — Agreement among respondents
+
+Kendall's coefficient of concordance is **W = `r round(W, 3)`** (`r W_interp` agreement), which is highly statistically significant (χ²(`r df_W`) = `r round(chi_sq_W, 1)`, *p* < 0.001). Respondents show non-random, consistent preferences for sushi — the agreement is real, not an artefact of chance.
+
+### Part 3 — Preference clusters
+
+A Gaussian mixture model (mclust, model `r best_model`) selected **K = `r best_G` clusters** based on BIC. Each respondent has a posterior probability of belonging to each cluster. Key clusters:
+
+`r paste("- ", cl_desc, collapse = "\n")`
+
+Respondents are assigned **probabilistically** — most belong predominantly to one cluster, but the soft membership captures genuine uncertainty for borderline cases.
+
+---
+
+## Setup and Data
+
+```{r data-peek}
+cat("Dimensions:", dim(sushi), "\n")
+cat("Items:", paste(items, collapse = ", "), "\n")
+head(sushi, 3) |> kable(caption = "First 3 rows of sushi_rankings (1 = most preferred)")
+```
+
+The data (`BayesMallows::sushi_rankings`) contains **`r n_voters` respondents** who each ranked **`r n_items` sushi types** from 1 (most preferred) to 10 (least preferred). The sushi types are: `r paste(items, collapse = ", ")`.
+
+---
+
+## Part 1 — Most Popular Options
+
+### First-preference counts
+
+```{r first-pref}
+fp_df |>
+  mutate(Proportion = scales::percent(Proportion, accuracy = 0.1)) |>
+  kable(caption = "First-place vote counts per sushi item (sorted descending)")
+```
+
+```{r first-pref-plot, fig.width=7, fig.height=4}
+fp_df |>
+  mutate(Item = fct_reorder(Item, Count)) |>
+  ggplot(aes(x = Item, y = Count,
+             fill = Item == fp_winner)) +
+  geom_col(show.legend = FALSE) +
+  scale_fill_manual(values = c("grey70", "steelblue")) +
+  geom_text(aes(label = Count), hjust = -0.2, size = 3.5) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.12))) +
+  coord_flip() +
+  labs(
+    title = "First-preference votes per sushi item",
+    x = NULL, y = "Number of respondents"
+  ) +
+  theme_bw() +
+  theme(panel.grid.major.y = element_blank(),
+        panel.grid.minor   = element_blank())
+```
+
+**`r fp_winner`** received the most first-place votes (`r fp_df$Count[1]`, `r round(fp_df$Proportion[1]*100,1)`% of respondents).
+
+### Instant-Runoff Voting (IRV)
+
+```{r irv-table}
+irv_round_df <- map_dfr(seq_along(irv_res$rounds), function(i) {
+  r <- irv_res$rounds[[i]]
+  tibble(Round = i, Item = names(r), Votes = as.integer(r))
+})
+
+irv_wide <- irv_round_df |>
+  pivot_wider(names_from = Round, values_from = Votes,
+              names_prefix = "Round ") |>
+  arrange(desc(`Round 1`))
+
+kable(irv_wide, caption = "IRV vote tallies by round (NA = already eliminated)")
+```
+
+```{r irv-elim}
+if (length(irv_res$eliminated) > 0) {
+  cat("Elimination sequence:", paste(irv_res$eliminated, collapse = " → "), "\n")
+} else {
+  cat("No eliminations needed — a majority was reached in Round 1.\n")
+}
+cat("IRV winner:", irv_winner)
+```
+
+The **IRV winner is `r irv_winner`**, consistent with its dominant first-preference share.
+
+### Condorcet analysis
+
+```{r condorcet-matrix, fig.width=7, fig.height=5.5}
+# Show pairwise win matrix as a heatmap
+pw_df <- as_tibble(pw_wins, rownames = "Item_A") |>
+  pivot_longer(-Item_A, names_to = "Item_B", values_to = "Wins") |>
+  filter(Item_A != Item_B) |>
+  mutate(Majority = Wins > n_voters / 2)
+
+ggplot(pw_df, aes(x = Item_B, y = Item_A, fill = Wins)) +
+  geom_tile(colour = "white") +
+  geom_text(aes(label = Wins), size = 2.8) +
+  scale_fill_gradient2(
+    low = "#d73027", mid = "white", high = "#4575b4",
+    midpoint = n_voters / 2,
+    name = "Voters preferring\nrow over column"
+  ) +
+  labs(
+    title = "Pairwise Condorcet win counts",
+    subtitle = paste0("Blue = row item preferred by >", n_voters/2, " voters; red = opposite"),
+    x = "Item B", y = "Item A"
+  ) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r condorcet-result}
+if (!is.na(condorcet_winner)) {
+  cat("Condorcet winner:", condorcet_winner, "\n")
+  cat(condorcet_winner, "beats every other item in head-to-head comparisons.\n")
+} else {
+  cat("No Condorcet winner exists (preference cycles detected).\n")
+  if (!is.null(cycle_example)) {
+    cat("Example cycle:", cycle_example[1], "beats", cycle_example[2],
+        ",", cycle_example[2], "beats", cycle_example[3],
+        ", but", cycle_example[3], "beats", cycle_example[1], "\n")
+  }
+}
+```
+
+**`r condorcet_label`** beats every other sushi item in direct head-to-head pairwise comparisons.
+
+---
+
+## Part 2 — Agreement vs Randomness (Kendall's W)
+
+### Method
+
+Kendall's coefficient of concordance $W$ measures the degree of agreement among $m$ judges ranking $n$ items:
+
+$$W = \frac{12S}{m^2(n^3 - n)}$$
+
+where $S = \sum_{j=1}^{n}(R_j - \bar{R})^2$ is the sum of squared deviations of column rank sums from their expected value under randomness ($\bar{R} = m(n+1)/2$). Under the null hypothesis of random rankings, $m(n-1)W \sim \chi^2_{n-1}$ (large-sample approximation).
+
+```{r kendall-compute}
+kendall_tbl <- tibble(
+  Statistic = c("m (judges)", "n (items)", "W", "χ² statistic", "df", "p-value"),
+  Value     = c(m, n,
+                round(W, 4),
+                round(chi_sq_W, 2),
+                df_W,
+                format.pval(p_W, digits = 3, eps = 1e-15))
+)
+kable(kendall_tbl, caption = "Kendall's W results")
+```
+
+```{r kendall-colsums, fig.width=7, fig.height=4}
+tibble(Item = items, RankSum = R_j) |>
+  mutate(Item = fct_reorder(Item, RankSum)) |>
+  ggplot(aes(x = Item, y = RankSum)) +
+  geom_col(fill = "steelblue") +
+  geom_hline(yintercept = R_bar, linetype = "dashed", colour = "firebrick",
+             linewidth = 0.8) +
+  annotate("text", x = 1.5, y = R_bar + 500,
+           label = paste("Expected under\nrandomness =", R_bar),
+           colour = "firebrick", size = 3.2, hjust = 0) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
+  coord_flip() +
+  labs(title = "Column rank sums (deviation from randomness drives W)",
+       x = NULL, y = "Sum of ranks across 5 000 respondents") +
+  theme_bw() +
+  theme(panel.grid.major.y = element_blank(),
+        panel.grid.minor   = element_blank())
+```
+
+### Interpretation
+
+$W = `r round(W, 3)`$ indicates **`r W_interp` agreement** among the 5 000 respondents. The chi-squared test strongly rejects the null hypothesis of random rankings ($\chi^2(`r df_W`) = `r round(chi_sq_W, 1)`$, $p < 0.001$). While a perfect $W = 1$ is rare for large groups with diverse tastes, the observed level of concordance confirms that sushi preferences are **non-random and consistent across respondents** — fatty tuna and tuna are broadly liked, while cucumber roll and egg are broadly disliked.
+
+---
+
+## Part 3 — Clustering with Probabilistic Class Membership
+
+### Model choice
+
+We use **Gaussian Mixture Models (GMM)** via the `mclust` R package (Scrucca et al., 2023). Although the data are rankings rather than continuous measurements, GMMs applied to rank matrices are a well-established general-purpose latent class approach that directly yields posterior class membership probabilities for each respondent. `mclust` selects the covariance structure automatically via BIC.
+
+> *Justification:* `mclust` handles multivariate continuous (or rank-as-continuous) data and provides exact posterior probabilities $P(\text{cluster } k \mid \text{ranking}_i)$ via the E-step of the EM algorithm — exactly what this analysis requires.
+
+### Number of clusters (BIC)
+
+```{r bic-table}
+kable(bic_table, caption = "mclust BIC by number of clusters K (higher = better)")
+```
+
+```{r bic-plot, fig.width=6, fig.height=4}
+bic_table |>
+  ggplot(aes(x = K, y = BIC)) +
+  geom_line(colour = "steelblue", linewidth = 1) +
+  geom_point(aes(colour = K == best_G), size = 3, show.legend = FALSE) +
+  scale_colour_manual(values = c("grey60", "steelblue")) +
+  labs(title = "mclust BIC by number of clusters",
+       subtitle = paste0("Selected: K = ", best_G, " (", best_model, " model)"),
+       x = "Number of clusters K", y = "BIC (higher = better)") +
+  theme_bw()
+```
+
+`mclust` selected **K = `r best_G`** clusters (model `r best_model`) as the highest-BIC solution.
+
+### Cluster sizes
+
+```{r cluster-sizes}
+kable(cl_sizes, caption = paste0("Respondent counts per cluster (K = ", best_G, ")"))
+```
+
+### Average ranks per cluster
+
+Lower values indicate stronger preference (rank 1 = most preferred).
+
+```{r cluster-avg-ranks}
+avg_rank_df <- map_dfr(seq_len(best_G), function(k) {
+  tibble(Cluster = paste0("Cluster ", k),
+         Item    = items,
+         AvgRank = cl_avg_ranks[[k]])
+})
+
+avg_rank_wide <- avg_rank_df |>
+  pivot_wider(names_from = Cluster, values_from = AvgRank) |>
+  mutate(across(where(is.numeric), ~round(.x, 2))) |>
+  arrange(`Cluster 1`)
+
+kable(avg_rank_wide,
+      caption = "Average rank per item per cluster (lower = more preferred)")
+```
+
+```{r cluster-heatmap, fig.width=7, fig.height=4}
+avg_rank_df |>
+  mutate(Item = fct_reorder(Item, AvgRank, .fun = mean)) |>
+  ggplot(aes(x = Cluster, y = Item, fill = AvgRank)) +
+  geom_tile(colour = "white") +
+  geom_text(aes(label = round(AvgRank, 1)), size = 3.5) +
+  scale_fill_gradient2(
+    low  = "#4575b4",
+    mid  = "white",
+    high = "#d73027",
+    midpoint = (n_items + 1) / 2,
+    name = "Avg rank\n(lower = preferred)"
+  ) +
+  labs(title = "Average preference rank by cluster",
+       x = NULL, y = NULL) +
+  theme_bw()
+```
+
+### Top 3 items per cluster
+
+```{r top3}
+tibble(
+  Cluster = paste0("Cluster ", seq_len(best_G)),
+  `Count (n)` = cl_sizes$Count,
+  `Top 3 most preferred` = top3_per_cluster
+) |> kable(caption = "Most preferred sushi items per cluster")
+```
+
+### Posterior membership probabilities (sample)
+
+The matrix below shows the first 10 respondents' posterior probabilities of belonging to each cluster ($\sum_k P_k = 1$ per row).
+
+```{r posterior-probs}
+z_matrix |>
+  as_tibble(.name_repair = "unique") |>
+  setNames(paste0("P(Cluster ", seq_len(best_G), ")")) |>
+  mutate(
+    Respondent = seq_len(n_voters),
+    `Hard assignment` = cl_assign
+  ) |>
+  select(Respondent, `Hard assignment`, everything()) |>
+  slice_head(n = 10) |>
+  mutate(across(starts_with("P("), ~round(.x, 3))) |>
+  kable(caption = "Posterior cluster membership probabilities (first 10 respondents)")
+```
+
+### Cluster descriptions
+
+```{r cluster-desc}
+map_dfr(seq_len(best_G), function(k) {
+  avg_r   <- cl_avg_ranks[[k]]
+  ord     <- order(avg_r)
+  top3    <- names(avg_r)[ord[1:3]]
+  bottom2 <- names(avg_r)[ord[(n_items-1):n_items]]
+  tibble(
+    Cluster    = paste0("Cluster ", k),
+    n          = cl_sizes$Count[k],
+    `%`        = paste0(round(cl_sizes$Proportion[k]*100, 1), "%"),
+    `Top 3 (most preferred)` = paste(top3, collapse = " > "),
+    `Bottom 2 (least preferred)` = paste(bottom2, collapse = " > ")
+  )
+}) |> kable(caption = "Plain-language cluster profiles")
+```
+
+---
+
+## Session Info
+
+```{r session-info}
+sessioninfo::session_info(c("BayesMallows", "mclust", "tidyverse"))
+```

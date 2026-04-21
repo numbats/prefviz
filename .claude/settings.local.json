@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__r-btw__btw_tool_docs_help_page",
+      "mcp__r-btw__btw_tool_sessioninfo_is_package_installed"
+    ]
+  }
+}
