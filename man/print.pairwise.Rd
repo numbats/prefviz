@@ -17,3 +17,4 @@
 \description{
 Print a pairwise object
 }
+\keyword{internal}

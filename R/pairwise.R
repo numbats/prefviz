@@ -102,12 +102,12 @@ print.pairwise <- function(x, ...) {
   n_items <- nrow(x$pairwise_matrix)
   cat(sprintf("Pairwise analysis (%d items)\n\n", n_items))
 
-  cat("Head-to-head results:\n")
+  cat("Head-to-head results (first 5 rows):\n")
   display <- x$two_candidate_preferred
   # Format as percentages for display only; underlying tibble keeps raw 0-1 values
   display$tcp_a <- sprintf("%.1f%%", display$tcp_a * 100)
   display$tcp_b <- sprintf("%.1f%%", display$tcp_b * 100)
-  print(as.data.frame(display), row.names = FALSE)
+  print(as.data.frame(display) |> head(5), row.names = FALSE)
 
   cat("\n")
   if (!is.na(x$condorcet_winner)) {

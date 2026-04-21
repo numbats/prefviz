@@ -1,0 +1,338 @@
+---
+title: "Sushi Rankings Analysis"
+subtitle: "Voting rules, agreement, and preference clustering"
+date: today
+format:
+  html:
+    self-contained: true
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    theme: flatly
+    df-print: kable
+execute:
+  warning: false
+  message: false
+  cache: false
+---
+
+```{r setup, include=FALSE}
+library(prefviz)
+library(prefio)
+library(tidyverse)
+library(mclust)
+library(knitr)
+
+# ── Load sushi data from PrefLib ──────────────────────────────────────────────
+sushi_data <- prefio::read_preflib(
+  "00014 - sushi/00014-00000001.soc",
+  from_preflib = TRUE
+)
+
+# ── Clustering (mclust on PCA) ──────────────────────────────────────
+items     <- levels(sushi_data$preferences)
+n_voters  <- sum(sushi_data$frequency) 
+n_items   <- length(items)               # 10
+
+# Expand to one row per respondent for matrix-based analyses
+sushi_prefs_expanded <- rep(sushi_data$preferences, sushi_data$frequency)
+rankings_mat <- prefio::ranking_matrix(sushi_prefs_expanded)
+colnames(rankings_mat) <- items
+
+# Rankings sum to 55 per row → data lies on a 9-D hyperplane.
+# Project onto first 9 PCs before fitting GMM to avoid singular covariances.
+pca_sushi  <- prcomp(rankings_mat, center = TRUE, scale. = FALSE)
+sushi_9pc  <- pca_sushi$x[, 1:9]
+
+set.seed(42)
+bic_obj  <- mclustBIC(sushi_9pc, G = 1:4)
+mc_fit   <- Mclust(sushi_9pc, G = 1:4, x = bic_obj)
+best_G   <- mc_fit$G
+best_model <- mc_fit$modelName
+
+z_matrix  <- mc_fit$z          # posterior membership probabilities
+cl_assign <- mc_fit$classification
+
+cl_sizes <- tibble(
+  Cluster    = seq_len(best_G),
+  Count      = as.integer(table(cl_assign)),
+  Proportion = round(as.numeric(table(cl_assign)) / n_voters, 3)
+)
+
+cl_avg_ranks <- lapply(seq_len(best_G), function(k) {
+  colMeans(rankings_mat[cl_assign == k, ])
+})
+
+top3_per_cluster <- map_chr(cl_avg_ranks, function(avg_r) {
+  paste(names(sort(avg_r))[1:3], collapse = ", ")
+})
+
+cl_desc <- map_chr(seq_len(best_G), function(k) {
+  top <- names(sort(cl_avg_ranks[[k]]))[1:2]
+  bot <- names(sort(cl_avg_ranks[[k]], decreasing = TRUE))[1]
+  glue::glue(
+    "Cluster {k} ({cl_sizes$Count[k]} respondents, ",
+    "{cl_sizes$Proportion[k] * 100}%): ",
+    "prefers {top[1]} and {top[2]}; likes {bot} least."
+  )
+})
+
+bic_vals  <- apply(bic_obj, 1, max, na.rm = TRUE)
+bic_table <- tibble(
+  K        = 1:4,
+  BIC      = round(bic_vals, 1),
+  Selected = if_else(K == best_G, "✓", "")
+)
+
+# ── Part 3: Ternary plot of cluster membership (K = 3) ───────────────────────
+# Posterior probs sum to 1 per respondent → natural simplex coordinates.
+# Use the optimal K if it equals 3, otherwise fit a dedicated K=3 model.
+if (best_G == 3) {
+  z_tern     <- z_matrix
+  cl_tern    <- cl_assign
+} else {
+  mc_fit3  <- Mclust(sushi_9pc, G = 3)
+  z_tern   <- mc_fit3$z
+  cl_tern  <- mc_fit3$classification
+}
+
+cl_names <- paste0("Cluster ", seq_len(3))
+tern_probs_df <- as.data.frame(z_tern)
+colnames(tern_probs_df) <- cl_names
+tern_probs_df$assignment <- paste0("Cluster ", cl_tern)
+
+tern_obj  <- as_ternable(tern_probs_df, items = all_of(cl_names))
+tern_data <- get_tern_data2d(tern_obj)
+```
+
+## Setup and Data
+
+```{r data-peek}
+sushi_data <- prefio::read_preflib(
+  "00014 - sushi/00014-00000001.soc",
+  from_preflib = TRUE
+)
+sushi_data
+```
+
+The data are loaded via `prefio::read_preflib()` from the PrefLib sushi dataset
+(Kato & Ishigami 2004; file `00014-00000001.soc`). Each of the **`r n_voters`
+respondents** gave a complete ranking of **`r n_items` sushi types** from 1
+(most preferred) to 10 (least preferred). The sushi types are:
+`r paste(items, collapse = ", ")`.
+
+---
+
+## Part 1 — Most Popular Options
+
+### First-preference counts
+
+```{r first-pref-table}
+irv_tbl <- dop_irv(
+  sushi_data,
+  value_type    = "percent",
+  preferences_col = preferences,
+  frequency_col   = frequency
+)
+irv_winner <- unique(irv_tbl$winner)
+
+dop_bar(irv_tbl, -c(round, winner), at_round = 1)
+```
+
+**`r irv_winner`** received the most first-place votes
+
+### Instant-Runoff Voting (IRV)
+
+IRV results are computed using `prefviz::dop_irv()`.
+
+```{r irv-table}
+irv_wide <- irv_tbl |>
+  select(-winner) |>
+  rename(Round = round) |>
+  arrange(Round)
+
+kable(irv_wide,
+      caption = "IRV vote tallies by round (NA = already eliminated)")
+```
+
+The **IRV winner is `r irv_winner`**, consistent with its dominant
+first-preference share.
+
+### Condorcet analysis
+
+Pairwise comparisons are computed using `prefviz::pairwise_calculator()`
+
+```{r condorcet-heatmap, fig.width=7, fig.height=5.5}
+pw_result <- pairwise_calculator(
+  sushi_data,
+  preferences_col = preferences,
+  frequency_col   = frequency
+)
+pw_result
+```
+
+```{r}
+pairwise_heatmap(pw_result, value = "tcp")
+```
+
+## Part 2 — Clustering with Probabilistic Class Membership
+
+### Model choice
+
+We use **Gaussian Mixture Models (GMM)** via the `mclust` R package
+(Scrucca et al., 2023). Although the data are rankings rather than continuous
+measurements, GMMs applied to rank matrices are a well-established
+general-purpose latent class approach that directly yields posterior class
+membership probabilities for each respondent. `mclust` selects the covariance
+structure automatically via BIC.
+
+> *Justification:* `mclust` handles multivariate continuous (or
+> rank-as-continuous) data and provides exact posterior probabilities
+> $P(\text{cluster } k \mid \text{ranking}_i)$ via the E-step of the EM
+> algorithm — exactly what this analysis requires. The ranking matrix is
+> first projected onto 9 principal components to remove the zero-variance
+> direction (all row sums are identical = 55).
+
+### Number of clusters (BIC)
+
+```{r bic-table}
+kable(bic_table,
+      caption = "mclust BIC by number of clusters K (higher = better)")
+```
+
+```{r bic-plot, fig.width=6, fig.height=4}
+bic_table |>
+  ggplot(aes(x = K, y = BIC)) +
+  geom_line(colour = "steelblue", linewidth = 1) +
+  geom_point(aes(colour = K == best_G), size = 3, show.legend = FALSE) +
+  scale_colour_manual(values = c("grey60", "steelblue")) +
+  labs(
+    title = "mclust BIC by number of clusters",
+    subtitle = paste0("Selected: K = ", best_G, " (", best_model, " model)"),
+    x = "Number of clusters K", y = "BIC (higher = better)"
+  ) +
+  theme_bw()
+```
+
+`mclust` selected **K = `r best_G`** clusters (model `r best_model`) as the
+highest-BIC solution.
+
+### Cluster sizes
+
+```{r cluster-sizes}
+kable(cl_sizes,
+      caption = paste0("Respondent counts per cluster (K = ", best_G, ")"))
+```
+
+### Average ranks per cluster
+
+Lower values indicate stronger preference (rank 1 = most preferred).
+
+```{r cluster-avg-ranks}
+avg_rank_df <- map_dfr(seq_len(best_G), function(k) {
+  tibble(
+    Cluster = paste0("Cluster ", k),
+    Item    = items,
+    AvgRank = cl_avg_ranks[[k]]
+  )
+})
+
+avg_rank_df |>
+  pivot_wider(names_from = Cluster, values_from = AvgRank) |>
+  mutate(across(where(is.numeric), ~ round(.x, 2))) |>
+  arrange(`Cluster 1`) |>
+  kable(caption = "Average rank per item per cluster (lower = more preferred)")
+```
+
+```{r cluster-heatmap, fig.width=7, fig.height=4}
+avg_rank_df |>
+  mutate(Item = fct_reorder(Item, AvgRank, .fun = mean)) |>
+  ggplot(aes(x = Cluster, y = Item, fill = AvgRank)) +
+  geom_tile(colour = "white") +
+  geom_text(aes(label = round(AvgRank, 1)), size = 3.5) +
+  scale_fill_gradient2(
+    low      = "#4575b4",
+    mid      = "white",
+    high     = "#d73027",
+    midpoint = (n_items + 1) / 2,
+    name     = "Avg rank\n(lower = preferred)"
+  ) +
+  labs(title = "Average preference rank by cluster", x = NULL, y = NULL) +
+  theme_bw()
+```
+
+### Top 3 items per cluster
+
+```{r top3}
+tibble(
+  Cluster              = paste0("Cluster ", seq_len(best_G)),
+  `Count (n)`          = cl_sizes$Count,
+  `Top 3 most preferred` = top3_per_cluster
+) |> kable(caption = "Most preferred sushi items per cluster")
+```
+
+### Posterior membership probabilities (sample)
+
+The matrix below shows the first 10 respondents' posterior probabilities of
+belonging to each cluster ($\sum_k P_k = 1$ per row).
+
+```{r posterior-probs}
+z_matrix |>
+  as_tibble(.name_repair = "unique") |>
+  setNames(paste0("P(Cluster ", seq_len(best_G), ")")) |>
+  mutate(
+    Respondent       = seq_len(n_voters),
+    `Hard assignment` = cl_assign
+  ) |>
+  select(Respondent, `Hard assignment`, everything()) |>
+  slice_head(n = 10) |>
+  mutate(across(starts_with("P("), ~ round(.x, 3))) |>
+  kable(caption = "Posterior cluster membership probabilities (first 10 respondents)")
+```
+
+### Ternary plot of cluster membership
+
+The 2D ternary plot below uses the posterior probabilities from a K = 3 model
+as simplex coordinates (each respondent's three cluster probabilities sum to 1,
+placing them inside the triangle). Points near a vertex have high certainty of
+belonging to that cluster; points near the centre are uncertain across all three.
+Built with `prefviz::as_ternable()` and `prefviz::get_tern_data2d()`.
+
+```{r ternary-cluster, fig.width=6, fig.height=5.5}
+cluster_colours <- c(
+  "Cluster 1" = "#E13940",
+  "Cluster 2" = "#1C4F9C",
+  "Cluster 3" = "#10C25B"
+)
+
+ggplot(tern_data, aes(x = x1, y = x2)) +
+  add_ternary_base() +
+  geom_point(
+    aes(colour = assignment),
+    alpha = 0.25, size = 0.8
+  ) +
+  add_vertex_labels(tern_obj$simplex_vertices, size = 4, fontface = "bold") +
+  scale_colour_manual(values = cluster_colours, name = "Hard assignment") +
+  labs(title = "Ternary plot of cluster membership probabilities (K = 3)") +
+  guides(colour = guide_legend(
+    override.aes = list(alpha = 1, size = 3)
+  ))
+```
+
+### Cluster descriptions
+
+```{r cluster-desc}
+map_dfr(seq_len(best_G), function(k) {
+  avg_r   <- cl_avg_ranks[[k]]
+  ord     <- order(avg_r)
+  top3    <- names(avg_r)[ord[1:3]]
+  bottom2 <- names(avg_r)[ord[(n_items - 1):n_items]]
+  tibble(
+    Cluster                    = paste0("Cluster ", k),
+    n                          = cl_sizes$Count[k],
+    `%`                        = paste0(round(cl_sizes$Proportion[k] * 100, 1), "%"),
+    `Top 3 (most preferred)`   = paste(top3, collapse = " > "),
+    `Bottom 2 (least preferred)` = paste(bottom2, collapse = " > ")
+  )
+}) |> kable(caption = "Plain-language cluster profiles")
+```

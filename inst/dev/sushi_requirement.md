@@ -5,13 +5,15 @@
 - Use **R** and write the analysis in a **Quarto** `.qmd` file.  
 - Everything should be in folder `inst/dev/`.
 - The `.qmd` should:
-  - Load the `BayesMallows` package and the `sushi_ranking` dataset.  
+  - Use the `sushi` dataset by running `prefio::read_preflib("00014 - sushi/00014-00000001.soc", from_preflib = TRUE)`.
   - Perform all analyses described in Parts 1–3.  
-  - Be rendered to a **self-contained HTML report** at the end.  
+  - Be rendered to a **self-contained HTML report** at the end.
+  - Output should be named: sushi_analysis_prefviz.html
 - The **HTML report** must:
   - **Front‑load the conclusions**: start with a short “Summary of findings” section at the top, clearly stating the main answers from Parts 1–3 (most popular options, presence of real agreement, and clustering results).  
   - Then present the detailed methods, code, tables, and plots supporting those conclusions.  
 - Work with the complete ranking data as provided (rows = respondents, columns/items = sushi options, values = ranks where 1 is most preferred).
+- For all questions, use `prefviz` functions as much as possible: i.e., IRV result, first preference, Condorcet winner, etc.
 
 ***
 
@@ -55,34 +57,7 @@ Goal: Identify “most popular” sushi options using **three voting-style rules
 
 ***
 
-## Part 2 – Agreement vs randomness (Kendall’s coefficient of concordance)
-
-Goal: Assess whether respondents show meaningful agreement in their rankings or if rankings are close to random.
-
-1. **Prepare ranks**
-   - Use the ranking matrix directly:
-     - Rows = respondents.  
-     - Columns = sushi items.  
-     - Cells = ranks (1 = highest preference).
-
-2. **Compute Kendall’s coefficient of concordance \(W\)**
-   - Compute Kendall’s \(W\) to measure agreement among respondents across all sushi items.  
-   - Perform a hypothesis test:
-     - Null: rankings are essentially random (no agreement).  
-     - Alternative: there is non-random agreement.
-   - Report in the HTML:
-     - The value of \(W\).  
-     - The test statistic and p-value.
-
-3. **Interpretation**
-   - In the detailed section, give a short explanation:
-     - Is \(W\) low, moderate, or high?  
-     - Is the agreement statistically significant based on the p-value?  
-   - In the “Summary of findings” section at the top, include a one‑to‑two sentence conclusion about whether there is meaningful agreement in sushi preferences.
-
-***
-
-## Part 3 – Clustering with probabilistic class membership (not using BayesMallows clustering)
+## Part 2 – Clustering with probabilistic class membership (not using BayesMallows clustering)
 
 Goal: Cluster respondents into latent preference classes and obtain, **for each observation**, the **probability of membership** in each class. Do **not** use the clustering / mixture functionality provided by BayesMallows.
 
@@ -118,6 +93,7 @@ Goal: Cluster respondents into latent preference classes and obtain, **for each 
      - A table or heatmap of **average ranks or top items per cluster**.  
      - A table of **cluster sizes** (counts and proportions).  
      - A table or downloadable object (if appropriate) with **posterior membership probabilities** by respondent.
+     - A 2D ternary plot using the **posterior probabilities** of each respondent in each cluster.
    - In the “Summary of findings” at the top:
      - State the chosen number of clusters.  
      - Briefly describe each cluster in plain language (e.g., “Cluster 1 prefers X and Y; Cluster 2 prefers A and B”).  

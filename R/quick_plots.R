@@ -88,24 +88,27 @@ dop_bar <- function(data,
       tidyr::pivot_longer({{ items }}, names_to = "item", values_to = "value")
   } else {
     df <- data |>
+      dplyr::filter(.data[[round_col]] == at_round) |>
       dplyr::select(item = {{ items }}, value = {{ value_col }})
   }
+
+  mid_value <- sum(df$value) / 2
 
   ggplot2::ggplot(df, ggplot2::aes(x = reorder(item, -value), y = value)) +
     ggplot2::geom_col(fill = "steelblue") +
     ggplot2::geom_text(ggplot2::aes(label = round(value, 3)),
-                       vjust = -0.5, size = 3.5) +
-    ggplot2::geom_hline(yintercept = 0.5, linetype = "dashed", color = "grey50") +
+                       hjust = -0.25, size = 3.5) +
+    ggplot2::geom_hline(yintercept = mid_value, linetype = "dashed", color = "grey20") +
+    ggplot2::coord_flip() +
     ggplot2::labs(
-      x = "Item",
-      y = "Value",
+      x = NULL,
+      y = NULL,
       title = paste0("Distribution of Preferences, Round ", at_round)
     ) +
     ggplot2::theme_bw() +
     ggplot2::theme(
       panel.grid.major.x = ggplot2::element_blank(),
-      panel.grid.minor = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_blank()
+      panel.grid.minor = ggplot2::element_blank()
     )
 }
 
@@ -182,7 +185,7 @@ pairwise_heatmap <- function(x, value = c("tcp", "count")) {
     ggplot2::geom_tile(color = "white", linewidth = 0.5) +
     ggplot2::geom_text(
       ggplot2::aes(label = label_val, color = text_color),
-      size = 5
+      size = 3.5
     ) +
     ggplot2::scale_color_identity() +
     ggplot2::scale_fill_gradient2(
@@ -196,5 +199,8 @@ pairwise_heatmap <- function(x, value = c("tcp", "count")) {
       x = "Opponent",
       y = "Item"
     ) +
-    ggplot2::theme_minimal()
+    ggplot2::theme_bw() +
+    ggplot2::theme(
+      axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)
+    )
 }
