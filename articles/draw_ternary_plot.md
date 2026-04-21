@@ -79,13 +79,19 @@ input that are compatible with popular plotting packages, i.e.,
 
 There are 3 `get_tern_*()` functions:
 
-- [`get_tern_data()`](https://numbats.github.io/prefviz/reference/ternary_getters.md):
-  Provides input data for `ggplot2` or `tourr`.
+- [`get_tern_data2d()`](https://numbats.github.io/prefviz/reference/ternary_getters.md):
+  Provides input data for `ggplot2` (2D ternary plots).
+- [`get_tern_datahd()`](https://numbats.github.io/prefviz/reference/ternary_getters.md):
+  Provides input data for `tourr` (high-dimensional ternary plots). The
+  returned data frame includes a `labels` column containing vertex names
+  for simplex rows and `""` for observation rows, which can be passed
+  directly to `tourr`’s `obs_labels` argument.
 - [`get_tern_edges()`](https://numbats.github.io/prefviz/reference/ternary_getters.md):
   Provides edges of the simplex, which is required by `tourr`.
-- [`get_tern_labels()`](https://numbats.github.io/prefviz/reference/ternary_getters.md):
-  Provides labels for the vertices, which is helpful for distinguishing
-  vertices in `tourr`.
+
+Note:
+[`get_tern_labels()`](https://numbats.github.io/prefviz/reference/ternary_getters.md)
+is deprecated. Use `get_tern_datahd(tern)[["labels"]]` instead.
 
 ## Drawing a 2D ternary plot
 
@@ -103,26 +109,21 @@ tern22 <- as_ternable(aecdop22_transformed, ALP:Other)
 ```
 
 Now we can use the
-[`get_tern_data()`](https://numbats.github.io/prefviz/reference/ternary_getters.md)
+[`get_tern_data2d()`](https://numbats.github.io/prefviz/reference/ternary_getters.md)
 function to get the input data for `ggplot2`.
 
 ``` r
-input_df <- get_tern_data(tern22, plot_type = "2D")
+input_df <- get_tern_data2d(tern22)
 head(input_df)
-#>   DivisionNm CountNumber ElectedParty    ALP    LNP  Other          x1
-#> 1   Adelaide           0          ALP 0.3998 0.3200 0.2802  0.05642712
-#> 2      Aston           0          LNP 0.3255 0.4305 0.2440 -0.07424621
-#> 3   Ballarat           0          ALP 0.4474 0.2709 0.2817  0.12480435
-#> 4      Banks           0          LNP 0.3526 0.4522 0.1952 -0.07042784
-#> 5     Barker           0          LNP 0.2085 0.5563 0.2352 -0.24593174
-#> 6     Barton           0          ALP 0.5043 0.2619 0.2338  0.17140268
-#>            x2
-#> 1 -0.06507478
-#> 2 -0.10941054
-#> 3 -0.06323766
-#> 4 -0.16917809
-#> 5 -0.12018830
-#> 6 -0.12190294
+#> # A tibble: 6 × 8
+#>   DivisionNm CountNumber ElectedParty   ALP   LNP Other      x1      x2
+#>   <chr>            <dbl> <chr>        <dbl> <dbl> <dbl>   <dbl>   <dbl>
+#> 1 Adelaide             0 ALP          0.400 0.32  0.280  0.0564 -0.0651
+#> 2 Aston                0 LNP          0.325 0.430 0.244 -0.0742 -0.109 
+#> 3 Ballarat             0 ALP          0.447 0.271 0.282  0.125  -0.0632
+#> 4 Banks                0 LNP          0.353 0.452 0.195 -0.0704 -0.169 
+#> 5 Barker               0 LNP          0.209 0.556 0.235 -0.246  -0.120 
+#> 6 Barton               0 ALP          0.504 0.262 0.234  0.171  -0.122
 ```
 
 The output is a data frame where the original columns are combined with
@@ -217,10 +218,11 @@ head(aecdop25_transformed)
 tern25 <- as_ternable(aecdop25_transformed, ALP:IND)
 
 # Animate the tour
+tourr_data <- get_tern_datahd(tern25)
 animate_xy(
-  get_tern_data(tern25, plot_type = "HD"), # Dataframe with coordinates of the observations and vertices
+  dplyr::select(tourr_data, starts_with("x")), # Coordinates of the observations and vertices
   edges = get_tern_edges(tern25), # Edges of the simplex
-  obs_labels  = get_tern_labels(tern25), # Labels for the vertices
+  obs_labels = tourr_data[["labels"]], # Labels for the vertices
   axes = "bottomleft"
 )
 ```
@@ -243,11 +245,11 @@ party_colors <- c(
 color_vector <- c(rep("black", 5),
   party_colors[aecdop25_transformed$ElectedParty])
 
-# Animate the tour
+# Animate the tour (tourr_data already defined above)
 animate_xy(
-  get_tern_data(tern25, plot_type = "HD"), 
+  dplyr::select(tourr_data, starts_with("x")),
   edges = get_tern_edges(tern25),
-  obs_labels  = get_tern_labels(tern25),
+  obs_labels = tourr_data[["labels"]],
   col = color_vector,
   axes = "bottomleft"
 )

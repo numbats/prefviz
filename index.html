@@ -5,14 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Visualizes Preference Data via Ternary Plots in Two and Higher dimensions • prefviz</title>
+<title>Visualizes Preferential Data in One and More Contests • prefviz</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Visualizes Preference Data via Ternary Plots in Two and Higher dimensions">
-<meta name="description" content="Visualises preference and ranking data by extending traditional ternary plots to support high-dimensional simplexes. The package provides methods to transform compositional data into coordinates suitable for 2D and high-dimensional ternary plots (see Cook &amp; Laa (2024) &lt;https://dicook.github.io/mulgar_book/&gt;). Compatibility with interactive visualization packages such as plotly or detourr allows users to explore high-dimensional preference structures dynamically.">
-<meta property="og:description" content="Visualises preference and ranking data by extending traditional ternary plots to support high-dimensional simplexes. The package provides methods to transform compositional data into coordinates suitable for 2D and high-dimensional ternary plots (see Cook &amp; Laa (2024) &lt;https://dicook.github.io/mulgar_book/&gt;). Compatibility with interactive visualization packages such as plotly or detourr allows users to explore high-dimensional preference structures dynamically.">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Visualizes Preferential Data in One and More Contests">
+<meta name="description" content="A visualization toolkit for preferential data, such as ranked-choice election results, tournament outcomes, and survey responses. The package provides methods to visualise the preference distribution of one contest with bar charts and pairwise comparisons of two contestants, as well as methods to visualise multiple contests through 2D and high-dimensional simplex plots both statically and interactively. HD simplex displays are implemented via projection methods using the tourr and detourr packages, enabling dynamic exploration of high-dimensional preference structure. For more details on HD simplex projection, see Wickham et al. (2011) &lt;doi:10.21105/joss.03419&gt;.">
+<meta property="og:description" content="A visualization toolkit for preferential data, such as ranked-choice election results, tournament outcomes, and survey responses. The package provides methods to visualise the preference distribution of one contest with bar charts and pairwise comparisons of two contestants, as well as methods to visualise multiple contests through 2D and high-dimensional simplex plots both statically and interactively. HD simplex displays are implemented via projection methods using the tourr and detourr packages, enabling dynamic exploration of high-dimensional preference structure. For more details on HD simplex projection, see Wickham et al. (2011) &lt;doi:10.21105/joss.03419&gt;.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">prefviz</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -127,22 +127,17 @@
 </h2>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get the input data</span></span>
-<span><span class="va">input_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ternary_getters.html">get_tern_data</a></span><span class="op">(</span><span class="va">tern22</span>, plot_type <span class="op">=</span> <span class="st">"2D"</span><span class="op">)</span></span>
+<span><span class="va">input_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ternary_getters.html">get_tern_data2d</a></span><span class="op">(</span><span class="va">tern22</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">input_df</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   DivisionNm CountNumber ElectedParty    ALP    LNP  Other          x1</span></span>
-<span><span class="co">#&gt; 1   Adelaide           0          ALP 0.3998 0.3200 0.2802  0.05642712</span></span>
-<span><span class="co">#&gt; 2      Aston           0          LNP 0.3255 0.4305 0.2440 -0.07424621</span></span>
-<span><span class="co">#&gt; 3   Ballarat           0          ALP 0.4474 0.2709 0.2817  0.12480435</span></span>
-<span><span class="co">#&gt; 4      Banks           0          LNP 0.3526 0.4522 0.1952 -0.07042784</span></span>
-<span><span class="co">#&gt; 5     Barker           0          LNP 0.2085 0.5563 0.2352 -0.24593174</span></span>
-<span><span class="co">#&gt; 6     Barton           0          ALP 0.5043 0.2619 0.2338  0.17140268</span></span>
-<span><span class="co">#&gt;            x2</span></span>
-<span><span class="co">#&gt; 1 -0.06507478</span></span>
-<span><span class="co">#&gt; 2 -0.10941054</span></span>
-<span><span class="co">#&gt; 3 -0.06323766</span></span>
-<span><span class="co">#&gt; 4 -0.16917809</span></span>
-<span><span class="co">#&gt; 5 -0.12018830</span></span>
-<span><span class="co">#&gt; 6 -0.12190294</span></span>
+<span><span class="co">#&gt; # A tibble: 6 × 8</span></span>
+<span><span class="co">#&gt;   DivisionNm CountNumber ElectedParty   ALP   LNP Other      x1      x2</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;            &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 Adelaide             0 ALP          0.400 0.32  0.280  0.0564 -0.0651</span></span>
+<span><span class="co">#&gt; 2 Aston                0 LNP          0.325 0.430 0.244 -0.0742 -0.109 </span></span>
+<span><span class="co">#&gt; 3 Ballarat             0 ALP          0.447 0.271 0.282  0.125  -0.0632</span></span>
+<span><span class="co">#&gt; 4 Banks                0 LNP          0.353 0.452 0.195 -0.0704 -0.169 </span></span>
+<span><span class="co">#&gt; 5 Barker               0 LNP          0.209 0.556 0.235 -0.246  -0.120 </span></span>
+<span><span class="co">#&gt; 6 Barton               0 ALP          0.504 0.262 0.234  0.171  -0.122</span></span>
 <span></span>
 <span><span class="co"># Visualize</span></span>
 <span><span class="fu">ggplot</span><span class="op">(</span><span class="va">input_df</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">x1</span>, y <span class="op">=</span> <span class="va">x2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -197,10 +192,11 @@
 <span>  <span class="va">party_colors</span><span class="op">[</span><span class="va">aecdop25_transformed</span><span class="op">$</span><span class="va">ElectedParty</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Animate the tour</span></span>
+<span><span class="va">tourr_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ternary_getters.html">get_tern_datahd</a></span><span class="op">(</span><span class="va">tern25</span><span class="op">)</span></span>
 <span><span class="fu">animate_xy</span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="reference/ternary_getters.html">get_tern_data</a></span><span class="op">(</span><span class="va">tern25</span>, plot_type <span class="op">=</span> <span class="st">"HD"</span><span class="op">)</span>, </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">tourr_data</span>, <span class="fu">starts_with</span><span class="op">(</span><span class="st">"x"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  edges <span class="op">=</span> <span class="fu"><a href="reference/ternary_getters.html">get_tern_edges</a></span><span class="op">(</span><span class="va">tern25</span><span class="op">)</span>,</span>
-<span>  obs_labels  <span class="op">=</span> <span class="fu"><a href="reference/ternary_getters.html">get_tern_labels</a></span><span class="op">(</span><span class="va">tern25</span><span class="op">)</span>,</span>
+<span>  obs_labels <span class="op">=</span> <span class="va">tourr_data</span><span class="op">[[</span><span class="st">"labels"</span><span class="op">]</span><span class="op">]</span>,</span>
 <span>  col <span class="op">=</span> <span class="va">color_vector</span>,</span>
 <span>  axes <span class="op">=</span> <span class="st">"bottomleft"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -216,6 +212,7 @@
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
+<li><a href="https://cloud.r-project.org/package=prefviz" class="external-link">View on CRAN</a></li>
 <li><a href="https://github.com/numbats/prefviz/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/numbats/prefviz/issues" class="external-link">Report a bug</a></li>
 </ul>

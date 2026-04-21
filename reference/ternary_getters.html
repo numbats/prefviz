@@ -11,7 +11,7 @@ high-dimensional ternary plots with tourr."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">prefviz</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,7 +51,9 @@ high-dimensional ternary plots with <code>tourr</code>.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_tern_data</span><span class="op">(</span><span class="va">ternable</span>, plot_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2D"</span>, <span class="st">"HD"</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_tern_data2d</span><span class="op">(</span><span class="va">ternable</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">get_tern_datahd</span><span class="op">(</span><span class="va">ternable</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">get_tern_edges</span><span class="op">(</span><span class="va">ternable</span>, include_data <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
@@ -66,11 +68,6 @@ high-dimensional ternary plots with <code>tourr</code>.</p>
 <dd><p>A ternable object created by <code><a href="as_ternable.html">as_ternable()</a></code>.</p></dd>
 
 
-<dt id="arg-plot-type">plot_type<a class="anchor" aria-label="anchor" href="#arg-plot-type"></a></dt>
-<dd><p>Only in <code>get_tern_data()</code>. Character string specifying the type of plot to be drawn.
-Either "2D" for a 2D ternary plot or "HD" for a high-dimensional ternary plot.</p></dd>
-
-
 <dt id="arg-include-data">include_data<a class="anchor" aria-label="anchor" href="#arg-include-data"></a></dt>
 <dd><p>Logical. Only in <code>get_tern_edges()</code>. If <code>TRUE</code>, return data edges, along with simplex edges.
 If <code>FALSE</code>, only return simplex edges.</p></dd>
@@ -79,28 +76,33 @@ If <code>FALSE</code>, only return simplex edges.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
 
-<ul><li><p><code>get_tern_data()</code>: A data frame as input for <code>ggplot2</code> or <code>tourr</code>.</p><ul><li><p>If <code>plot_type = "2D"</code>, the data frame augments the original data, with
-its ternary coordinates. Used as input data for <code>ggplot2</code>.</p></li>
-<li><p>If <code>plot_type = "HD"</code>, the data frame combines ternary coordinates of
-original data with those of simplex vertices (without vertex labels).
-Used as input data for <code>tourr</code>.</p></li>
-</ul></li>
+<ul><li><p><code>get_tern_data2d()</code>: A data frame augmenting the original data with its
+ternary coordinates (<code>x1</code>, <code>x2</code>). Used as input data for 2D ternary plot with <code>ggplot2</code>.</p></li>
+<li><p><code>get_tern_datahd()</code>: A data frame combining the simplex vertices with the
+original data and ternary coordinates. The <code>labels</code> column contains labels
+for the vertexes and <code>""</code> for data rows. Pass the coordinate columns
+(<code>dplyr::select(starts_with("x"))</code>) to <code>tourr</code> and use the <code>labels</code> column
+directly for <code>obs_labels</code>.</p></li>
 <li><p><code>get_tern_edges()</code>: A matrix of simplex edge connections for drawing
 the simplex boundary.</p><ul><li><p>If <code>include_data = FALSE</code>, the matrix contains only the simplex edges.
 Equivalent to <code>ternable$simplex_edges</code>.</p></li>
 <li><p>If <code>include_data = TRUE</code>, the matrix combines the simplex edges with
 the data edges. Used when you want to draw lines between the data points.</p></li>
 </ul></li>
-<li><p><code>get_tern_labels()</code>: A character vector containing vertex labels.
-Used as vertex labels for <code>tourr</code>, via argument <code>vertex_labels</code>.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>These functions are designed to work together for creating animated tours
-of high-dimensional ternary data:</p><ul><li><p><code>get_tern_data()</code> provides the point coordinates</p></li>
+of high-dimensional ternary data:</p><ul><li><p><code>get_tern_datahd()</code> provides both the point coordinates and observation labels</p></li>
 <li><p><code>get_tern_edges()</code> provides the simplex structure</p></li>
-<li><p><code>get_tern_labels()</code> provides labels that align with the data rows</p></li>
 </ul></div>
+    <div class="section level2">
+    <h2 id="deprecated">Deprecated<a class="anchor" aria-label="anchor" href="#deprecated"></a></h2>
+
+
+<p><code>get_tern_labels()</code> is deprecated as of version 0.1.2. Use
+<code>get_tern_datahd(ternable)[["labels"]]</code> instead.</p>
+    </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="as_ternable.html">as_ternable()</a></code> for creating ternable objects</p></div>
@@ -110,18 +112,20 @@ of high-dimensional ternary data:</p><ul><li><p><code>get_tern_data()</code> pro
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Create a ternable object</span></span></span>
-<span class="r-in"><span><span class="va">tern</span> <span class="op">&lt;-</span> <span class="fu"><a href="as_ternable.html">as_ternable</a></span><span class="op">(</span><span class="fu">prefviz</span><span class="fu">::</span><span class="va"><a href="aecdop_transformed.html">aecdop22_transformed</a></span>, <span class="va">ALP</span><span class="op">:</span><span class="va">Other</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">tern</span> <span class="op">&lt;-</span> <span class="fu"><a href="as_ternable.html">as_ternable</a></span><span class="op">(</span><span class="va">aecdop22_transformed</span>, <span class="va">ALP</span><span class="op">:</span><span class="va">Other</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Use with tourr (example)</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="va">tourr_data</span> <span class="op">&lt;-</span> <span class="fu">get_tern_datahd</span><span class="op">(</span><span class="va">tern</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">tourr</span><span class="fu">::</span><span class="fu"><a href="https://ggobi.github.io/tourr/reference/display_xy.html" class="external-link">animate_xy</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span> <span class="fu">get_tern_data</span><span class="op">(</span><span class="va">tern</span>, plot_type <span class="op">=</span> <span class="st">"HD"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span> edges <span class="op">=</span> <span class="fu">get_tern_edges</span><span class="op">(</span><span class="va">tern</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span> obs_labels  <span class="op">=</span> <span class="fu">get_tern_labels</span><span class="op">(</span><span class="va">tern</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span> axes <span class="op">=</span> <span class="st">"bottomleft"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Converting input data to the required matrix format.</span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">tourr_data</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"x"</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  edges <span class="op">=</span> <span class="fu">get_tern_edges</span><span class="op">(</span><span class="va">tern</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  obs_labels <span class="op">=</span> <span class="va">tourr_data</span><span class="op">[[</span><span class="st">"labels"</span><span class="op">]</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>  axes <span class="op">=</span> <span class="st">"bottomleft"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Use with ggplot2 (example)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu">get_tern_data</span><span class="op">(</span><span class="va">tern</span>, plot_type <span class="op">=</span> <span class="st">"2D"</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x1</span>, y <span class="op">=</span> <span class="va">x2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu">get_tern_data2d</span><span class="op">(</span><span class="va">tern</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x1</span>, y <span class="op">=</span> <span class="va">x2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="add_ternary_base.html">add_ternary_base</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">ElectedParty</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="ternary_getters-1.png" alt="" width="700" height="433"></span>

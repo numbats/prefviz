@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">prefviz</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,10 +39,29 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.2" id="prefviz-012">prefviz 0.1.2<a class="anchor" aria-label="anchor" href="#prefviz-012"></a></h2>
+<ul><li>Added <code><a href="../reference/pairwise_calculator.html">pairwise_calculator()</a></code> to compute all head-to-head comparisons from ranked preference data, returning a <code>"pairwise"</code> S3 object with TCP ratios, raw win counts, and Condorcet winner/loser detection.</li>
+<li>Added <code><a href="../reference/pairwise_heatmap.html">pairwise_heatmap()</a></code> to visualise pairwise results as a red–green diverging heatmap, with tile annotations for TCP percentages or raw vote counts.</li>
+<li>Added <code><a href="../reference/dop_bar.html">dop_bar()</a></code> to plot the preference distribution for a single contest round as a bar chart, supporting both wide and long input formats.</li>
+<li>
+<code>get_tern_data()</code> split into <code><a href="../reference/ternary_getters.html">get_tern_data2d()</a></code> (2D plots) and <code><a href="../reference/ternary_getters.html">get_tern_datahd()</a></code> (HD plots).</li>
+<li>
+<code><a href="../reference/ternary_getters.html">get_tern_datahd()</a></code> now returns the full data frame with a <code>labels</code> column, replacing the need for <code><a href="../reference/ternary_getters.html">get_tern_labels()</a></code>.</li>
+<li>
+<code><a href="../reference/ternary_getters.html">get_tern_labels()</a></code> is deprecated; use <code>get_tern_datahd(ternable)[["labels"]]</code> instead.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.1" id="prefviz-011">prefviz 0.1.1<a class="anchor" aria-label="anchor" href="#prefviz-011"></a></h2><p class="text-muted">CRAN release: 2026-04-13</p>
+<ul><li>Fixed <code><a href="../reference/helmert_transform.html">helmert_transform()</a></code> to use <code><a href="https://rdrr.io/pkg/geozoo/man/f_helmert.html" class="external-link">geozoo::f_helmert()</a></code> correctly.</li>
+<li>Updated package description to reflect expanded scope.</li>
+<li>Addressed CRAN reviewer comments: improved documentation and examples across multiple functions, added <code>data.R</code> documentation for bundled datasets, removed internal <code>sysdata.rda</code>.</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="prefviz-010">prefviz 0.1.0<a class="anchor" aria-label="anchor" href="#prefviz-010"></a></h2>
-<p>*First release</p>
-</div>
-  </main></div>
+<ul><li>First release.</li>
+</ul></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

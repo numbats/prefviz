@@ -14,6 +14,8 @@
 <url><loc>https://numbats.github.io/prefviz/reference/aecdop.html</loc></url>
 <url><loc>https://numbats.github.io/prefviz/reference/aecdop_transformed.html</loc></url>
 <url><loc>https://numbats.github.io/prefviz/reference/as_ternable.html</loc></url>
+<url><loc>https://numbats.github.io/prefviz/reference/condorcet_find.html</loc></url>
+<url><loc>https://numbats.github.io/prefviz/reference/dop_bar.html</loc></url>
 <url><loc>https://numbats.github.io/prefviz/reference/dop_irv.html</loc></url>
 <url><loc>https://numbats.github.io/prefviz/reference/dop_transform.html</loc></url>
 <url><loc>https://numbats.github.io/prefviz/reference/elb_centroid.html</loc></url>
@@ -22,7 +24,11 @@
 <url><loc>https://numbats.github.io/prefviz/reference/helmert_transform.html</loc></url>
 <url><loc>https://numbats.github.io/prefviz/reference/index.html</loc></url>
 <url><loc>https://numbats.github.io/prefviz/reference/ordered_path_df.html</loc></url>
+<url><loc>https://numbats.github.io/prefviz/reference/pairwise_build_tcp.html</loc></url>
+<url><loc>https://numbats.github.io/prefviz/reference/pairwise_calculator.html</loc></url>
+<url><loc>https://numbats.github.io/prefviz/reference/pairwise_heatmap.html</loc></url>
 <url><loc>https://numbats.github.io/prefviz/reference/prefviz-package.html</loc></url>
+<url><loc>https://numbats.github.io/prefviz/reference/print.pairwise.html</loc></url>
 <url><loc>https://numbats.github.io/prefviz/reference/print.ternable.html</loc></url>
 <url><loc>https://numbats.github.io/prefviz/reference/stat_ordered_path.html</loc></url>
 <url><loc>https://numbats.github.io/prefviz/reference/ternary_getters.html</loc></url>

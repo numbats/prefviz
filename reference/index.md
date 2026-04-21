@@ -23,7 +23,8 @@ Create a `ternable` object and prepare it for plotting
 
 - [`as_ternable()`](https://numbats.github.io/prefviz/reference/as_ternable.md)
   : Create a ternable object
-- [`get_tern_data()`](https://numbats.github.io/prefviz/reference/ternary_getters.md)
+- [`get_tern_data2d()`](https://numbats.github.io/prefviz/reference/ternary_getters.md)
+  [`get_tern_datahd()`](https://numbats.github.io/prefviz/reference/ternary_getters.md)
   [`get_tern_edges()`](https://numbats.github.io/prefviz/reference/ternary_getters.md)
   [`get_tern_labels()`](https://numbats.github.io/prefviz/reference/ternary_getters.md)
   : Getter functions to extract components from ternable object for
@@ -40,6 +41,17 @@ Prepare your PrefLib and distribution of preferences data for plotting
   round as percentage
 - [`helmert_transform()`](https://numbats.github.io/prefviz/reference/helmert_transform.md)
   : Transform compositional data using Helmert matrix
+- [`pairwise_calculator()`](https://numbats.github.io/prefviz/reference/pairwise_calculator.md)
+  : Compute pairwise results from ranked preference data
+
+## Quick plots
+
+Quickly draw a distribution of preference chart or pairwise comparison
+
+- [`dop_bar()`](https://numbats.github.io/prefviz/reference/dop_bar.md)
+  : Bar chart of preference distribution for one contest
+- [`pairwise_heatmap()`](https://numbats.github.io/prefviz/reference/pairwise_heatmap.md)
+  : Heatmap of pairwise results
 
 ## Data
 

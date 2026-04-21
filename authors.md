@@ -15,14 +15,14 @@
 Source:
 [`DESCRIPTION`](https://github.com/numbats/prefviz/blob/main/DESCRIPTION)
 
-Ngo L, Cook D, Vukcevic D (2026). *prefviz: Visualizes Preference Data
-via Ternary Plots in Two and Higher dimensions*. R package version
-0.1.1, <https://numbats.github.io/prefviz/>.
+Ngo L, Cook D, Vukcevic D (2026). *prefviz: Visualizes Preferential Data
+in One and More Contests*. R package version 0.1.2,
+<https://numbats.github.io/prefviz/>.
 
     @Manual{,
-      title = {prefviz: Visualizes Preference Data via Ternary Plots in Two and Higher dimensions},
+      title = {prefviz: Visualizes Preferential Data in One and More Contests},
       author = {Linh Ngo and Dianne Cook and Damjan Vukcevic},
       year = {2026},
-      note = {R package version 0.1.1},
+      note = {R package version 0.1.2},
       url = {https://numbats.github.io/prefviz/},
     }

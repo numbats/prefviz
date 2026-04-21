@@ -7,7 +7,9 @@ high-dimensional ternary plots with `tourr`.
 ## Usage
 
 ``` r
-get_tern_data(ternable, plot_type = c("2D", "HD"))
+get_tern_data2d(ternable)
+
+get_tern_datahd(ternable)
 
 get_tern_edges(ternable, include_data = FALSE)
 
@@ -21,12 +23,6 @@ get_tern_labels(ternable)
   A ternable object created by
   [`as_ternable()`](https://numbats.github.io/prefviz/reference/as_ternable.md).
 
-- plot_type:
-
-  Only in `get_tern_data()`. Character string specifying the type of
-  plot to be drawn. Either "2D" for a 2D ternary plot or "HD" for a
-  high-dimensional ternary plot.
-
 - include_data:
 
   Logical. Only in `get_tern_edges()`. If `TRUE`, return data edges,
@@ -34,14 +30,15 @@ get_tern_labels(ternable)
 
 ## Value
 
-- `get_tern_data()`: A data frame as input for `ggplot2` or `tourr`.
+- `get_tern_data2d()`: A data frame augmenting the original data with
+  its ternary coordinates (`x1`, `x2`). Used as input data for 2D
+  ternary plot with `ggplot2`.
 
-  - If `plot_type = "2D"`, the data frame augments the original data,
-    with its ternary coordinates. Used as input data for `ggplot2`.
-
-  - If `plot_type = "HD"`, the data frame combines ternary coordinates
-    of original data with those of simplex vertices (without vertex
-    labels). Used as input data for `tourr`.
+- `get_tern_datahd()`: A data frame combining the simplex vertices with
+  the original data and ternary coordinates. The `labels` column
+  contains labels for the vertexes and `""` for data rows. Pass the
+  coordinate columns (`dplyr::select(starts_with("x"))`) to `tourr` and
+  use the `labels` column directly for `obs_labels`.
 
 - `get_tern_edges()`: A matrix of simplex edge connections for drawing
   the simplex boundary.
@@ -53,19 +50,20 @@ get_tern_labels(ternable)
     the data edges. Used when you want to draw lines between the data
     points.
 
-- `get_tern_labels()`: A character vector containing vertex labels. Used
-  as vertex labels for `tourr`, via argument `vertex_labels`.
-
 ## Details
 
 These functions are designed to work together for creating animated
 tours of high-dimensional ternary data:
 
-- `get_tern_data()` provides the point coordinates
+- `get_tern_datahd()` provides both the point coordinates and
+  observation labels
 
 - `get_tern_edges()` provides the simplex structure
 
-- `get_tern_labels()` provides labels that align with the data rows
+## Deprecated
+
+`get_tern_labels()` is deprecated as of version 0.1.2. Use
+`get_tern_datahd(ternable)[["labels"]]` instead.
 
 ## See also
 
@@ -77,18 +75,20 @@ for creating ternable objects
 ``` r
 library(ggplot2)
 # Create a ternable object
-tern <- as_ternable(prefviz::aecdop22_transformed, ALP:Other)
+tern <- as_ternable(aecdop22_transformed, ALP:Other)
 
 # Use with tourr (example)
+if (FALSE) { # \dontrun{
+tourr_data <- get_tern_datahd(tern)
 tourr::animate_xy(
- get_tern_data(tern, plot_type = "HD"),
- edges = get_tern_edges(tern),
- obs_labels  = get_tern_labels(tern),
- axes = "bottomleft")
-#> Converting input data to the required matrix format.
+  dplyr::select(tourr_data, starts_with("x")),
+  edges = get_tern_edges(tern),
+  obs_labels = tourr_data[["labels"]],
+  axes = "bottomleft")
+} # }
 
 # Use with ggplot2 (example)
-ggplot(get_tern_data(tern, plot_type = "2D"), aes(x = x1, y = x2)) +
+ggplot(get_tern_data2d(tern), aes(x = x1, y = x2)) +
   add_ternary_base() +
   geom_point(aes(color = ElectedParty))
 

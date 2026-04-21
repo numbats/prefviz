@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">prefviz</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -109,7 +109,7 @@ order you want them to be connected.</p>
 (<code>group = DivisionNm</code>).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># The base plot</span></span>
-<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ternary_getters.html">get_tern_data</a></span><span class="op">(</span><span class="va">tern22</span>, plot_type <span class="op">=</span> <span class="st">"2D"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ternary_getters.html">get_tern_data2d</a></span><span class="op">(</span><span class="va">tern22</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x1</span>, y <span class="op">=</span> <span class="va">x2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/add_ternary_base.html">add_ternary_base</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_ternary_region.html">geom_ternary_region</a></span><span class="op">(</span></span>
@@ -184,12 +184,13 @@ the <code>edges</code> argument. This can be done by setting
 <span>  <span class="va">party_colors</span><span class="op">[</span><span class="va">input_df2</span><span class="op">$</span><span class="va">ElectedParty</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Animate the tour</span></span>
+<span><span class="va">tourr_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ternary_getters.html">get_tern_datahd</a></span><span class="op">(</span><span class="va">tern25</span><span class="op">)</span></span>
 <span><span class="fu">animate_xy</span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="../reference/ternary_getters.html">get_tern_data</a></span><span class="op">(</span><span class="va">tern25</span>, plot_type <span class="op">=</span> <span class="st">"HD"</span><span class="op">)</span>, </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">tourr_data</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"x"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  col <span class="op">=</span> <span class="va">color_vector</span>,</span>
 <span>  edges <span class="op">=</span> <span class="fu"><a href="../reference/ternary_getters.html">get_tern_edges</a></span><span class="op">(</span><span class="va">tern25</span>, include_data <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>  edges.col <span class="op">=</span> <span class="va">edges_color</span>,</span>
-<span>  obs_labels  <span class="op">=</span> <span class="fu"><a href="../reference/ternary_getters.html">get_tern_labels</a></span><span class="op">(</span><span class="va">tern25</span><span class="op">)</span>,</span>
+<span>  obs_labels <span class="op">=</span> <span class="va">tourr_data</span><span class="op">[[</span><span class="st">"labels"</span><span class="op">]</span><span class="op">]</span>,</span>
 <span>  axes <span class="op">=</span> <span class="st">"bottomleft"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="add_ordered_path_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="700"><img src="add_ordered_path_files/figure-html/unnamed-chunk-5-2.png" class="r-plt" alt="" width="700"></p>

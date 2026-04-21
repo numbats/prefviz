@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">prefviz</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -160,15 +160,21 @@ packages, i.e., <code>ggplot2</code> for 2D ternary plot and
 <p>There are 3 <code>get_tern_*()</code> functions:</p>
 <ul>
 <li>
-<code><a href="../reference/ternary_getters.html">get_tern_data()</a></code>: Provides input data for
-<code>ggplot2</code> or <code>tourr</code>.</li>
+<code><a href="../reference/ternary_getters.html">get_tern_data2d()</a></code>: Provides input data for
+<code>ggplot2</code> (2D ternary plots).</li>
+<li>
+<code><a href="../reference/ternary_getters.html">get_tern_datahd()</a></code>: Provides input data for
+<code>tourr</code> (high-dimensional ternary plots). The returned data
+frame includes a <code>labels</code> column containing vertex names for
+simplex rows and <code>""</code> for observation rows, which can be
+passed directly to <code>tourr</code>’s <code>obs_labels</code>
+argument.</li>
 <li>
 <code><a href="../reference/ternary_getters.html">get_tern_edges()</a></code>: Provides edges of the simplex, which
 is required by <code>tourr</code>.</li>
-<li>
-<code><a href="../reference/ternary_getters.html">get_tern_labels()</a></code>: Provides labels for the vertices,
-which is helpful for distinguishing vertices in <code>tourr</code>.</li>
 </ul>
+<p>Note: <code><a href="../reference/ternary_getters.html">get_tern_labels()</a></code> is deprecated. Use
+<code>get_tern_datahd(tern)[["labels"]]</code> instead.</p>
 </div>
 </div>
 <div class="section level2">
@@ -182,25 +188,20 @@ major parties: Labor and the Coalition, and other parties.</p>
 <code><a href="../reference/as_ternable.html">as_ternable()</a></code> to create a <code>ternable</code> object.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tern22</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_ternable.html">as_ternable</a></span><span class="op">(</span><span class="va">aecdop22_transformed</span>, <span class="va">ALP</span><span class="op">:</span><span class="va">Other</span><span class="op">)</span></span></code></pre></div>
-<p>Now we can use the <code><a href="../reference/ternary_getters.html">get_tern_data()</a></code> function to get the
+<p>Now we can use the <code><a href="../reference/ternary_getters.html">get_tern_data2d()</a></code> function to get the
 input data for <code>ggplot2</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">input_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ternary_getters.html">get_tern_data</a></span><span class="op">(</span><span class="va">tern22</span>, plot_type <span class="op">=</span> <span class="st">"2D"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">input_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ternary_getters.html">get_tern_data2d</a></span><span class="op">(</span><span class="va">tern22</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">input_df</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   DivisionNm CountNumber ElectedParty    ALP    LNP  Other          x1</span></span>
-<span><span class="co">#&gt; 1   Adelaide           0          ALP 0.3998 0.3200 0.2802  0.05642712</span></span>
-<span><span class="co">#&gt; 2      Aston           0          LNP 0.3255 0.4305 0.2440 -0.07424621</span></span>
-<span><span class="co">#&gt; 3   Ballarat           0          ALP 0.4474 0.2709 0.2817  0.12480435</span></span>
-<span><span class="co">#&gt; 4      Banks           0          LNP 0.3526 0.4522 0.1952 -0.07042784</span></span>
-<span><span class="co">#&gt; 5     Barker           0          LNP 0.2085 0.5563 0.2352 -0.24593174</span></span>
-<span><span class="co">#&gt; 6     Barton           0          ALP 0.5043 0.2619 0.2338  0.17140268</span></span>
-<span><span class="co">#&gt;            x2</span></span>
-<span><span class="co">#&gt; 1 -0.06507478</span></span>
-<span><span class="co">#&gt; 2 -0.10941054</span></span>
-<span><span class="co">#&gt; 3 -0.06323766</span></span>
-<span><span class="co">#&gt; 4 -0.16917809</span></span>
-<span><span class="co">#&gt; 5 -0.12018830</span></span>
-<span><span class="co">#&gt; 6 -0.12190294</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 8</span></span></span>
+<span><span class="co">#&gt;   DivisionNm CountNumber ElectedParty   ALP   LNP Other      x1      x2</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Adelaide             0 ALP          0.400 0.32  0.280  0.056<span style="text-decoration: underline;">4</span> -<span style="color: #BB0000;">0.065</span><span style="color: #BB0000; text-decoration: underline;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Aston                0 LNP          0.325 0.430 0.244 -<span style="color: #BB0000;">0.074</span><span style="color: #BB0000; text-decoration: underline;">2</span> -<span style="color: #BB0000;">0.109</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Ballarat             0 ALP          0.447 0.271 0.282  0.125  -<span style="color: #BB0000;">0.063</span><span style="color: #BB0000; text-decoration: underline;">2</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Banks                0 LNP          0.353 0.452 0.195 -<span style="color: #BB0000;">0.070</span><span style="color: #BB0000; text-decoration: underline;">4</span> -<span style="color: #BB0000;">0.169</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Barker               0 LNP          0.209 0.556 0.235 -<span style="color: #BB0000;">0.246</span>  -<span style="color: #BB0000;">0.120</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> Barton               0 ALP          0.504 0.262 0.234  0.171  -<span style="color: #BB0000;">0.122</span></span></span></code></pre></div>
 <p>The output is a data frame where the original columns are combined
 with the coordinates (<code>x1</code>, <code>x2</code>). These
 coordinate columns are the observation locations on the plot. We can now
@@ -284,10 +285,11 @@ tour)</li>
 <span><span class="va">tern25</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_ternable.html">as_ternable</a></span><span class="op">(</span><span class="va">aecdop25_transformed</span>, <span class="va">ALP</span><span class="op">:</span><span class="va">IND</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Animate the tour</span></span>
+<span><span class="va">tourr_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ternary_getters.html">get_tern_datahd</a></span><span class="op">(</span><span class="va">tern25</span><span class="op">)</span></span>
 <span><span class="fu">animate_xy</span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="../reference/ternary_getters.html">get_tern_data</a></span><span class="op">(</span><span class="va">tern25</span>, plot_type <span class="op">=</span> <span class="st">"HD"</span><span class="op">)</span>, <span class="co"># Dataframe with coordinates of the observations and vertices</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">tourr_data</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"x"</span><span class="op">)</span><span class="op">)</span>, <span class="co"># Coordinates of the observations and vertices</span></span>
 <span>  edges <span class="op">=</span> <span class="fu"><a href="../reference/ternary_getters.html">get_tern_edges</a></span><span class="op">(</span><span class="va">tern25</span><span class="op">)</span>, <span class="co"># Edges of the simplex</span></span>
-<span>  obs_labels  <span class="op">=</span> <span class="fu"><a href="../reference/ternary_getters.html">get_tern_labels</a></span><span class="op">(</span><span class="va">tern25</span><span class="op">)</span>, <span class="co"># Labels for the vertices</span></span>
+<span>  obs_labels <span class="op">=</span> <span class="va">tourr_data</span><span class="op">[[</span><span class="st">"labels"</span><span class="op">]</span><span class="op">]</span>, <span class="co"># Labels for the vertices</span></span>
 <span>  axes <span class="op">=</span> <span class="st">"bottomleft"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="draw_ternary_plot_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="" width="700"><img src="draw_ternary_plot_files/figure-html/unnamed-chunk-7-2.png" class="r-plt" alt="" width="700"></p>
@@ -306,11 +308,11 @@ tour)</li>
 <span><span class="va">color_vector</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"black"</span>, <span class="fl">5</span><span class="op">)</span>,</span>
 <span>  <span class="va">party_colors</span><span class="op">[</span><span class="va">aecdop25_transformed</span><span class="op">$</span><span class="va">ElectedParty</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Animate the tour</span></span>
+<span><span class="co"># Animate the tour (tourr_data already defined above)</span></span>
 <span><span class="fu">animate_xy</span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="../reference/ternary_getters.html">get_tern_data</a></span><span class="op">(</span><span class="va">tern25</span>, plot_type <span class="op">=</span> <span class="st">"HD"</span><span class="op">)</span>, </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">tourr_data</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"x"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  edges <span class="op">=</span> <span class="fu"><a href="../reference/ternary_getters.html">get_tern_edges</a></span><span class="op">(</span><span class="va">tern25</span><span class="op">)</span>,</span>
-<span>  obs_labels  <span class="op">=</span> <span class="fu"><a href="../reference/ternary_getters.html">get_tern_labels</a></span><span class="op">(</span><span class="va">tern25</span><span class="op">)</span>,</span>
+<span>  obs_labels <span class="op">=</span> <span class="va">tourr_data</span><span class="op">[[</span><span class="st">"labels"</span><span class="op">]</span><span class="op">]</span>,</span>
 <span>  col <span class="op">=</span> <span class="va">color_vector</span>,</span>
 <span>  axes <span class="op">=</span> <span class="st">"bottomleft"</span></span>
 <span><span class="op">)</span></span></code></pre></div>

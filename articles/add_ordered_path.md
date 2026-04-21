@@ -48,7 +48,7 @@ In this case, we want to connect the points in the order of round
 
 ``` r
 # The base plot
-p <- get_tern_data(tern22, plot_type = "2D") |> 
+p <- get_tern_data2d(tern22) |>
   ggplot(aes(x = x1, y = x2)) +
   add_ternary_base() +
   geom_ternary_region(
@@ -130,12 +130,13 @@ edges_color <- c(rep("black", nrow(tern25$simplex_edges)),
   party_colors[input_df2$ElectedParty])
 
 # Animate the tour
+tourr_data <- get_tern_datahd(tern25)
 animate_xy(
-  get_tern_data(tern25, plot_type = "HD"), 
+  dplyr::select(tourr_data, starts_with("x")),
   col = color_vector,
   edges = get_tern_edges(tern25, include_data = TRUE),
   edges.col = edges_color,
-  obs_labels  = get_tern_labels(tern25),
+  obs_labels = tourr_data[["labels"]],
   axes = "bottomleft"
 )
 ```

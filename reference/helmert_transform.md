@@ -52,7 +52,7 @@ helmert_transform(comp_mat)
 #>         x1    x2
 #>      <dbl> <dbl>
 #> 1 1.41e- 1 0.163
-#> 2 2.67e-18 0.163
+#> 2 6.50e-18 0.163
 #> 3 2.83e- 1 0.163
 
 # Example 2: Transform specific columns in a data frame
@@ -67,6 +67,6 @@ helmert_transform(df, items = c(ALP, LNP, Other))
 #>         x1    x2
 #>      <dbl> <dbl>
 #> 1 1.41e- 1 0.163
-#> 2 2.67e-18 0.163
+#> 2 6.50e-18 0.163
 #> 3 2.83e- 1 0.163
 ```
