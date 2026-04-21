@@ -40,6 +40,13 @@ reference:
     - dop_transform
     - dop_irv
     - helmert_transform
+    - pairwise_calculator
+
+  - title: Quick plots
+    desc: Quickly draw a distribution of preference chart or pairwise comparison
+    contents:
+    - dop_bar
+    - pairwise_heatmap
   
   - title: Data
     contents:
