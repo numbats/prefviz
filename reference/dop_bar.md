@@ -109,8 +109,7 @@ long_df <- aecdop_2022 |>
     CountNumber == 0,
     DivisionNm == "Adelaide"
   )
-dop_bar(long_df, items = PartyAb, value_col = CalculationValue)
-#> Error in dplyr::filter(data, .data[[round_col]] == at_round): ℹ In argument: `.data[["round"]] == at_round`.
-#> Caused by error in `.data[["round"]]`:
-#> ! Column `round` not found in `.data`.
+dop_bar(long_df, items = PartyAb, value_col = CalculationValue,
+       round_col = "CountNumber", at_round = 0)
+
 ```
