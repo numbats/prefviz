@@ -95,7 +95,8 @@ pairwise_calculator <- function(x, preferences_col = NULL, frequency_col = NULL)
 #' @param ... Currently unused.
 #'
 #' @return `x`, invisibly.
-#'
+#' 
+#' @keywords internal
 #' @export
 print.pairwise <- function(x, ...) {
   n_items <- nrow(x$pairwise_matrix)
