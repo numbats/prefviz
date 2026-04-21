@@ -12,4 +12,4 @@
 ^\.github$
 ^README\.html$
 ^cran-comments\.md$
-^CLAUDE\.md$
+^\.claude$

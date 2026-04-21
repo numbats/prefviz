@@ -71,7 +71,8 @@
 #'     CountNumber == 0,
 #'     DivisionNm == "Adelaide"
 #'   )
-#' dop_bar(long_df, items = PartyAb, value_col = CalculationValue)
+#' dop_bar(long_df, items = PartyAb, value_col = CalculationValue,
+#'        round_col = "CountNumber", at_round = 0)
 #'
 #' @seealso [dop_irv()] to generate wide-format input from raw ballot data.
 #'
@@ -94,7 +95,7 @@ dop_bar <- function(data,
 
   mid_value <- sum(df$value) / 2
 
-  ggplot2::ggplot(df, ggplot2::aes(x = reorder(item, -value), y = value)) +
+  ggplot2::ggplot(df, ggplot2::aes(x = stats::reorder(item, -value), y = value)) +
     ggplot2::geom_col(fill = "steelblue") +
     ggplot2::geom_text(ggplot2::aes(label = round(value, 3)),
                        hjust = -0.25, size = 3.5) +

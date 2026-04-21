@@ -107,7 +107,7 @@ print.pairwise <- function(x, ...) {
   # Format as percentages for display only; underlying tibble keeps raw 0-1 values
   display$tcp_a <- sprintf("%.1f%%", display$tcp_a * 100)
   display$tcp_b <- sprintf("%.1f%%", display$tcp_b * 100)
-  print(as.data.frame(display) |> head(5), row.names = FALSE)
+  print(as.data.frame(display) |> utils::head(5), row.names = FALSE)
 
   cat("\n")
   if (!is.na(x$condorcet_winner)) {
