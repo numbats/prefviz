@@ -97,8 +97,6 @@ dop_bar <- function(data,
 
   ggplot2::ggplot(df, ggplot2::aes(x = stats::reorder(item, -value), y = value)) +
     ggplot2::geom_col(fill = "steelblue") +
-    ggplot2::geom_text(ggplot2::aes(label = round(value, 3)),
-                       hjust = -0.25, size = 3.5) +
     ggplot2::geom_hline(yintercept = mid_value, linetype = "dashed", color = "grey20") +
     ggplot2::coord_flip() +
     ggplot2::labs(
@@ -108,7 +106,7 @@ dop_bar <- function(data,
     ) +
     ggplot2::theme_bw() +
     ggplot2::theme(
-      panel.grid.major.x = ggplot2::element_blank(),
+      panel.grid.major.y = ggplot2::element_blank(),
       panel.grid.minor = ggplot2::element_blank()
     )
 }
@@ -154,43 +152,29 @@ pairwise_heatmap <- function(x, value = c("tcp", "count")) {
   dir_a <- data.frame(
     item = tcp$item_a,
     opponent = tcp$item_b,
-    tcp_val = tcp$tcp_a,
-    label_val = if (value == "tcp") {
-      sprintf("%.1f%%", tcp$tcp_a * 100)
-    } else {
-      as.character(tcp$wins_a)
-    }
+    tcp_val = tcp$tcp_a
   )
   dir_b <- data.frame(
     item = tcp$item_b,
     opponent = tcp$item_a,
-    tcp_val = tcp$tcp_b,
-    label_val = if (value == "tcp") {
-      sprintf("%.1f%%", tcp$tcp_b * 100)
-    } else {
-      as.character(tcp$wins_b)
-    }
+    tcp_val = tcp$tcp_b
   )
   plot_data <- rbind(dir_a, dir_b)
 
-  # White text on dark tiles (far from 0.5), dark grey on light tiles (near 0.5)
-  plot_data$text_color <- ifelse(
-    plot_data$tcp_val < 0.25 | plot_data$tcp_val > 0.75,
-    "white", "grey20"
-  )
+  # Order items by pairwise wins ascending so most-wins item is the top row
+  wins_per_item <- tapply(plot_data$tcp_val > 0.5, plot_data$item, sum)
+  win_order <- names(sort(wins_per_item))
+  plot_data$item <- factor(plot_data$item, levels = win_order)
+  plot_data$opponent <- factor(plot_data$opponent, levels = win_order)
 
   ggplot2::ggplot(
     plot_data,
     ggplot2::aes(x = opponent, y = item, fill = tcp_val)
   ) +
     ggplot2::geom_tile(color = "white", linewidth = 0.5) +
-    ggplot2::geom_text(
-      ggplot2::aes(label = label_val, color = text_color),
-      size = 3.5
-    ) +
     ggplot2::scale_color_identity() +
     ggplot2::scale_fill_gradient2(
-      low = "firebrick", mid = "white", high = "forestgreen",
+      low = "#0072B2", mid = "white", high = "#D55E00",
       midpoint = 0.5, limits = c(0, 1),
       labels = scales::percent,
       name = "TCP ratio"
