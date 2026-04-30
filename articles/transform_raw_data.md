@@ -26,6 +26,7 @@ characteristics:
   to 1.
 
 ``` r
+
 df <- tibble(
   electorate = c("A", "B", "C"),
   PartyA = c(0.5, 0.4, 0.6),
@@ -59,6 +60,7 @@ In this example, we will use the [NSW Legislative Assembly Election
 dataset](https://preflib.github.io/PrefLib-Jekyll/dataset/00058).
 
 ``` r
+
 nswla <- read_preflib("00058 - nswla/00058-00000171.soi", from_preflib = TRUE)
 nswla
 #> # A tibble: 1,104 × 2
@@ -81,6 +83,7 @@ which works fine under Australian IRV rules, but may not be appropriate
 for other electoral systems.
 
 ``` r
+
 dop_irv(
   nswla, value_type = "percentage",
   preferences_col = preferences,
@@ -127,6 +130,7 @@ typical column for preference rank.
 |         5 | Melbourne      | Other |               1 |
 
 ``` r
+
 # Convert to PrefLib format
 preflib_long <- prefio::long_preferences(
   ballot_long,
@@ -160,6 +164,7 @@ rank.
 |         5 | Melbourne      |   2 |   3 |     1 |
 
 ``` r
+
 # Convert to PrefLib format
 preflib_wide <- prefio::wide_preferences(ballot_wide, vote, ALP:Other)
 
@@ -196,6 +201,7 @@ Before transforming the data, let’s do some data wrangling to filter for
 relevant information.
 
 ``` r
+
 # only include preference percentage and parties of interest
 
 aecdop_2025 <- aecdop_2025 |> 
@@ -223,6 +229,7 @@ We will use the
 function to transform the data into a `ternable`-friendly format.
 
 ``` r
+
 dop_transform(
   data = aecdop_2025,
   key_cols = c(DivisionNm, CountNumber),

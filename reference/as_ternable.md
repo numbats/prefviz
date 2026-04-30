@@ -97,6 +97,7 @@ A ternable object (S3 class) containing:
 ## Examples
 
 ``` r
+
 # Load and transform the dataset
 prefviz::aecdop25_transformed
 #> # A tibble: 976 × 8

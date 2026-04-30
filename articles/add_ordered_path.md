@@ -19,6 +19,7 @@ representing the preference distribution in one round of voting in one
 electorate.
 
 ``` r
+
 input_df <- prefviz::aecdop22_transformed |> 
    filter(DivisionNm %in% c("Higgins", "Monash", "Melbourne"))
 head(input_df)
@@ -47,6 +48,7 @@ In this case, we want to connect the points in the order of round
 (`order_by = CountNumber`) for each electorate (`group = DivisionNm`).
 
 ``` r
+
 # The base plot
 p <- get_tern_data2d(tern22) |>
   ggplot(aes(x = x1, y = x2)) +
@@ -90,6 +92,7 @@ input data frame, we just need to provide the grouping variable
 (`DivisionNm`).
 
 ``` r
+
 input_df2 <- prefviz::aecdop25_transformed |>
   filter(DivisionNm %in% c("Monash", "Melbourne"))
 head(input_df2)
@@ -114,6 +117,7 @@ done by setting `include_data = TRUE` in
 [`get_tern_edges()`](https://numbats.github.io/prefviz/reference/ternary_getters.md).
 
 ``` r
+
 # Add colors
 party_colors <- c(
   "ALP" = "#E13940",    # Red

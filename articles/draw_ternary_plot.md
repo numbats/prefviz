@@ -42,6 +42,7 @@ takes 2 arguments:
   ternary plot. The default takes all the columns in `data`.
 
 ``` r
+
 aecdop22_transformed <- prefviz::aecdop22_transformed |> 
   filter(CountNumber == 0)
 head(aecdop22_transformed)
@@ -105,6 +106,7 @@ format, so we can directly pass it to
 to create a `ternable` object.
 
 ``` r
+
 tern22 <- as_ternable(aecdop22_transformed, ALP:Other)
 ```
 
@@ -113,6 +115,7 @@ Now we can use the
 function to get the input data for `ggplot2`.
 
 ``` r
+
 input_df <- get_tern_data2d(tern22)
 head(input_df)
 #> # A tibble: 6 × 8
@@ -132,6 +135,7 @@ observation locations on the plot. We can now use `ggplot2` to draw the
 ternary plot.
 
 ``` r
+
 p <- ggplot(input_df, aes(x = x1, y = x2)) +
   # Draw the ternary space as an equilateral triangle
   add_ternary_base() + 
@@ -158,6 +162,7 @@ The default reference point is the centroid, which divides the triangle
 into 3 equal regions.
 
 ``` r
+
 p + 
   geom_ternary_region(
     x1 = 1/3, x2 = 1/3, x3 = 1/3, # Default reference points. Must sum to 1
@@ -201,6 +206,7 @@ A ternary tour requires the following components:
 - Vertex labels (good to have to identify the vertices during the tour)
 
 ``` r
+
 # Load the data
 aecdop25_transformed <- prefviz::aecdop25_transformed |> 
   filter(CountNumber == 0)
@@ -232,6 +238,7 @@ animate_xy(
 We can add colors to the points.
 
 ``` r
+
 # Define color mapping
 party_colors <- c(
   "ALP" = "#E13940",    # Red

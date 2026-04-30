@@ -18,6 +18,7 @@ interactively.
 You can install the development version of `prefviz` via:
 
 ``` r
+
 # install.packages("devtools")
 remotes::install_github("numbats/prefviz")
 ```
@@ -30,6 +31,7 @@ For optimal compatibility, we suggest your data have its
 alternatives/composition in columns and these columns sum to 1.
 
 ``` r
+
 aecdop22_transformed <- prefviz::aecdop22_transformed |> 
   filter(CountNumber == 0)
 head(aecdop22_transformed) |> select(-CountNumber, -ElectedParty)
@@ -70,6 +72,7 @@ Consider the distribution of first-round preferences in the 2022
 Australian Federal Election:
 
 ``` r
+
 head(aecdop22_transformed)
 #> # A tibble: 6 × 6
 #>   DivisionNm CountNumber ElectedParty   ALP   LNP Other
@@ -87,6 +90,7 @@ We can create a `ternable` object using the
 function:
 
 ``` r
+
 tern22 <- as_ternable(aecdop22_transformed, ALP:Other)
 tern22
 #> Ternable object
@@ -99,6 +103,7 @@ tern22
 ## Draw a 2D ternary plot
 
 ``` r
+
 # Get the input data
 input_df <- get_tern_data2d(tern22)
 head(input_df)
@@ -135,6 +140,7 @@ ggplot(input_df, aes(x = x1, y = x2)) +
 ## Draw a high-dimensional ternary plot
 
 ``` r
+
 # Load the data
 aecdop25_transformed <- prefviz::aecdop25_transformed |> 
   filter(CountNumber == 0)
