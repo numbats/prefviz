@@ -1,6 +1,6 @@
 Package: prefviz
 Title: Visualizes Preferential Data in One and More Contests
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: c(
   person("Linh", "Ngo", email = "linhngo66.work@gmail.com", role = c("aut", "cre")),
   person("Dianne", "Cook", email = "DiCook@monash.edu", role = "aut", comment = c(ORCID = "0000-0002-3813-7155")),
