@@ -1,76 +1,109 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Overview
+# prefviz <img src="man/figures/prefviz-sticker.png" width="200" align="right" alt="prefviz hex sticker" />
 
-Ternary plot is one of the popular ways to visualize preference data,
-such as from preferential elections where voters rank candidates
-ordinally. Traditionally, ternary plot works with 3-part compositional
-variables, representing as 3 vertices of a 2D equilateral triangle.
-However, in many cases, preference data consists of more than 3
-alternatives, making the 2D ternary plot inadequate to visualize the
-data.
+`prefviz` is a visualisation toolkit for preferential data, where
+individuals rank or order a set of alternatives, such as ranked-choice
+election ballots, tournament results, or survey rankings. The package
+makes it easy to explore both single-contest and multi-contest
+preference patterns through three complementary plot types:
 
-`prefviz` provides a solution for creating ternary plots of both two and
-higher dimensions. These plots are made compatible with other
-interactivity R packages, allowing users to explore their ternary plot
-interactively.
+- **Distribution of preferences bar chart** shows the marginal vote
+  shares for each candidate in a single contest.
+- **Pairwise heatmap** reveals head-to-head competition between every
+  pair of candidates, including Condorcet winner/loser detection.
+- **Ternary plot** compares multiple sets of preferences simultaneously
+  by placing each one as a point inside a simplex, where each vertex
+  represents one items and a point’s position reflects how support is
+  split among all items. Traditional ternary plots support three items
+  via a 2D simplex - an equilateral triangle, but `prefviz` extends this
+  to high dimensions via animated tours when there are more than 3
+  items.
 
 # Installation
 
-You can install the development version of `prefviz` via:
+`prefviz` is available on CRAN:
+
+``` r
+install.packages("prefviz")
+```
+
+The development version of `prefviz` can be installed via:
 
 ``` r
 # install.packages("devtools")
 remotes::install_github("numbats/prefviz")
 ```
 
-# Usage
+# Getting started
 
-## Prepare your data
+## Distribution of preferences bar chart
 
-For optimal compatibility, we suggest your data have its
-alternatives/composition in columns and these columns sum to 1.
+Used when you want to understand how preferences is spread across items
+in a single contest.
 
 ``` r
-aecdop22_transformed <- prefviz::aecdop22_transformed |> 
-  filter(CountNumber == 0)
-head(aecdop22_transformed) |> select(-CountNumber, -ElectedParty)
-#> # A tibble: 6 × 4
-#>   DivisionNm   ALP   LNP Other
-#>   <chr>      <dbl> <dbl> <dbl>
-#> 1 Adelaide   0.400 0.32  0.280
-#> 2 Aston      0.325 0.430 0.244
-#> 3 Ballarat   0.447 0.271 0.282
-#> 4 Banks      0.353 0.452 0.195
-#> 5 Barker     0.209 0.556 0.235
-#> 6 Barton     0.504 0.262 0.234
+sushi_data <- prefio::read_preflib(
+  "00014 - sushi/00014-00000001.soc",
+  from_preflib = TRUE
+)
+
+irv_result <- dop_irv(sushi_data,
+                      preferences_col = preferences,
+                      frequency_col   = frequency)
+
+dop_bar(irv_result, items = -c(round, winner), at_round = 1)
 ```
 
-You can explore the wrapper functions `dop_irv()` and `dop_transform()`
-that assist your transformation.
+<img src="man/figures/README-dop-bar-1.png" alt="" width="100%" />
 
-## Prepare components for ternary plot
+## Pairwise heatmap
 
-Every ternary plot is made up of 3 components:
-
-1.  Coordinates of the observations: Your n-part compositional data must
-    be transformed into (n-1)-dimensional space via Helmert matrix.
-2.  Vertices: The point coordinates that define the vertices of the
-    simplex
-3.  Edges: How the vertices are connected to create the simplex
-
-These components are provided in a `ternable` object, and can be
-accessed directly through the object or via getter functions
-`get_tern_*()`. These `get_tern_*()` functions transform the components
-of the `ternable` object into suitable input data for `ggplot2` and
-`tourr`.
-
-Consider the distribution of first-round preferences in the 2022
-Australian Federal Election:
+Used when you want to examine head-to-head competition between every
+pair of candidates and identify Condorcet winners or losers.
 
 ``` r
-head(aecdop22_transformed)
+pw <- pairwise_calculator(sushi_data,
+                          preferences_col = preferences,
+                          frequency_col   = frequency)
+pw
+#> Pairwise analysis (10 items)
+#> 
+#> Head-to-head results (first 5 rows):
+#>        item_a            item_b wins_a wins_b total tcp_a tcp_b
+#>  ebi (shrimp)   anago (sea eel)   2152   2848  5000 43.0% 57.0%
+#>  ebi (shrimp)     maguro (tuna)   2848   2152  5000 57.0% 43.0%
+#>  ebi (shrimp)       ika (squid)   2570   2430  5000 51.4% 48.6%
+#>  ebi (shrimp)  uni (sea urchin)   2428   2572  5000 48.6% 51.4%
+#>  ebi (shrimp) sake (salmon roe)   3449   1551  5000 69.0% 31.0%
+#>        h2h_winner
+#>   anago (sea eel)
+#>      ebi (shrimp)
+#>      ebi (shrimp)
+#>  uni (sea urchin)
+#>      ebi (shrimp)
+#> 
+#> Condorcet winner: tamago (egg)
+#> Condorcet loser:  tekka-maki (tuna roll)
+
+pairwise_heatmap(pw, value = "tcp")
+```
+
+<img src="man/figures/README-pairwise-heatmap-1.png" alt="" width="100%" />
+
+## Ternary plot
+
+Used when you want to compare preference distributions across many sets
+of preferences simultaneously. Each point is one set of preference
+(e.g. an electoral division, a customer survey, etc.), and its position
+inside the simplex reflects how support is split among the items.
+
+``` r
+# First-preference shares across 2025 Australian Federal Election divisions
+tern22_df <- aecdop22_transformed |>
+  filter(CountNumber == 0)
+head(tern22_df)
 #> # A tibble: 6 × 6
 #>   DivisionNm CountNumber ElectedParty   ALP   LNP Other
 #>   <chr>            <dbl> <chr>        <dbl> <dbl> <dbl>
@@ -80,57 +113,32 @@ head(aecdop22_transformed)
 #> 4 Banks                0 LNP          0.353 0.452 0.195
 #> 5 Barker               0 LNP          0.209 0.556 0.235
 #> 6 Barton               0 ALP          0.504 0.262 0.234
-```
 
-We can create a `ternable` object using the `as_ternable()` function:
+# Create ternable object
+tern22 <- as_ternable(tern22_df, ALP:Other)
 
-``` r
-tern22 <- as_ternable(aecdop22_transformed, ALP:Other)
-tern22
-#> Ternable object
-#> ----------------
-#> Items: ALP, LNP, Other 
-#> Vertices: 3 
-#> Edges: 6
-```
-
-## Draw a 2D ternary plot
-
-``` r
-# Get the input data
-input_df <- get_tern_data2d(tern22)
-head(input_df)
-#> # A tibble: 6 × 8
-#>   DivisionNm CountNumber ElectedParty   ALP   LNP Other      x1      x2
-#>   <chr>            <dbl> <chr>        <dbl> <dbl> <dbl>   <dbl>   <dbl>
-#> 1 Adelaide             0 ALP          0.400 0.32  0.280  0.0564 -0.0651
-#> 2 Aston                0 LNP          0.325 0.430 0.244 -0.0742 -0.109 
-#> 3 Ballarat             0 ALP          0.447 0.271 0.282  0.125  -0.0632
-#> 4 Banks                0 LNP          0.353 0.452 0.195 -0.0704 -0.169 
-#> 5 Barker               0 LNP          0.209 0.556 0.235 -0.246  -0.120 
-#> 6 Barton               0 ALP          0.504 0.262 0.234  0.171  -0.122
-
-# Visualize
-ggplot(input_df, aes(x = x1, y = x2)) +
+# Plot
+ggplot(get_tern_data2d(tern22), aes(x = x1, y = x2)) +
   add_ternary_base() +
   geom_ternary_region(
     vertex_labels = tern22$vertex_labels,
-    aes(fill = after_stat(vertex_labels)), 
-    alpha = 0.3, color = "grey50",
-    show.legend = FALSE
+    aes(fill = after_stat(vertex_labels)),
+    alpha = 0.3, color = "grey50", show.legend = FALSE
   ) +
-  geom_point(aes(color = ElectedParty)) +
+  geom_point(aes(color = ElectedParty), alpha = 0.7) +
   add_vertex_labels(tern22$simplex_vertices) +
   scale_fill_manual(
-    values = c("ALP" = "red", "LNP" = "blue", "Other" = "grey70"),
+    values = c("ALP" = "#E13940", "LNP" = "#1C4F9C","Other" = "#95A5A6"),
     aesthetics = c("fill", "colour")
   ) +
   labs(title = "First preference in 2022 Australian Federal election")
 ```
 
-<img src="man/figures/README-unnamed-chunk-6-1.png" alt="" width="100%" />
+<img src="man/figures/README-ternary-2d-1.png" alt="" width="100%" />
 
-## Draw a high-dimensional ternary plot
+When there are more than 3 alternatives, use `get_tern_datahd()` and
+`get_tern_edges()` to prepare the data for an animated tour through the
+high-dimensional simplex via the `tourr` package.
 
 ``` r
 # Load the data
@@ -150,31 +158,46 @@ head(aecdop25_transformed)
 # Create ternable object
 tern25 <- as_ternable(aecdop25_transformed, ALP:IND)
 
-# Add colors to the points
+# Plot
 party_colors <- c(
-  "ALP" = "#E13940",    # Red
-  "LNP" = "#1C4F9C",    # Blue
-  "GRN" = "#10C25B",    # Green
-  "IND" = "#F39C12",    # Orange
-  "Other" = "#95A5A6"   # Gray
+  "ALP" = "#E13940", # Red
+  "LNP" = "#1C4F9C", # Blue
+  "GRN" = "#10C25B", # Green
+  "IND" = "#1ce5f3", # Teal
+  "Other" = "#95A5A6" # Grey
 )
 
-# Map to your data
-color_vector <- c(rep("black", 5),
-  party_colors[aecdop25_transformed$ElectedParty])
-
-# Animate the tour
 tourr_data <- get_tern_datahd(tern25)
-animate_xy(
+color_vector <- c(
+  rep("black", 5),
+  party_colors[aecdop25_transformed |> filter(CountNumber == 0) |> pull(ElectedParty)]
+)
+
+tourr::animate_xy(
   dplyr::select(tourr_data, starts_with("x")),
-  edges = get_tern_edges(tern25),
+  edges      = get_tern_edges(tern25),
   obs_labels = tourr_data[["labels"]],
-  col = color_vector,
-  axes = "bottomleft"
+  col        = color_vector,
+  axes       = "bottomleft"
 )
 ```
 
-<img src="man/figures/README-unnamed-chunk-7-1.png" alt="" width="100%" /><img src="man/figures/README-unnamed-chunk-7-2.png" alt="" width="100%" />
+<img src="man/figures/README-ternary-hd-1.png" alt="" width="100%" /><img src="man/figures/README-ternary-hd-2.png" alt="" width="100%" />
+
+# Learn more
+
+To learn more about the visualisations, especially ternary plots, see
+the package vignettes:
+
+- `vignette("transform_raw_data", package = "prefviz")` - introduction
+  to common preferential data formats and how to use `dop_transform()`
+  and `dop_irv()` to transform raw data to be ready for visualisation
+- `vignette("draw_ternary_plot", package = "prefviz")` - step-by-step
+  guide to building 2D and high-dimensional ternary plots with
+  `as_ternable()`, `get_tern_*()`, and `tourr`.
+- `vignette("add_ordered_path", package = "prefviz")` - how to add
+  ordered paths to your ternary plots to trace how preference
+  distributions evolve over time or across preference sets
 
 # References
 

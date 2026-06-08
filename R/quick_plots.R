@@ -95,7 +95,7 @@ dop_bar <- function(data,
 
   mid_value <- sum(df$value) / 2
 
-  ggplot2::ggplot(df, ggplot2::aes(x = stats::reorder(item, -value), y = value)) +
+  ggplot2::ggplot(df, ggplot2::aes(x = stats::reorder(item, -value, sum), y = value)) +
     ggplot2::geom_col(fill = "steelblue") +
     ggplot2::geom_hline(yintercept = mid_value, linetype = "dashed", color = "grey20") +
     ggplot2::coord_flip() +
