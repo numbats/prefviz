@@ -2,6 +2,8 @@
 
 ## prefviz 0.1.2
 
+CRAN release: 2026-05-01
+
 - Added
   [`pairwise_calculator()`](https://numbats.github.io/prefviz/reference/pairwise_calculator.md)
   to compute all head-to-head comparisons from ranked preference data,

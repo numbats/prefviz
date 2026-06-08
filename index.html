@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Visualizes Preferential Data in One and More Contests • prefviz</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Visualizes Preferential Data in One and More Contests">
 <meta name="description" content="A visualization toolkit for preferential data, such as ranked-choice election results, tournament outcomes, and survey responses. The package provides methods to visualise the preference distribution of one contest with bar charts and pairwise comparisons of two contestants, as well as methods to visualise multiple contests through 2D and high-dimensional simplex plots both statically and interactively. HD simplex displays are implemented via projection methods using the tourr and detourr packages, enabling dynamic exploration of high-dimensional preference structure. For more details on HD simplex projection, see Wickham et al. (2011) &lt;doi:10.21105/joss.03419&gt;.">
@@ -55,54 +55,89 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+<div class="page-header"><h1 id="prefviz-">prefviz <img src="reference/figures/prefviz-sticker.png" width="200" align="right" alt="prefviz hex sticker"><a class="anchor" aria-label="anchor" href="#prefviz-"></a>
 </h1></div>
-<p>Ternary plot is one of the popular ways to visualize preference data, such as from preferential elections where voters rank candidates ordinally. Traditionally, ternary plot works with 3-part compositional variables, representing as 3 vertices of a 2D equilateral triangle. However, in many cases, preference data consists of more than 3 alternatives, making the 2D ternary plot inadequate to visualize the data.</p>
-<p><code>prefviz</code> provides a solution for creating ternary plots of both two and higher dimensions. These plots are made compatible with other interactivity R packages, allowing users to explore their ternary plot interactively.</p>
+<p><code>prefviz</code> is a visualisation toolkit for preferential data, where individuals rank or order a set of alternatives, such as ranked-choice election ballots, tournament results, or survey rankings. The package makes it easy to explore both single-contest and multi-contest preference patterns through three complementary plot types:</p>
+<ul>
+<li>
+<strong>Distribution of preferences bar chart</strong> shows the marginal vote shares for each candidate in a single contest.</li>
+<li>
+<strong>Pairwise heatmap</strong> reveals head-to-head competition between every pair of candidates, including Condorcet winner/loser detection.</li>
+<li>
+<strong>Ternary plot</strong> compares multiple sets of preferences simultaneously by placing each one as a point inside a simplex, where each vertex represents one items and a point’s position reflects how support is split among all items. Traditional ternary plots support three items via a 2D simplex - an equilateral triangle, but <code>prefviz</code> extends this to high dimensions via animated tours when there are more than 3 items.</li>
+</ul>
 </div>
 <div class="section level1">
 <h1 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h1>
-<p>You can install the development version of <code>prefviz</code> via:</p>
+<p><code>prefviz</code> is available on CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"prefviz"</span><span class="op">)</span></span></code></pre></div>
+<p>The development version of <code>prefviz</code> can be installed via:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"numbats/prefviz"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level1">
-<h1 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
+<h1 id="getting-started">Getting started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
 </h1>
 <div class="section level2">
-<h2 id="prepare-your-data">Prepare your data<a class="anchor" aria-label="anchor" href="#prepare-your-data"></a>
+<h2 id="distribution-of-preferences-bar-chart">Distribution of preferences bar chart<a class="anchor" aria-label="anchor" href="#distribution-of-preferences-bar-chart"></a>
 </h2>
-<p>For optimal compatibility, we suggest your data have its alternatives/composition in columns and these columns sum to 1.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">aecdop22_transformed</span> <span class="op">&lt;-</span> <span class="fu">prefviz</span><span class="fu">::</span><span class="va"><a href="reference/aecdop_transformed.html">aecdop22_transformed</a></span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">CountNumber</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">aecdop22_transformed</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">CountNumber</span>, <span class="op">-</span><span class="va">ElectedParty</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 6 × 4</span></span>
-<span><span class="co">#&gt;   DivisionNm   ALP   LNP Other</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 Adelaide   0.400 0.32  0.280</span></span>
-<span><span class="co">#&gt; 2 Aston      0.325 0.430 0.244</span></span>
-<span><span class="co">#&gt; 3 Ballarat   0.447 0.271 0.282</span></span>
-<span><span class="co">#&gt; 4 Banks      0.353 0.452 0.195</span></span>
-<span><span class="co">#&gt; 5 Barker     0.209 0.556 0.235</span></span>
-<span><span class="co">#&gt; 6 Barton     0.504 0.262 0.234</span></span></code></pre></div>
-<p>You can explore the wrapper functions <code><a href="reference/dop_irv.html">dop_irv()</a></code> and <code><a href="reference/dop_transform.html">dop_transform()</a></code> that assist your transformation.</p>
+<p>Used when you want to understand how preferences is spread across items in a single contest.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sushi_data</span> <span class="op">&lt;-</span> <span class="fu">prefio</span><span class="fu">::</span><span class="fu"><a href="https://fleverest.github.io/prefio/reference/read_preflib.html" class="external-link">read_preflib</a></span><span class="op">(</span></span>
+<span>  <span class="st">"00014 - sushi/00014-00000001.soc"</span>,</span>
+<span>  from_preflib <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">irv_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/dop_irv.html">dop_irv</a></span><span class="op">(</span><span class="va">sushi_data</span>,</span>
+<span>                      preferences_col <span class="op">=</span> <span class="va">preferences</span>,</span>
+<span>                      frequency_col   <span class="op">=</span> <span class="va">frequency</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/dop_bar.html">dop_bar</a></span><span class="op">(</span><span class="va">irv_result</span>, items <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">round</span>, <span class="va">winner</span><span class="op">)</span>, at_round <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-dop-bar-1.png" alt="" width="100%"></p>
 </div>
 <div class="section level2">
-<h2 id="prepare-components-for-ternary-plot">Prepare components for ternary plot<a class="anchor" aria-label="anchor" href="#prepare-components-for-ternary-plot"></a>
+<h2 id="pairwise-heatmap">Pairwise heatmap<a class="anchor" aria-label="anchor" href="#pairwise-heatmap"></a>
 </h2>
-<p>Every ternary plot is made up of 3 components:</p>
-<ol style="list-style-type: decimal">
-<li>Coordinates of the observations: Your n-part compositional data must be transformed into (n-1)-dimensional space via Helmert matrix.</li>
-<li>Vertices: The point coordinates that define the vertices of the simplex</li>
-<li>Edges: How the vertices are connected to create the simplex</li>
-</ol>
-<p>These components are provided in a <code>ternable</code> object, and can be accessed directly through the object or via getter functions <code>get_tern_*()</code>. These <code>get_tern_*()</code> functions transform the components of the <code>ternable</code> object into suitable input data for <code>ggplot2</code> and <code>tourr</code>.</p>
-<p>Consider the distribution of first-round preferences in the 2022 Australian Federal Election:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">aecdop22_transformed</span><span class="op">)</span></span>
+<p>Used when you want to examine head-to-head competition between every pair of candidates and identify Condorcet winners or losers.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">pw</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pairwise_calculator.html">pairwise_calculator</a></span><span class="op">(</span><span class="va">sushi_data</span>,</span>
+<span>                          preferences_col <span class="op">=</span> <span class="va">preferences</span>,</span>
+<span>                          frequency_col   <span class="op">=</span> <span class="va">frequency</span><span class="op">)</span></span>
+<span><span class="va">pw</span></span>
+<span><span class="co">#&gt; Pairwise analysis (10 items)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Head-to-head results (first 5 rows):</span></span>
+<span><span class="co">#&gt;        item_a            item_b wins_a wins_b total tcp_a tcp_b</span></span>
+<span><span class="co">#&gt;  ebi (shrimp)   anago (sea eel)   2152   2848  5000 43.0% 57.0%</span></span>
+<span><span class="co">#&gt;  ebi (shrimp)     maguro (tuna)   2848   2152  5000 57.0% 43.0%</span></span>
+<span><span class="co">#&gt;  ebi (shrimp)       ika (squid)   2570   2430  5000 51.4% 48.6%</span></span>
+<span><span class="co">#&gt;  ebi (shrimp)  uni (sea urchin)   2428   2572  5000 48.6% 51.4%</span></span>
+<span><span class="co">#&gt;  ebi (shrimp) sake (salmon roe)   3449   1551  5000 69.0% 31.0%</span></span>
+<span><span class="co">#&gt;        h2h_winner</span></span>
+<span><span class="co">#&gt;   anago (sea eel)</span></span>
+<span><span class="co">#&gt;      ebi (shrimp)</span></span>
+<span><span class="co">#&gt;      ebi (shrimp)</span></span>
+<span><span class="co">#&gt;  uni (sea urchin)</span></span>
+<span><span class="co">#&gt;      ebi (shrimp)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Condorcet winner: tamago (egg)</span></span>
+<span><span class="co">#&gt; Condorcet loser:  tekka-maki (tuna roll)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/pairwise_heatmap.html">pairwise_heatmap</a></span><span class="op">(</span><span class="va">pw</span>, value <span class="op">=</span> <span class="st">"tcp"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-pairwise-heatmap-1.png" alt="" width="100%"></p>
+</div>
+<div class="section level2">
+<h2 id="ternary-plot">Ternary plot<a class="anchor" aria-label="anchor" href="#ternary-plot"></a>
+</h2>
+<p>Used when you want to compare preference distributions across many sets of preferences simultaneously. Each point is one set of preference (e.g. an electoral division, a customer survey, etc.), and its position inside the simplex reflects how support is split among the items.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># First-preference shares across 2025 Australian Federal Election divisions</span></span>
+<span><span class="va">tern22_df</span> <span class="op">&lt;-</span> <span class="va">aecdop22_transformed</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">CountNumber</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">tern22_df</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 6 × 6</span></span>
 <span><span class="co">#&gt;   DivisionNm CountNumber ElectedParty   ALP   LNP Other</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;            &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
@@ -111,55 +146,28 @@
 <span><span class="co">#&gt; 3 Ballarat             0 ALP          0.447 0.271 0.282</span></span>
 <span><span class="co">#&gt; 4 Banks                0 LNP          0.353 0.452 0.195</span></span>
 <span><span class="co">#&gt; 5 Barker               0 LNP          0.209 0.556 0.235</span></span>
-<span><span class="co">#&gt; 6 Barton               0 ALP          0.504 0.262 0.234</span></span></code></pre></div>
-<p>We can create a <code>ternable</code> object using the <code><a href="reference/as_ternable.html">as_ternable()</a></code> function:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">tern22</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_ternable.html">as_ternable</a></span><span class="op">(</span><span class="va">aecdop22_transformed</span>, <span class="va">ALP</span><span class="op">:</span><span class="va">Other</span><span class="op">)</span></span>
-<span><span class="va">tern22</span></span>
-<span><span class="co">#&gt; Ternable object</span></span>
-<span><span class="co">#&gt; ----------------</span></span>
-<span><span class="co">#&gt; Items: ALP, LNP, Other </span></span>
-<span><span class="co">#&gt; Vertices: 3 </span></span>
-<span><span class="co">#&gt; Edges: 6</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="draw-a-2d-ternary-plot">Draw a 2D ternary plot<a class="anchor" aria-label="anchor" href="#draw-a-2d-ternary-plot"></a>
-</h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Get the input data</span></span>
-<span><span class="va">input_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ternary_getters.html">get_tern_data2d</a></span><span class="op">(</span><span class="va">tern22</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">input_df</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 6 × 8</span></span>
-<span><span class="co">#&gt;   DivisionNm CountNumber ElectedParty   ALP   LNP Other      x1      x2</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;            &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 Adelaide             0 ALP          0.400 0.32  0.280  0.0564 -0.0651</span></span>
-<span><span class="co">#&gt; 2 Aston                0 LNP          0.325 0.430 0.244 -0.0742 -0.109 </span></span>
-<span><span class="co">#&gt; 3 Ballarat             0 ALP          0.447 0.271 0.282  0.125  -0.0632</span></span>
-<span><span class="co">#&gt; 4 Banks                0 LNP          0.353 0.452 0.195 -0.0704 -0.169 </span></span>
-<span><span class="co">#&gt; 5 Barker               0 LNP          0.209 0.556 0.235 -0.246  -0.120 </span></span>
-<span><span class="co">#&gt; 6 Barton               0 ALP          0.504 0.262 0.234  0.171  -0.122</span></span>
+<span><span class="co">#&gt; 6 Barton               0 ALP          0.504 0.262 0.234</span></span>
 <span></span>
-<span><span class="co"># Visualize</span></span>
-<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">input_df</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">x1</span>, y <span class="op">=</span> <span class="va">x2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="co"># Create ternable object</span></span>
+<span><span class="va">tern22</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_ternable.html">as_ternable</a></span><span class="op">(</span><span class="va">tern22_df</span>, <span class="va">ALP</span><span class="op">:</span><span class="va">Other</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Plot</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="fu"><a href="reference/ternary_getters.html">get_tern_data2d</a></span><span class="op">(</span><span class="va">tern22</span><span class="op">)</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">x1</span>, y <span class="op">=</span> <span class="va">x2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="reference/add_ternary_base.html">add_ternary_base</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="reference/geom_ternary_region.html">geom_ternary_region</a></span><span class="op">(</span></span>
 <span>    vertex_labels <span class="op">=</span> <span class="va">tern22</span><span class="op">$</span><span class="va">vertex_labels</span>,</span>
-<span>    <span class="fu">aes</span><span class="op">(</span>fill <span class="op">=</span> <span class="fu">after_stat</span><span class="op">(</span><span class="va">vertex_labels</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>    alpha <span class="op">=</span> <span class="fl">0.3</span>, color <span class="op">=</span> <span class="st">"grey50"</span>,</span>
-<span>    show.legend <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>    <span class="fu">aes</span><span class="op">(</span>fill <span class="op">=</span> <span class="fu">after_stat</span><span class="op">(</span><span class="va">vertex_labels</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    alpha <span class="op">=</span> <span class="fl">0.3</span>, color <span class="op">=</span> <span class="st">"grey50"</span>, show.legend <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">geom_point</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>color <span class="op">=</span> <span class="va">ElectedParty</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>color <span class="op">=</span> <span class="va">ElectedParty</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="reference/add_vertex_labels.html">add_vertex_labels</a></span><span class="op">(</span><span class="va">tern22</span><span class="op">$</span><span class="va">simplex_vertices</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">scale_fill_manual</span><span class="op">(</span></span>
-<span>    values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ALP"</span> <span class="op">=</span> <span class="st">"red"</span>, <span class="st">"LNP"</span> <span class="op">=</span> <span class="st">"blue"</span>, <span class="st">"Other"</span> <span class="op">=</span> <span class="st">"grey70"</span><span class="op">)</span>,</span>
+<span>    values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ALP"</span> <span class="op">=</span> <span class="st">"#E13940"</span>, <span class="st">"LNP"</span> <span class="op">=</span> <span class="st">"#1C4F9C"</span>,<span class="st">"Other"</span> <span class="op">=</span> <span class="st">"#95A5A6"</span><span class="op">)</span>,</span>
 <span>    aesthetics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fill"</span>, <span class="st">"colour"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"First preference in 2022 Australian Federal election"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-6-1.png" alt="" width="100%"></p>
-</div>
-<div class="section level2">
-<h2 id="draw-a-high-dimensional-ternary-plot">Draw a high-dimensional ternary plot<a class="anchor" aria-label="anchor" href="#draw-a-high-dimensional-ternary-plot"></a>
-</h2>
+<p><img src="reference/figures/README-ternary-2d-1.png" alt="" width="100%"></p>
+<p>When there are more than 3 alternatives, use <code><a href="reference/ternary_getters.html">get_tern_datahd()</a></code> and <code><a href="reference/ternary_getters.html">get_tern_edges()</a></code> to prepare the data for an animated tour through the high-dimensional simplex via the <code>tourr</code> package.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load the data</span></span>
 <span><span class="va">aecdop25_transformed</span> <span class="op">&lt;-</span> <span class="fu">prefviz</span><span class="fu">::</span><span class="va"><a href="reference/aecdop_transformed.html">aecdop25_transformed</a></span> <span class="op">|&gt;</span> </span>
@@ -178,30 +186,43 @@
 <span><span class="co"># Create ternable object</span></span>
 <span><span class="va">tern25</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_ternable.html">as_ternable</a></span><span class="op">(</span><span class="va">aecdop25_transformed</span>, <span class="va">ALP</span><span class="op">:</span><span class="va">IND</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Add colors to the points</span></span>
+<span><span class="co"># Plot</span></span>
 <span><span class="va">party_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"ALP"</span> <span class="op">=</span> <span class="st">"#E13940"</span>,    <span class="co"># Red</span></span>
-<span>  <span class="st">"LNP"</span> <span class="op">=</span> <span class="st">"#1C4F9C"</span>,    <span class="co"># Blue</span></span>
-<span>  <span class="st">"GRN"</span> <span class="op">=</span> <span class="st">"#10C25B"</span>,    <span class="co"># Green</span></span>
-<span>  <span class="st">"IND"</span> <span class="op">=</span> <span class="st">"#F39C12"</span>,    <span class="co"># Orange</span></span>
-<span>  <span class="st">"Other"</span> <span class="op">=</span> <span class="st">"#95A5A6"</span>   <span class="co"># Gray</span></span>
+<span>  <span class="st">"ALP"</span> <span class="op">=</span> <span class="st">"#E13940"</span>, <span class="co"># Red</span></span>
+<span>  <span class="st">"LNP"</span> <span class="op">=</span> <span class="st">"#1C4F9C"</span>, <span class="co"># Blue</span></span>
+<span>  <span class="st">"GRN"</span> <span class="op">=</span> <span class="st">"#10C25B"</span>, <span class="co"># Green</span></span>
+<span>  <span class="st">"IND"</span> <span class="op">=</span> <span class="st">"#1ce5f3"</span>, <span class="co"># Teal</span></span>
+<span>  <span class="st">"Other"</span> <span class="op">=</span> <span class="st">"#95A5A6"</span> <span class="co"># Grey</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Map to your data</span></span>
-<span><span class="va">color_vector</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"black"</span>, <span class="fl">5</span><span class="op">)</span>,</span>
-<span>  <span class="va">party_colors</span><span class="op">[</span><span class="va">aecdop25_transformed</span><span class="op">$</span><span class="va">ElectedParty</span><span class="op">]</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Animate the tour</span></span>
 <span><span class="va">tourr_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ternary_getters.html">get_tern_datahd</a></span><span class="op">(</span><span class="va">tern25</span><span class="op">)</span></span>
-<span><span class="fu">animate_xy</span><span class="op">(</span></span>
+<span><span class="va">color_vector</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"black"</span>, <span class="fl">5</span><span class="op">)</span>,</span>
+<span>  <span class="va">party_colors</span><span class="op">[</span><span class="va">aecdop25_transformed</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">CountNumber</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">pull</span><span class="op">(</span><span class="va">ElectedParty</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">tourr</span><span class="fu">::</span><span class="fu"><a href="https://ggobi.github.io/tourr/reference/display_xy.html" class="external-link">animate_xy</a></span><span class="op">(</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">tourr_data</span>, <span class="fu">starts_with</span><span class="op">(</span><span class="st">"x"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  edges <span class="op">=</span> <span class="fu"><a href="reference/ternary_getters.html">get_tern_edges</a></span><span class="op">(</span><span class="va">tern25</span><span class="op">)</span>,</span>
+<span>  edges      <span class="op">=</span> <span class="fu"><a href="reference/ternary_getters.html">get_tern_edges</a></span><span class="op">(</span><span class="va">tern25</span><span class="op">)</span>,</span>
 <span>  obs_labels <span class="op">=</span> <span class="va">tourr_data</span><span class="op">[[</span><span class="st">"labels"</span><span class="op">]</span><span class="op">]</span>,</span>
-<span>  col <span class="op">=</span> <span class="va">color_vector</span>,</span>
-<span>  axes <span class="op">=</span> <span class="st">"bottomleft"</span></span>
+<span>  col        <span class="op">=</span> <span class="va">color_vector</span>,</span>
+<span>  axes       <span class="op">=</span> <span class="st">"bottomleft"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-7-1.png" alt="" width="100%"><img src="reference/figures/README-unnamed-chunk-7-2.png" alt="" width="100%"></p>
+<p><img src="reference/figures/README-ternary-hd-1.png" alt="" width="100%"><img src="reference/figures/README-ternary-hd-2.png" alt="" width="100%"></p>
 </div>
+</div>
+<div class="section level1">
+<h1 id="learn-more">Learn more<a class="anchor" aria-label="anchor" href="#learn-more"></a>
+</h1>
+<p>To learn more about the visualisations, especially ternary plots, see the package vignettes:</p>
+<ul>
+<li>
+<code><a href="articles/transform_raw_data.html">vignette("transform_raw_data", package = "prefviz")</a></code> - introduction to common preferential data formats and how to use <code><a href="reference/dop_transform.html">dop_transform()</a></code> and <code><a href="reference/dop_irv.html">dop_irv()</a></code> to transform raw data to be ready for visualisation</li>
+<li>
+<code><a href="articles/draw_ternary_plot.html">vignette("draw_ternary_plot", package = "prefviz")</a></code> - step-by-step guide to building 2D and high-dimensional ternary plots with <code><a href="reference/as_ternable.html">as_ternable()</a></code>, <code>get_tern_*()</code>, and <code>tourr</code>.</li>
+<li>
+<code><a href="articles/add_ordered_path.html">vignette("add_ordered_path", package = "prefviz")</a></code> - how to add ordered paths to your ternary plots to trace how preference distributions evolve over time or across preference sets</li>
+</ul>
 </div>
 <div class="section level1">
 <h1 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
