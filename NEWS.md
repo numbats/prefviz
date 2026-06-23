@@ -1,3 +1,7 @@
+# prefviz 0.1.3
+
+* Fixed `dop_bar()` to order columns correctly and have y axis look nicer.
+
 # prefviz 0.1.2
 
 * Added `pairwise_calculator()` to compute all head-to-head comparisons from ranked preference data, returning a `"pairwise"` S3 object with TCP ratios, raw win counts, and Condorcet winner/loser detection.
