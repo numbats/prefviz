@@ -98,6 +98,7 @@ dop_bar <- function(data,
   ggplot2::ggplot(df, ggplot2::aes(x = stats::reorder(item, -value, sum), y = value)) +
     ggplot2::geom_col(fill = "steelblue") +
     ggplot2::geom_hline(yintercept = mid_value, linetype = "dashed", color = "grey20") +
+    ggplot2::scale_y_continuous(labels = scales::label_number()) +
     ggplot2::coord_flip() +
     ggplot2::labs(
       x = NULL,
@@ -108,7 +109,8 @@ dop_bar <- function(data,
     ggplot2::theme(
       panel.grid.major.y = ggplot2::element_blank(),
       panel.grid.minor = ggplot2::element_blank()
-    )
+    ) 
+    
 }
 
 #' Heatmap of pairwise results
