@@ -1,5 +1,11 @@
 # Changelog
 
+## prefviz 0.1.3
+
+- Fixed
+  [`dop_bar()`](https://numbats.github.io/prefviz/reference/dop_bar.md)
+  to order columns correctly and have y axis look nicer.
+
 ## prefviz 0.1.2
 
 CRAN release: 2026-05-01
