@@ -4,8 +4,8 @@ First release
 
 ## R CMD check results
 
-── R CMD check results ────────────────────────────────────────── prefviz 0.1.2 ────
-Duration: 22.1s
+── R CMD check results ───────────────────────────────── prefviz 0.1.3 ────
+Duration: 48.4s
 
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔
 
